@@ -25,8 +25,7 @@ let package = Package(
                         "Nimble",
                         "Quick"
                     ],
-                    path: "Tests/Specs",
-                    exclude: ["Resources/cocoapods"])
+                    path: "Tests")
     ],
     swiftLanguageVersions: [.v5]
 )
