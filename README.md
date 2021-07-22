@@ -385,7 +385,7 @@ Templates for creating fakes can be found in this repository in the "Templates" 
 
 __Usage__
 
-When you go to create a new file in Xcode, you will notice a new section called "Spry" with templates called "Class Fake" and "Protocol Fake". Select the template according to the type being faked, click "Next", enter the name of the type or protocol you want to fake (the word "Fake" will be added automatically), select the target(s) and folder location for the fake, and start testing with ease!
+When you go to create a new file in Xcode, you will notice a new section called "NSpry" with templates called "Class Fake" and "Protocol Fake". Select the template according to the type being faked, click "Next", enter the name of the type or protocol you want to fake (the word "Fake" will be added automatically), select the target(s) and folder location for the fake, and start testing with ease!
 
 ## Installation
 
