@@ -11,7 +11,7 @@ public protocol SpryEquatable {
 }
 
 public extension SpryEquatable {
-    func _isEqual(to actual: SpryEquatable?) -> Bool {
+    func _isEqual(to _: SpryEquatable?) -> Bool {
         Constant.FatalError.doesNotConformToEquatable(self)
     }
 }
@@ -56,7 +56,7 @@ public extension SpryEquatable where Self: AnyObject & Equatable {
 
 public extension Array {
     func _isEqual(to actual: SpryEquatable?) -> Bool {
-        guard let castedActual = actual as? Array<Element> else {
+        guard let castedActual = actual as? [Element] else {
             return false
         }
 
@@ -82,7 +82,7 @@ public extension Array {
 
 public extension Dictionary {
     func _isEqual(to actual: SpryEquatable?) -> Bool {
-        guard let castedActual = actual as? Dictionary<Key, Value> else {
+        guard let castedActual = actual as? [Key: Value] else {
             return false
         }
 
@@ -113,8 +113,11 @@ public extension Dictionary {
 /**
  Used to specify an `Optional` constraint. This is needed until Swift supports extensions where Self can be constrained to a type.
  */
-public protocol OptionalType {}
-extension Optional: OptionalType {}
+public protocol OptionalType {
+}
+
+extension Optional: OptionalType {
+}
 
 // MARK: - SpryEquatable where Self: OptionalType
 
@@ -132,7 +135,7 @@ public extension SpryEquatable where Self: OptionalType {
 
         let selfsWrappedValue = selfMirror.children.first?.value
 
-        if isNil(selfsWrappedValue) && isNil(actual) {
+        if isNil(selfsWrappedValue), isNil(actual) {
             return true
         }
         guard let selfsWrappedValueAsNonOptional = selfsWrappedValue, let actual = actual else {

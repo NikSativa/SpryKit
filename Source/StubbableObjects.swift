@@ -15,7 +15,7 @@ public class Stub: CustomStringConvertible {
 
     /// A beautified description. Used for debugging purposes.
     public var description: String {
-        let argumentsDescription = arguments.map{"<\($0)>"}.joined(separator: ", ")
+        let argumentsDescription = arguments.map { "<\($0)>" }.joined(separator: ", ")
         let returnDescription = isNil(stubType) ? "nil" : "\(stubType!)"
 
         return "Stub(function: <\(functionName)>, args: <\(argumentsDescription)>, returnValue: <\(returnDescription)>)"
@@ -104,7 +104,7 @@ public class Stub: CustomStringConvertible {
 
      - Parameter value: The value to be returned by the stubbed function.
      */
-    public func andReturn(_ value: Any? = Void()) {
+    public func andReturn(_ value: Any? = ()) {
         stubType = .andReturn(value)
     }
 
@@ -183,7 +183,6 @@ public class Stub: CustomStringConvertible {
  This exists because a dictionary is needed as a class. Instances of this type are put into an NSMapTable.
  */
 public class StubsDictionary: CustomStringConvertible {
-
     // MARK: - Public Properties
 
     /// A beautified description. Used for debugging purposes.
@@ -198,7 +197,7 @@ public class StubsDictionary: CustomStringConvertible {
         }
 
         let friendlyStubsString = stubs
-            .map { $0.friendlyDescription }
+            .map(\.friendlyDescription)
             .joined(separator: "; ")
 
         return friendlyStubsString
@@ -233,7 +232,7 @@ public class StubsDictionary: CustomStringConvertible {
         var duplicates: [Stub] = []
 
         stubsDict[stub.functionName]?.forEach {
-            guard $0.chronologicalIndex != stub.chronologicalIndex && stub.isComplete else {
+            guard $0.chronologicalIndex != stub.chronologicalIndex, stub.isComplete else {
                 return
             }
 

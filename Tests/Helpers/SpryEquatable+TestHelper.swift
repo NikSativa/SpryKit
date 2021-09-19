@@ -15,12 +15,14 @@ class SpryEquatableTestHelper: SpryEquatable {
     }
 }
 
-class NotSpryEquatable { }
+class NotSpryEquatable {
+}
 
 class AnyObjectAndEquatable: Equatable, SpryEquatable {
-    public static func == (lhs: AnyObjectAndEquatable, rhs: AnyObjectAndEquatable) -> Bool {
+    public static func ==(_: AnyObjectAndEquatable, _: AnyObjectAndEquatable) -> Bool {
         return true
     }
 }
 
-class AnyObjectOnly: SpryEquatable { }
+class AnyObjectOnly: SpryEquatable {
+}
