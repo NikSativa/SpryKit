@@ -6,7 +6,6 @@ import Foundation
  See Spyable and Stubbable or more information.
  */
 public protocol Spryable: Spyable, Stubbable {
-
     // MARK: Instance
 
     /**
@@ -135,7 +134,6 @@ public protocol Spryable: Spyable, Stubbable {
 }
 
 public extension Spryable {
-
     // MARK: - Instance
 
     func spryify<T>(_ functionName: String = #function, arguments: Any?..., asType _: T.Type = T.self, file: String = #file, line: Int = #line) -> T {

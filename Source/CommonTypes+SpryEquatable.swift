@@ -1,35 +1,74 @@
-import Foundation
 import CoreGraphics
+import Foundation
 
-extension Optional: SpryEquatable {}
-extension NSObject: SpryEquatable {}
+extension Optional: SpryEquatable {
+}
 
-extension String: SpryEquatable {}
-extension Array: SpryEquatable {}
-extension Dictionary: SpryEquatable {}
+extension NSObject: SpryEquatable {
+}
 
-extension Bool: SpryEquatable {}
+extension String: SpryEquatable {
+}
 
-extension CGFloat: SpryEquatable {}
-extension Float: SpryEquatable {}
-extension Double: SpryEquatable {}
+extension Array: SpryEquatable {
+}
 
-extension Int: SpryEquatable {}
-extension Int8: SpryEquatable {}
-extension Int16: SpryEquatable {}
-extension Int32: SpryEquatable {}
-extension Int64: SpryEquatable {}
+extension Dictionary: SpryEquatable {
+}
 
-extension UInt: SpryEquatable {}
-extension UInt8: SpryEquatable {}
-extension UInt16: SpryEquatable {}
-extension UInt32: SpryEquatable {}
-extension UInt64: SpryEquatable {}
+extension Bool: SpryEquatable {
+}
 
-extension Notification: SpryEquatable {}
-extension Notification.Name: SpryEquatable {}
+extension CGFloat: SpryEquatable {
+}
 
-extension Data: SpryEquatable {}
+extension Float: SpryEquatable {
+}
 
-extension DispatchTime: SpryEquatable {}
-extension DispatchTimeInterval: SpryEquatable {}
+extension Double: SpryEquatable {
+}
+
+extension Int: SpryEquatable {
+}
+
+extension Int8: SpryEquatable {
+}
+
+extension Int16: SpryEquatable {
+}
+
+extension Int32: SpryEquatable {
+}
+
+extension Int64: SpryEquatable {
+}
+
+extension UInt: SpryEquatable {
+}
+
+extension UInt8: SpryEquatable {
+}
+
+extension UInt16: SpryEquatable {
+}
+
+extension UInt32: SpryEquatable {
+}
+
+extension UInt64: SpryEquatable {
+}
+
+extension Notification: SpryEquatable {
+}
+
+extension Notification.Name: SpryEquatable {
+}
+
+extension Data: SpryEquatable {
+}
+
+extension DispatchTime: SpryEquatable {
+}
+
+extension DispatchTimeInterval: SpryEquatable {
+}

@@ -1,5 +1,5 @@
-import Quick
 import Nimble
+import Quick
 
 import NSpry
 
@@ -292,6 +292,5 @@ class HaveReceivedMatcherSpec: QuickSpec {
                 }
             }
         }
-
     }
 }

@@ -14,8 +14,8 @@ public class ArgumentCaptor: SpryEquatable {
 
      - Returns: The captured argument or fatal error if there was an issue.
      */
-    public func getValue<T>(at index: Int = 0, as: T.Type = T.self) -> T {
-        guard index >= 0 && capturedArguments.count > index else {
+    public func getValue<T>(at index: Int = 0, as _: T.Type = T.self) -> T {
+        guard index >= 0, capturedArguments.count > index else {
             Constant.FatalError.capturedArgumentsOutOfBounds(index: index, capturedArguments: capturedArguments)
         }
 
@@ -34,7 +34,7 @@ public class ArgumentCaptor: SpryEquatable {
 
 /**
  Argument specifier used by Spyable and Stubbable. Used for non-Equatable comparision.
- 
+
  * .anything - Every value matches this qualification.
  * .nonNil - Every value matches this qualification except Optional.none
  * .nil - Only Optional.nil matches this qualification.
@@ -54,12 +54,12 @@ public enum Argument: CustomStringConvertible, SpryEquatable {
             return "Argument.nonNil"
         case .nil:
             return "Argument.nil"
-        case .validator(_):
+        case .validator:
             return "Argument.validator"
         }
     }
 
-    public static func == (lhs: Argument, rhs: Argument) -> Bool {
+    public static func ==(lhs: Argument, rhs: Argument) -> Bool {
         switch (lhs, rhs) {
         case (.anything, .anything):
             return true
@@ -84,7 +84,7 @@ public enum Argument: CustomStringConvertible, SpryEquatable {
 
      - Returns: A new ArgumentCaptor.
      */
-    static public func captor() -> ArgumentCaptor {
+    public static func captor() -> ArgumentCaptor {
         return ArgumentCaptor()
     }
 }

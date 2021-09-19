@@ -1,6 +1,6 @@
-import Quick
 import Nimble
 import NSpry
+import Quick
 
 class SpyableSpec: QuickSpec {
     override func spec() {
@@ -276,6 +276,5 @@ class SpyableSpec: QuickSpec {
                 }
             }
         }
-
     }
 }

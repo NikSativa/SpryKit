@@ -1,6 +1,6 @@
-import Quick
 import Nimble
 import NSpry
+import Quick
 
 class StubbableSpec: QuickSpec {
     override func spec() {
@@ -124,7 +124,7 @@ class StubbableSpec: QuickSpec {
                     let expectedString = "string from closure"
 
                     beforeEach {
-                        subject.stub(.hereComesAClosure).andReturn({ expectedString })
+                        subject.stub(.hereComesAClosure).andReturn { expectedString }
                     }
 
                     it("should get a closure from the stubbed service") {
@@ -223,7 +223,7 @@ class StubbableSpec: QuickSpec {
                             let completion = arguments[1] as! () -> Void
                             completion()
 
-                            return Void()
+                            return ()
                         }
 
                         subject.callThisCompletion(string: "") {
@@ -256,7 +256,7 @@ class StubbableSpec: QuickSpec {
                     }
 
                     it("should fatal error") {
-                        expect{
+                        expect {
                             _ = subject.giveMeAString()
                         }.to(throwAssertion())
                     }
@@ -307,7 +307,7 @@ class StubbableSpec: QuickSpec {
                     }
 
                     it("should fatal error") {
-                        expect({_ = subject.giveMeAString(string: "")}()).to(throwAssertion())
+                        expect({ _ = subject.giveMeAString(string: "") }()).to(throwAssertion())
                     }
                 }
 
@@ -554,6 +554,5 @@ class StubbableSpec: QuickSpec {
                 }
             }
         }
-
     }
 }

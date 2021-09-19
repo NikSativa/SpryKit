@@ -4,7 +4,7 @@ import NSpry
 struct StubbableError: Error, Equatable {
     let id: String
 
-    public static func == (lhs: StubbableError, rhs: StubbableError) -> Bool {
+    public static func ==(lhs: StubbableError, rhs: StubbableError) -> Bool {
         return lhs.id == rhs.id
     }
 }
@@ -115,7 +115,7 @@ class StubbableTestHelper: Stubbable {
         return stubbedValue()
     }
 
-    func hereComesProtocolWithSelfRequirements<T: ProtocolWithSelfRequirement>(object: T) -> T {
+    func hereComesProtocolWithSelfRequirements<T: ProtocolWithSelfRequirement>(object _: T) -> T {
         return stubbedValue()
     }
 

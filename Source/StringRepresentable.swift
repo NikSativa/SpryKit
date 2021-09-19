@@ -2,9 +2,9 @@ import Foundation
 
 /**
  This protocol is how the function name string gets converted to a type.
- 
+
  It's easiest to have an enum with a raw type of `String`. Said type only needs to say it conforms to this protocol.
- 
+
  ## Example ##
  ```swift
  enum Function: String, StringRepresentable {
@@ -26,16 +26,13 @@ public extension StringRepresentable {
 
         if let function = Self(rawValue: functionName) {
             self = function
-        }
-        else if hasUnnamedArgumentSuffix,
-            let function = Self(rawValue: String(functionName.dropLast(singleUnnamedArgumentFunctionaSuffix.count))) {
+        } else if hasUnnamedArgumentSuffix,
+                  let function = Self(rawValue: String(functionName.dropLast(singleUnnamedArgumentFunctionaSuffix.count))) {
             self = function
-        }
-        else if !hasUnnamedArgumentSuffix,
-            let function = Self(rawValue: functionName + singleUnnamedArgumentFunctionaSuffix){
+        } else if !hasUnnamedArgumentSuffix,
+                  let function = Self(rawValue: functionName + singleUnnamedArgumentFunctionaSuffix) {
             self = function
-        }
-        else {
+        } else {
             Constant.FatalError.noFunctionFound(functionName: functionName, type: type, file: file, line: line)
         }
     }

@@ -1,6 +1,6 @@
 import Foundation
-import Quick
 import Nimble
+import Quick
 
 @testable import NSpry
 
@@ -12,7 +12,7 @@ class ArgumentSpec: QuickSpec {
                     expect("\(Argument.anything)").to(equal("Argument.anything"))
                     expect("\(Argument.nonNil)").to(equal("Argument.nonNil"))
                     expect("\(Argument.nil)").to(equal("Argument.nil"))
-                    expect("\(Argument.validator({ _ in true }))").to(equal("Argument.validator"))
+                    expect("\(Argument.validator { _ in true })").to(equal("Argument.validator"))
                 }
             }
 
@@ -56,16 +56,12 @@ class ArgumentSpec: QuickSpec {
                 describe("Argument enum") {
                     describe(".anything") {
                         beforeEach {
-                            specifiedArgs = [
-                                Argument.anything,
-                                Argument.anything,
-                                Argument.anything,
-                            ]
-                            actualArgs = [
-                                "asdf",
-                                3 as Int?,
-                                NSObject(),
-                            ]
+                            specifiedArgs = [Argument.anything,
+                                             Argument.anything,
+                                             Argument.anything]
+                            actualArgs = ["asdf",
+                                          3 as Int?,
+                                          NSObject()]
 
                             subjectAction()
                         }
@@ -78,12 +74,8 @@ class ArgumentSpec: QuickSpec {
                     describe(".nonNil") {
                         context("when the actual arg is nil") {
                             beforeEach {
-                                specifiedArgs = [
-                                    Argument.nonNil,
-                                ]
-                                actualArgs = [
-                                    nil as String?,
-                                ]
+                                specifiedArgs = [Argument.nonNil]
+                                actualArgs = [nil as String?]
 
                                 subjectAction()
                             }
@@ -95,12 +87,8 @@ class ArgumentSpec: QuickSpec {
 
                         context("when the actual arg is not nil") {
                             beforeEach {
-                                specifiedArgs = [
-                                    Argument.nonNil,
-                                ]
-                                actualArgs = [
-                                    "" as String?,
-                                ]
+                                specifiedArgs = [Argument.nonNil]
+                                actualArgs = ["" as String?]
 
                                 subjectAction()
                             }
@@ -114,14 +102,10 @@ class ArgumentSpec: QuickSpec {
                     describe(".nil") {
                         context("when the actual arg is nil") {
                             beforeEach {
-                                specifiedArgs = [
-                                    Argument.nil,
-                                    Argument.nil,
-                                ]
-                                actualArgs = [
-                                    nil as String?,
-                                    nil as Int?,
-                                ]
+                                specifiedArgs = [Argument.nil,
+                                                 Argument.nil]
+                                actualArgs = [nil as String?,
+                                              nil as Int?]
 
                                 subjectAction()
                             }
@@ -133,12 +117,8 @@ class ArgumentSpec: QuickSpec {
 
                         context("when the actual arg is not nil") {
                             beforeEach {
-                                specifiedArgs = [
-                                    Argument.nil,
-                                ]
-                                actualArgs = [
-                                    "" as String?,
-                                ]
+                                specifiedArgs = [Argument.nil]
+                                actualArgs = ["" as String?]
 
                                 subjectAction()
                             }
@@ -162,12 +142,8 @@ class ArgumentSpec: QuickSpec {
                                     return true
                                 }
 
-                                specifiedArgs = [
-                                    customValidator,
-                                ]
-                                actualArgs = [
-                                    actualArg,
-                                ]
+                                specifiedArgs = [customValidator]
+                                actualArgs = [actualArg]
 
                                 subjectAction()
                             }
@@ -179,14 +155,10 @@ class ArgumentSpec: QuickSpec {
 
                         context("when the validator returns true") {
                             beforeEach {
-                                specifiedArgs = [
-                                    Argument.validator { _ -> Bool in
-                                        return true
-                                    },
-                                ]
-                                actualArgs = [
-                                    "",
-                                ]
+                                specifiedArgs = [Argument.validator { _ -> Bool in
+                                    return true
+                                }]
+                                actualArgs = [""]
 
                                 subjectAction()
                             }
@@ -198,14 +170,10 @@ class ArgumentSpec: QuickSpec {
 
                         context("when the validator returns true") {
                             beforeEach {
-                                specifiedArgs = [
-                                    Argument.validator { _ -> Bool in
-                                        return false
-                                    },
-                                ]
-                                actualArgs = [
-                                    "",
-                                ]
+                                specifiedArgs = [Argument.validator { _ -> Bool in
+                                    return false
+                                }]
+                                actualArgs = [""]
 
                                 subjectAction()
                             }
@@ -219,14 +187,10 @@ class ArgumentSpec: QuickSpec {
 
                 describe("ArgumentCaptor") {
                     beforeEach {
-                        specifiedArgs = [
-                            Argument.captor(),
-                            ArgumentCaptor(),
-                        ]
-                        actualArgs = [
-                            "",
-                            "",
-                        ]
+                        specifiedArgs = [Argument.captor(),
+                                         ArgumentCaptor()]
+                        actualArgs = ["",
+                                      ""]
 
                         subjectAction()
                     }
@@ -239,12 +203,8 @@ class ArgumentSpec: QuickSpec {
                 describe("passing in nil") {
                     context("when both arguments are nil (of any type)") {
                         beforeEach {
-                            specifiedArgs = [
-                                nil as Int?,
-                            ]
-                            actualArgs = [
-                                nil as String?,
-                            ]
+                            specifiedArgs = [nil as Int?]
+                            actualArgs = [nil as String?]
 
                             subjectAction()
                         }
@@ -256,12 +216,8 @@ class ArgumentSpec: QuickSpec {
 
                     context("when the specified argument is nil (of any type)") {
                         beforeEach {
-                            specifiedArgs = [
-                                nil as Int?,
-                            ]
-                            actualArgs = [
-                                "",
-                            ]
+                            specifiedArgs = [nil as Int?]
+                            actualArgs = [""]
 
                             subjectAction()
                         }
@@ -273,12 +229,8 @@ class ArgumentSpec: QuickSpec {
 
                     context("when the actual argument is nil (of any type)") {
                         beforeEach {
-                            specifiedArgs = [
-                                "",
-                            ]
-                            actualArgs = [
-                                nil as Int?,
-                            ]
+                            specifiedArgs = [""]
+                            actualArgs = [nil as Int?]
 
                             subjectAction()
                         }
@@ -292,12 +244,8 @@ class ArgumentSpec: QuickSpec {
                 describe("actual arg equatability") {
                     context("when the actual arg is NOT SpryEquatable") {
                         beforeEach {
-                            specifiedArgs = [
-                                "",
-                            ]
-                            actualArgs = [
-                                NotSpryEquatable(),
-                            ]
+                            specifiedArgs = [""]
+                            actualArgs = [NotSpryEquatable()]
                         }
 
                         it("should fatal error") {
@@ -309,12 +257,8 @@ class ArgumentSpec: QuickSpec {
 
                     context("when the actual arg is SpryEquatable; NOT equal to specified") {
                         beforeEach {
-                            specifiedArgs = [
-                                SpryEquatableTestHelper(isEqual: false),
-                            ]
-                            actualArgs = [
-                                SpryEquatableTestHelper(isEqual: false),
-                            ]
+                            specifiedArgs = [SpryEquatableTestHelper(isEqual: false)]
+                            actualArgs = [SpryEquatableTestHelper(isEqual: false)]
 
                             subjectAction()
                         }
@@ -326,12 +270,8 @@ class ArgumentSpec: QuickSpec {
 
                     context("when the actual arg is SpryEquatable; equal to specified") {
                         beforeEach {
-                            specifiedArgs = [
-                                SpryEquatableTestHelper(isEqual: true),
-                            ]
-                            actualArgs = [
-                                SpryEquatableTestHelper(isEqual: true),
-                            ]
+                            specifiedArgs = [SpryEquatableTestHelper(isEqual: true)]
+                            actualArgs = [SpryEquatableTestHelper(isEqual: true)]
 
                             subjectAction()
                         }
@@ -343,6 +283,5 @@ class ArgumentSpec: QuickSpec {
                 }
             }
         }
-
     }
 }

@@ -5,8 +5,8 @@
 
 import Dispatch
 import Foundation
-@testable import Nimble
 import XCTest
+@testable import Nimble
 
 func failsWithErrorMessage(_ messages: [String], file: FileString = #file, line: UInt = #line, preferOriginalSourceLocation: Bool = false, closure: @escaping () throws -> Void) {
     var filePath = file
@@ -40,7 +40,7 @@ func failsWithErrorMessage(_ messages: [String], file: FileString = #file, line:
         if let lastFailure = lastFailure {
             message = "Got failure message: \"\(lastFailure.message.stringValue)\", but expected \"\(msg)\""
         } else {
-            let knownFailures = recorder.assertions.filter { !$0.success }.map { $0.message.stringValue }
+            let knownFailures = recorder.assertions.filter { !$0.success }.map(\.message.stringValue)
             let knownFailuresJoined = knownFailures.joined(separator: ", ")
             message = "Expected error message (\(msg)), got (\(knownFailuresJoined))\n\nAssertions Received:\n\(recorder.assertions)"
         }
@@ -51,13 +51,11 @@ func failsWithErrorMessage(_ messages: [String], file: FileString = #file, line:
 }
 
 func failsWithErrorMessage(_ message: String, file: FileString = #file, line: UInt = #line, preferOriginalSourceLocation: Bool = false, closure: @escaping () -> Void) {
-    return failsWithErrorMessage(
-        [message],
-        file: file,
-        line: line,
-        preferOriginalSourceLocation: preferOriginalSourceLocation,
-        closure: closure
-    )
+    return failsWithErrorMessage([message],
+                                 file: file,
+                                 line: line,
+                                 preferOriginalSourceLocation: preferOriginalSourceLocation,
+                                 closure: closure)
 }
 
 func failsWithErrorMessageForNil(_ message: String, file: FileString = #file, line: UInt = #line, preferOriginalSourceLocation: Bool = false, closure: @escaping () -> Void) {
@@ -77,7 +75,7 @@ public class NimbleHelper: NSObject {
     }
 
     public class func expectFailureMessages(_ messages: [NSString], block: @escaping () -> Void, file: FileString, line: UInt) {
-        failsWithErrorMessage(messages.map({String(describing: $0)}), file: file, line: line, preferOriginalSourceLocation: true, closure: block)
+        failsWithErrorMessage(messages.map { String(describing: $0) }, file: file, line: line, preferOriginalSourceLocation: true, closure: block)
     }
 
     public class func expectFailureMessageForNil(_ message: NSString, block: @escaping () -> Void, file: FileString, line: UInt) {
@@ -91,7 +89,7 @@ extension Date {
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         let date = dateFormatter.date(from: dateTimeString)!
-        self.init(timeInterval:0, since:date)
+        self.init(timeInterval: 0, since: date)
     }
 }
 

@@ -15,33 +15,32 @@ private var stubsMapTable: NSMapTable<AnyObject, StubsDictionary> = NSMapTable.w
  - Note: The `Spryable` protocol exists as a convenience to conform to both `Spyable` and `Stubbable` at the same time.
  */
 public protocol Stubbable: AnyObject {
-
     // MARK: - Instance
 
     /**
      The type that represents function and property names when stubbing.
-     
+
      Ideal to use an enum with raw type of `String`. An enum with raw type of `String` also automatically satisfies StringRepresentable protocol.
-     
+
      Property signatures are just the property name
-     
+
      Function signatures are the function name with "()" at the end. If there are parameters then the public facing parameter names are listed in order with ":" after each. If a parameter does not have a public facing name then the private name is used instead
-     
+
      - Note: This associatedtype has the exact same name as Spyable's so that a single type will satisfy both.
-     
+
      ## Example ##
      ```swift
      enum Function: String, StringRepresentable {
          // property signatures are just the property name
          case myProperty = "myProperty"
-     
+
          // function signatures are the function name with parameter names listed at the end in "()"
          case giveMeAString = "noParameters()"
          case hereAreTwoParameters = "hereAreTwoParameters(string1:string2:)"
          case paramWithDifferentNames = "paramWithDifferentNames(publicName:)"
          case paramWithNoPublicName = "paramWithNoPublicName(privateName:)"
      }
-     
+
      func noParameters() -> Bool {
          // ...
      }
@@ -53,7 +52,7 @@ public protocol Stubbable: AnyObject {
      func paramWithDifferentNames(publicName privateName: String) -> String {
          // ...
      }
-     
+
      func paramWithNoPublicName(_ privateName: String) -> String {
          // ...
      }
@@ -292,19 +291,16 @@ public protocol Stubbable: AnyObject {
 }
 
 public extension Stubbable {
-
     // MARK: - Instance
 
     var _stubsDictionary: StubsDictionary {
-        get {
-            guard let stubsDict = stubsMapTable.object(forKey: self) else {
-                let stubDict = StubsDictionary()
-                stubsMapTable.setObject(stubDict, forKey: self)
-                return stubDict
-            }
-
-            return stubsDict
+        guard let stubsDict = stubsMapTable.object(forKey: self) else {
+            let stubDict = StubsDictionary()
+            stubsMapTable.setObject(stubDict, forKey: self)
+            return stubDict
         }
+
+        return stubsDict
     }
 
     func stub(_ function: Function) -> Stub {
@@ -368,15 +364,13 @@ public extension Stubbable {
     // MARK: - Static
 
     static var _stubsDictionary: StubsDictionary {
-        get {
-            guard let stubDict = stubsMapTable.object(forKey: self) else {
-                let stubDict = StubsDictionary()
-                stubsMapTable.setObject(stubDict, forKey: self)
-                return stubDict
-            }
-
+        guard let stubDict = stubsMapTable.object(forKey: self) else {
+            let stubDict = StubsDictionary()
+            stubsMapTable.setObject(stubDict, forKey: self)
             return stubDict
         }
+
+        return stubDict
     }
 
     static func stub(_ function: ClassFunction) -> Stub {
@@ -438,7 +432,7 @@ public extension Stubbable {
             return fatalErrorOrReturnFallback(fallback: fallback, function: function, arguments: arguments)
         }
 
-        let (stubsWithoutArgs, stubsWithArgs) = stubsForFunctionName.bisect{ $0.arguments.count == 0 }
+        let (stubsWithoutArgs, stubsWithArgs) = stubsForFunctionName.bisect { $0.arguments.count == 0 }
 
         for stub in stubsWithArgs {
             if isEqualArgsLists(fakeType: Self.self, functionName: function.rawValue, specifiedArgs: stub.arguments, actualArgs: arguments) {
@@ -486,7 +480,7 @@ public extension Stubbable {
             return fatalErrorOrReturnFallback(fallback: fallback, function: function, arguments: arguments)
         }
 
-        let (stubsWithoutArgs, stubsWithArgs) = stubsForFunctionName.bisect{ $0.arguments.count == 0 }
+        let (stubsWithoutArgs, stubsWithArgs) = stubsForFunctionName.bisect { $0.arguments.count == 0 }
 
         for stub in stubsWithArgs {
             if isEqualArgsLists(fakeType: Self.self, functionName: function.rawValue, specifiedArgs: stub.arguments, actualArgs: arguments) {
@@ -557,14 +551,13 @@ private func handleDuplicates(stubsDictionary: StubsDictionary, stub: Stub, agai
 
     if again {
         stubsDictionary.remove(stubs: duplicates, forFunctionName: stub.functionName)
-    }
-    else {
+    } else {
         Constant.FatalError.stubbingSameFunctionWithSameArguments(stub: stub)
     }
 }
 
 private func captureArguments(stub: Stub, actualArgs: [Any?]) {
-    zip(stub.arguments, actualArgs).forEach { (specifiedArg, actual) in
+    zip(stub.arguments, actualArgs).forEach { specifiedArg, actual in
         if let specifiedArg = specifiedArg as? ArgumentCaptor {
             specifiedArg.capture(actual)
         }

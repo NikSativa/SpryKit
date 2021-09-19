@@ -1,8 +1,8 @@
 import Foundation
 
-import Quick
 import Nimble
 import NSpry
+import Quick
 
 class SpryEquatableSpec: QuickSpec {
     override func spec() {
@@ -49,7 +49,7 @@ class SpryEquatableSpec: QuickSpec {
                             let notSpryEquatable = NotSpryEquatable()
                             _ = [notSpryEquatable]._isEqual(to: [notSpryEquatable] as SpryEquatable)
 
-                            return Void()
+                            return ()
                         }.to(throwAssertion())
                     }
                 }
@@ -76,8 +76,8 @@ class SpryEquatableSpec: QuickSpec {
                             let notSpryEquatable = NotSpryEquatable()
                             _ = [1: notSpryEquatable]._isEqual(to: [1: notSpryEquatable] as SpryEquatable)
 
-                            return Void()
-                            }.to(throwAssertion())
+                            return ()
+                        }.to(throwAssertion())
                     }
                 }
             }
@@ -116,6 +116,5 @@ class SpryEquatableSpec: QuickSpec {
                 }
             }
         }
-
     }
 }

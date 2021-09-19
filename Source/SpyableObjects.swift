@@ -7,12 +7,11 @@ import Foundation
  * arguments: [Any] - The arguments passed in when the function was recorded.
  */
 public class RecordedCall: CustomStringConvertible {
-
     // MARK: - Public Properties
 
     /// A beautified description. Used for debugging purposes.
     public var description: String {
-        let argumentsString = arguments.map{"<\($0 as Any)>"}.joined(separator: ", ")
+        let argumentsString = arguments.map { "<\($0 as Any)>" }.joined(separator: ", ")
         return "RecordedCall(function: <\(functionName)>, arguments: <\(argumentsString)>)"
     }
 
@@ -49,7 +48,6 @@ public class RecordedCall: CustomStringConvertible {
  This exists because a dictionary is needed as a class. Instances of this type are put into an NSMapTable.
  */
 public class RecordedCallsDictionary: CustomStringConvertible {
-
     // MARK: - Public Properties
 
     /// A beautified description. Used for debugging purposes.
@@ -64,7 +62,7 @@ public class RecordedCallsDictionary: CustomStringConvertible {
         }
 
         let friendlyCallsString = calls
-            .map { $0.friendlyDescription }
+            .map(\.friendlyDescription)
             .joined(separator: "; ")
 
         return friendlyCallsString
