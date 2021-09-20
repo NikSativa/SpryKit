@@ -4,7 +4,7 @@ import Quick
 
 @testable import NSpry
 
-class ArgumentSpec: QuickSpec {
+final class ArgumentSpec: QuickSpec {
     override func spec() {
         describe("Argument") {
             describe("CustomStringConvertible") {

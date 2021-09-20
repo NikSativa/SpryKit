@@ -2,8 +2,9 @@ import Nimble
 import Quick
 
 import NSpry
+import NSpry_Nimble
 
-class HaveRecordedCallsMatcherSpec: QuickSpec {
+final class HaveRecordedCallsMatcherSpec: QuickSpec {
     override func spec() {
         describe("HaveRecordedCallsMatcher") {
             var subject: SpyableTestHelper!
