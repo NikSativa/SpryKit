@@ -2,7 +2,7 @@ import Nimble
 import NSpry
 import Quick
 
-class StubbableSpec: QuickSpec {
+final class StubbableSpec: QuickSpec {
     override func spec() {
         describe("Stubbable") {
             var subject: StubbableTestHelper!

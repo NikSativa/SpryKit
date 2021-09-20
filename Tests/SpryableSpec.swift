@@ -3,7 +3,7 @@ import Quick
 
 import NSpry
 
-class SpryableSpec: QuickSpec {
+final class SpryableSpec: QuickSpec {
     override func spec() {
         describe("Spryable") {
             var subject: SpryableTestClass!

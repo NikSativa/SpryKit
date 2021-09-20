@@ -4,7 +4,7 @@ import Nimble
 import NSpry
 import Quick
 
-class SpryEquatableSpec: QuickSpec {
+final class SpryEquatableSpec: QuickSpec {
     override func spec() {
         describe("SpryEquatable") {
             describe("Any Objects vs Equatable") {
