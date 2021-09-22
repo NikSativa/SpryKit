@@ -15,7 +15,7 @@ Pod::Spec.new do |spec|
   spec.social_media_url = 'https://www.facebook.com/Nik.Sativa'
 
   spec.swift_version = '5.4'
-  spec.ios.deployment_target = '10.0'
+  spec.ios.deployment_target = '11.0'
 
   spec.dependency 'NSpry'
   spec.dependency 'Nimble', '~> 9.2.0'
