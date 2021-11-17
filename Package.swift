@@ -5,7 +5,7 @@ import PackageDescription
 // swiftformat:disable all
 let package = Package(
     name: "NSpry",
-    platforms: [.iOS(.v10)],
+    platforms: [.iOS(.v10), .macOS(.v10_12)],
     products: [
         .library(name: "NSpry", targets: ["NSpry"]),
         .library(name: "NSpry_Nimble", targets: ["NSpry_Nimble"])
