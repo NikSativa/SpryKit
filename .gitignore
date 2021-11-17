@@ -20,4 +20,3 @@ bin/
 Build/
 DerivedData/
 .build/
-Carthage/
