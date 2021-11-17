@@ -1,0 +1,567 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 52;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		9B320C67274265F3009CBC64 /* NSpry_Carthage.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B320C65274265F3009CBC64 /* NSpry_Carthage.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9B320C7F27426610009CBC64 /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B320C7127426610009CBC64 /* Constant.swift */; };
+		9B320C8027426610009CBC64 /* SpyableObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B320C7227426610009CBC64 /* SpyableObjects.swift */; };
+		9B320C8127426610009CBC64 /* Argument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B320C7327426610009CBC64 /* Argument.swift */; };
+		9B320C8227426610009CBC64 /* StringRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B320C7427426610009CBC64 /* StringRepresentable.swift */; };
+		9B320C8327426610009CBC64 /* Spryable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B320C7527426610009CBC64 /* Spryable.swift */; };
+		9B320C8427426610009CBC64 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B320C7627426610009CBC64 /* Helpers.swift */; };
+		9B320C8527426610009CBC64 /* Stubbable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B320C7727426610009CBC64 /* Stubbable.swift */; };
+		9B320C8627426610009CBC64 /* StubbableObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B320C7827426610009CBC64 /* StubbableObjects.swift */; };
+		9B320C8727426610009CBC64 /* Spyable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B320C7927426610009CBC64 /* Spyable.swift */; };
+		9B320C8827426610009CBC64 /* SpryConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B320C7A27426610009CBC64 /* SpryConfiguration.swift */; };
+		9B320C8927426610009CBC64 /* SpryEquatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B320C7B27426610009CBC64 /* SpryEquatable.swift */; };
+		9B320C8A27426610009CBC64 /* CommonTypes+SpryEquatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B320C7C27426610009CBC64 /* CommonTypes+SpryEquatable.swift */; };
+		9B320C9427426635009CBC64 /* NSpry_Nimble.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B320C9227426635009CBC64 /* NSpry_Nimble.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9B320C982742663E009CBC64 /* HaveReceivedMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B320C6F27426610009CBC64 /* HaveReceivedMatcher.swift */; };
+		9B320C992742663E009CBC64 /* HaveRecordedCallsMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B320C6E27426610009CBC64 /* HaveRecordedCallsMatcher.swift */; };
+		9B320C9E27426CBC009CBC64 /* Nimble.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B320C9D27426CBC009CBC64 /* Nimble.xcframework */; };
+		9B320CA227426E1F009CBC64 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B320CA127426E1F009CBC64 /* XCTest.framework */; platformFilter = ios; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		9B320C9A27426BC5009CBC64 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9B320C59274265F3009CBC64 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9B320C61274265F3009CBC64;
+			remoteInfo = NSpry;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		9B320C62274265F3009CBC64 /* NSpry.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NSpry.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9B320C65274265F3009CBC64 /* NSpry_Carthage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSpry_Carthage.h; sourceTree = "<group>"; };
+		9B320C66274265F3009CBC64 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9B320C6E27426610009CBC64 /* HaveRecordedCallsMatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HaveRecordedCallsMatcher.swift; sourceTree = "<group>"; };
+		9B320C6F27426610009CBC64 /* HaveReceivedMatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HaveReceivedMatcher.swift; sourceTree = "<group>"; };
+		9B320C7127426610009CBC64 /* Constant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constant.swift; sourceTree = "<group>"; };
+		9B320C7227426610009CBC64 /* SpyableObjects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpyableObjects.swift; sourceTree = "<group>"; };
+		9B320C7327426610009CBC64 /* Argument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Argument.swift; sourceTree = "<group>"; };
+		9B320C7427426610009CBC64 /* StringRepresentable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringRepresentable.swift; sourceTree = "<group>"; };
+		9B320C7527426610009CBC64 /* Spryable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Spryable.swift; sourceTree = "<group>"; };
+		9B320C7627426610009CBC64 /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
+		9B320C7727426610009CBC64 /* Stubbable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Stubbable.swift; sourceTree = "<group>"; };
+		9B320C7827426610009CBC64 /* StubbableObjects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StubbableObjects.swift; sourceTree = "<group>"; };
+		9B320C7927426610009CBC64 /* Spyable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Spyable.swift; sourceTree = "<group>"; };
+		9B320C7A27426610009CBC64 /* SpryConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpryConfiguration.swift; sourceTree = "<group>"; };
+		9B320C7B27426610009CBC64 /* SpryEquatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpryEquatable.swift; sourceTree = "<group>"; };
+		9B320C7C27426610009CBC64 /* CommonTypes+SpryEquatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CommonTypes+SpryEquatable.swift"; sourceTree = "<group>"; };
+		9B320C9027426635009CBC64 /* NSpry_Nimble.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NSpry_Nimble.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9B320C9227426635009CBC64 /* NSpry_Nimble.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSpry_Nimble.h; sourceTree = "<group>"; };
+		9B320C9327426635009CBC64 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9B320C9D27426CBC009CBC64 /* Nimble.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Nimble.xcframework; path = ../Carthage/Build/Nimble.xcframework; sourceTree = "<group>"; };
+		9B320CA127426E1F009CBC64 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		9B320C5F274265F3009CBC64 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9B320C8D27426635009CBC64 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9B320C9E27426CBC009CBC64 /* Nimble.xcframework in Frameworks */,
+				9B320CA227426E1F009CBC64 /* XCTest.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		9B320C58274265F3009CBC64 = {
+			isa = PBXGroup;
+			children = (
+				9B320C64274265F3009CBC64 /* NSpry-Carthage */,
+				9B320C9127426635009CBC64 /* NSpry_Nimble */,
+				9B320C63274265F3009CBC64 /* Products */,
+				9B320C9C27426CBC009CBC64 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		9B320C63274265F3009CBC64 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9B320C62274265F3009CBC64 /* NSpry.framework */,
+				9B320C9027426635009CBC64 /* NSpry_Nimble.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		9B320C64274265F3009CBC64 /* NSpry-Carthage */ = {
+			isa = PBXGroup;
+			children = (
+				9B320C7027426610009CBC64 /* Core */,
+				9B320C6D27426610009CBC64 /* Nimble */,
+				9B320C65274265F3009CBC64 /* NSpry_Carthage.h */,
+				9B320C66274265F3009CBC64 /* Info.plist */,
+			);
+			path = "NSpry-Carthage";
+			sourceTree = "<group>";
+		};
+		9B320C6D27426610009CBC64 /* Nimble */ = {
+			isa = PBXGroup;
+			children = (
+				9B320C6E27426610009CBC64 /* HaveRecordedCallsMatcher.swift */,
+				9B320C6F27426610009CBC64 /* HaveReceivedMatcher.swift */,
+			);
+			name = Nimble;
+			path = ../../Source/Nimble;
+			sourceTree = "<group>";
+		};
+		9B320C7027426610009CBC64 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				9B320C7127426610009CBC64 /* Constant.swift */,
+				9B320C7227426610009CBC64 /* SpyableObjects.swift */,
+				9B320C7327426610009CBC64 /* Argument.swift */,
+				9B320C7427426610009CBC64 /* StringRepresentable.swift */,
+				9B320C7527426610009CBC64 /* Spryable.swift */,
+				9B320C7627426610009CBC64 /* Helpers.swift */,
+				9B320C7727426610009CBC64 /* Stubbable.swift */,
+				9B320C7827426610009CBC64 /* StubbableObjects.swift */,
+				9B320C7927426610009CBC64 /* Spyable.swift */,
+				9B320C7A27426610009CBC64 /* SpryConfiguration.swift */,
+				9B320C7B27426610009CBC64 /* SpryEquatable.swift */,
+				9B320C7C27426610009CBC64 /* CommonTypes+SpryEquatable.swift */,
+			);
+			name = Core;
+			path = ../../Source/Core;
+			sourceTree = "<group>";
+		};
+		9B320C9127426635009CBC64 /* NSpry_Nimble */ = {
+			isa = PBXGroup;
+			children = (
+				9B320C9227426635009CBC64 /* NSpry_Nimble.h */,
+				9B320C9327426635009CBC64 /* Info.plist */,
+			);
+			path = NSpry_Nimble;
+			sourceTree = "<group>";
+		};
+		9B320C9C27426CBC009CBC64 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9B320CA127426E1F009CBC64 /* XCTest.framework */,
+				9B320C9D27426CBC009CBC64 /* Nimble.xcframework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		9B320C5D274265F3009CBC64 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9B320C67274265F3009CBC64 /* NSpry_Carthage.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9B320C8B27426635009CBC64 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9B320C9427426635009CBC64 /* NSpry_Nimble.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		9B320C61274265F3009CBC64 /* NSpry */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9B320C6A274265F3009CBC64 /* Build configuration list for PBXNativeTarget "NSpry" */;
+			buildPhases = (
+				9B320C5D274265F3009CBC64 /* Headers */,
+				9B320C5E274265F3009CBC64 /* Sources */,
+				9B320C5F274265F3009CBC64 /* Frameworks */,
+				9B320C60274265F3009CBC64 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NSpry;
+			productName = "NSpry-Carthage";
+			productReference = 9B320C62274265F3009CBC64 /* NSpry.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		9B320C8F27426635009CBC64 /* NSpry_Nimble */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9B320C9527426635009CBC64 /* Build configuration list for PBXNativeTarget "NSpry_Nimble" */;
+			buildPhases = (
+				9B320C8B27426635009CBC64 /* Headers */,
+				9B320C8C27426635009CBC64 /* Sources */,
+				9B320C8D27426635009CBC64 /* Frameworks */,
+				9B320C8E27426635009CBC64 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9B320C9B27426BC5009CBC64 /* PBXTargetDependency */,
+			);
+			name = NSpry_Nimble;
+			productName = NSpry_Nimble;
+			productReference = 9B320C9027426635009CBC64 /* NSpry_Nimble.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9B320C59274265F3009CBC64 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1250;
+				TargetAttributes = {
+					9B320C61274265F3009CBC64 = {
+						CreatedOnToolsVersion = 12.5;
+					};
+					9B320C8F27426635009CBC64 = {
+						CreatedOnToolsVersion = 12.5;
+					};
+				};
+			};
+			buildConfigurationList = 9B320C5C274265F3009CBC64 /* Build configuration list for PBXProject "NSpry-Carthage" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 9B320C58274265F3009CBC64;
+			productRefGroup = 9B320C63274265F3009CBC64 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9B320C61274265F3009CBC64 /* NSpry */,
+				9B320C8F27426635009CBC64 /* NSpry_Nimble */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		9B320C60274265F3009CBC64 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9B320C8E27426635009CBC64 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9B320C5E274265F3009CBC64 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9B320C8527426610009CBC64 /* Stubbable.swift in Sources */,
+				9B320C8727426610009CBC64 /* Spyable.swift in Sources */,
+				9B320C8327426610009CBC64 /* Spryable.swift in Sources */,
+				9B320C8927426610009CBC64 /* SpryEquatable.swift in Sources */,
+				9B320C8027426610009CBC64 /* SpyableObjects.swift in Sources */,
+				9B320C8427426610009CBC64 /* Helpers.swift in Sources */,
+				9B320C8627426610009CBC64 /* StubbableObjects.swift in Sources */,
+				9B320C8827426610009CBC64 /* SpryConfiguration.swift in Sources */,
+				9B320C8227426610009CBC64 /* StringRepresentable.swift in Sources */,
+				9B320C8A27426610009CBC64 /* CommonTypes+SpryEquatable.swift in Sources */,
+				9B320C8127426610009CBC64 /* Argument.swift in Sources */,
+				9B320C7F27426610009CBC64 /* Constant.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9B320C8C27426635009CBC64 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9B320C992742663E009CBC64 /* HaveRecordedCallsMatcher.swift in Sources */,
+				9B320C982742663E009CBC64 /* HaveReceivedMatcher.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		9B320C9B27426BC5009CBC64 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9B320C61274265F3009CBC64 /* NSpry */;
+			targetProxy = 9B320C9A27426BC5009CBC64 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		9B320C68274265F3009CBC64 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		9B320C69274265F3009CBC64 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		9B320C6B274265F3009CBC64 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = U8743T8Z48;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "NSpry-Carthage/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "ru.maxkazakov.NSpry-Carthage";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		9B320C6C274265F3009CBC64 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = U8743T8Z48;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "NSpry-Carthage/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "ru.maxkazakov.NSpry-Carthage";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		9B320C9627426635009CBC64 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = U8743T8Z48;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
+				INFOPLIST_FILE = NSpry_Nimble/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "ru.maxkazakov.NSpry-Nimble";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		9B320C9727426635009CBC64 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = U8743T8Z48;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
+				INFOPLIST_FILE = NSpry_Nimble/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "ru.maxkazakov.NSpry-Nimble";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9B320C5C274265F3009CBC64 /* Build configuration list for PBXProject "NSpry-Carthage" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9B320C68274265F3009CBC64 /* Debug */,
+				9B320C69274265F3009CBC64 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9B320C6A274265F3009CBC64 /* Build configuration list for PBXNativeTarget "NSpry" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9B320C6B274265F3009CBC64 /* Debug */,
+				9B320C6C274265F3009CBC64 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9B320C9527426635009CBC64 /* Build configuration list for PBXNativeTarget "NSpry_Nimble" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9B320C9627426635009CBC64 /* Debug */,
+				9B320C9727426635009CBC64 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9B320C59274265F3009CBC64 /* Project object */;
+}
