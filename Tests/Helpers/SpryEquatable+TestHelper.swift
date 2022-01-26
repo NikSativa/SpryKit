@@ -1,7 +1,7 @@
 import Foundation
 import NSpry
 
-class SpryEquatableTestHelper: SpryEquatable {
+final class SpryEquatableTestHelper: SpryEquatable {
     let isEqual: Bool
     private(set) var lastValueCompared: SpryEquatable?
 
@@ -18,11 +18,11 @@ class SpryEquatableTestHelper: SpryEquatable {
 class NotSpryEquatable {
 }
 
-class AnyObjectAndEquatable: Equatable, SpryEquatable {
+final class AnyObjectAndEquatable: Equatable, SpryEquatable {
     public static func ==(_: AnyObjectAndEquatable, _: AnyObjectAndEquatable) -> Bool {
         return true
     }
 }
 
-class AnyObjectOnly: SpryEquatable {
+final class AnyObjectOnly: SpryEquatable {
 }

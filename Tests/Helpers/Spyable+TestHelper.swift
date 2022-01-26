@@ -1,7 +1,7 @@
 import Foundation
 import NSpry
 
-class SpyableTestHelper: Spyable {
+final class SpyableTestHelper: Spyable {
     enum ClassFunction: String, StringRepresentable {
         case doClassStuff = "doClassStuff()"
         case doClassStuffWith = "doClassStuffWith(string:)"
