@@ -28,7 +28,7 @@ final class AlwaysLowerCase: SpecialString {
 }
 
 // Non-final class
-class NumbersOnly: SpecialString {
+final class NumbersOnly: SpecialString {
     let value: Int
 
     required init(value: Int) {
@@ -67,7 +67,7 @@ final class ProtocolWithSelfRequirementImplemented: ProtocolWithSelfRequirement 
 }
 
 // Stubbable example class
-class StubbableTestHelper: Stubbable {
+final class StubbableTestHelper: Stubbable {
     enum ClassFunction: String, StringRepresentable {
         case classFunction = "classFunction()"
     }

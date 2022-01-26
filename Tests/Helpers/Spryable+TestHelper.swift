@@ -1,7 +1,7 @@
 import Foundation
 import NSpry
 
-class SpryableTestClass: Spryable {
+final class SpryableTestClass: Spryable {
     enum ClassFunction: String, StringRepresentable {
         case getAStaticString = "getAStaticString()"
     }
