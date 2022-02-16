@@ -120,7 +120,7 @@ private func descriptionOfExpectation(actualType: Any.Type, functionName: String
 private func descriptionOfNilAttempt(arguments: [SpryEquatable?], countSpecifier: CountSpecifier) -> String {
     var descriptionOfAttempt = "receive function"
 
-    if arguments.count != 0 {
+    if !arguments.isEmpty {
         descriptionOfAttempt += " with arguments"
     }
 

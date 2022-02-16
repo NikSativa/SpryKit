@@ -432,7 +432,7 @@ public extension Stubbable {
             return fatalErrorOrReturnFallback(fallback: fallback, function: function, arguments: arguments)
         }
 
-        let (stubsWithoutArgs, stubsWithArgs) = stubsForFunctionName.bisect { $0.arguments.count == 0 }
+        let (stubsWithoutArgs, stubsWithArgs) = stubsForFunctionName.bisect { $0.arguments.isEmpty }
 
         for stub in stubsWithArgs {
             if isEqualArgsLists(fakeType: Self.self, functionName: function.rawValue, specifiedArgs: stub.arguments, actualArgs: arguments) {
@@ -480,7 +480,7 @@ public extension Stubbable {
             return fatalErrorOrReturnFallback(fallback: fallback, function: function, arguments: arguments)
         }
 
-        let (stubsWithoutArgs, stubsWithArgs) = stubsForFunctionName.bisect { $0.arguments.count == 0 }
+        let (stubsWithoutArgs, stubsWithArgs) = stubsForFunctionName.bisect { $0.arguments.isEmpty }
 
         for stub in stubsWithArgs {
             if isEqualArgsLists(fakeType: Self.self, functionName: function.rawValue, specifiedArgs: stub.arguments, actualArgs: arguments) {
