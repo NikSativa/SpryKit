@@ -60,7 +60,7 @@ public extension Array {
             return false
         }
 
-        if self.count != castedActual.count {
+        if count != castedActual.count {
             return false
         }
 
@@ -86,7 +86,7 @@ public extension Dictionary {
             return false
         }
 
-        if self.count != castedActual.count {
+        if count != castedActual.count {
             return false
         }
 

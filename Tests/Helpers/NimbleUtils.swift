@@ -1,8 +1,3 @@
-// ****************************** IMPORTANT ******************************
-// The code in this file comes from the Nimble project which can be found at https://github.com/Quick/Nimble
-// This file is needed to test the 'haveReceived' matcher properly
-// ****************************** IMPORTANT ******************************
-
 import Dispatch
 import Foundation
 import XCTest
@@ -44,6 +39,8 @@ func failsWithErrorMessage(_ messages: [String], file: FileString = #file, line:
             let knownFailuresJoined = knownFailures.joined(separator: ", ")
             message = "Expected error message (\(msg)), got (\(knownFailuresJoined))\n\nAssertions Received:\n\(recorder.assertions)"
         }
+
+        // swiftformat:disable:next assertionFailures
         NimbleAssertionHandler.assert(false,
                                       message: FailureMessage(stringValue: message),
                                       location: SourceLocation(file: filePath, line: lineNumber))

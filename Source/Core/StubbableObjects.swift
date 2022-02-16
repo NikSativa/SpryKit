@@ -174,8 +174,8 @@ public class Stub: CustomStringConvertible {
     }
 
     internal func hasEqualBase(as stub: Stub) -> Bool {
-        return self.functionName == stub.functionName
-            && self.arguments._isEqual(to: stub.arguments as SpryEquatable)
+        return functionName == stub.functionName
+            && arguments._isEqual(to: stub.arguments as SpryEquatable)
     }
 }
 

@@ -42,7 +42,7 @@ internal extension Bool {
 
 extension String {
     func removeAfter(startingCharacter character: String) -> String? {
-        let range = self.range(of: character)
+        let range = range(of: character)
         if let lowerBound = range?.lowerBound {
             return String(self[..<lowerBound])
         }
@@ -61,7 +61,7 @@ internal extension Array {
      */
     func bisect(_ closure: (Element) -> Bool) -> ([Element], [Element]) {
         var arrays = ([Element](), [Element]())
-        self.forEach { closure($0) ? arrays.0.append($0) : arrays.1.append($0) }
+        forEach { closure($0) ? arrays.0.append($0) : arrays.1.append($0) }
 
         return arrays
     }
@@ -93,6 +93,6 @@ internal extension Array {
 
 internal extension Dictionary {
     func has(key: Key) -> Bool {
-        return self.contains { $0.key == key }
+        return contains { $0.key == key }
     }
 }
