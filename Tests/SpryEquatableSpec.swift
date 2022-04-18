@@ -58,8 +58,10 @@ final class SpryEquatableSpec: QuickSpec {
             describe("dictionary") {
                 context("when Value conforms to SpryEquatable") {
                     it("should be able to properly equate arrays") {
-                        let baseDict = [1: 1,
-                                        2: 2]
+                        let baseDict = [
+                            1: 1,
+                            2: 2,
+                        ]
 
                         expect(baseDict._isEqual(to: [1: 1, 2: 2] as SpryEquatable)).to(beTrue())
                         expect(baseDict._isEqual(to: [2: 2, 1: 1] as SpryEquatable)).to(beTrue())

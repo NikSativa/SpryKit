@@ -113,11 +113,9 @@ public extension Dictionary {
 /**
  Used to specify an `Optional` constraint. This is needed until Swift supports extensions where Self can be constrained to a type.
  */
-public protocol OptionalType {
-}
+public protocol OptionalType {}
 
-extension Optional: OptionalType {
-}
+extension Optional: OptionalType {}
 
 // MARK: - SpryEquatable where Self: OptionalType
 
