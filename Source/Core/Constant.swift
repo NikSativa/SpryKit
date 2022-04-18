@@ -20,12 +20,14 @@ internal enum Constant {
     enum FatalError {
         static func wrongNumberOfArgsBeingCompared<T>(fakeType: T.Type, functionName _: String, specifiedArguments: [SpryEquatable?], actualArguments: [Any?]) -> Never {
             let title = "Wrong number of arguments to compare"
-            let entries = ["Type: \(T.self)",
-                           "Function: \(fakeType)",
-                           "Specified count: \(specifiedArguments.count)",
-                           "Received count: \(actualArguments.count)",
-                           "Specified arguments: \(descriptionOfArguments(specifiedArguments))",
-                           "Actual arguments: \(descriptionOfArguments(actualArguments))"]
+            let entries = [
+                "Type: \(T.self)",
+                "Function: \(fakeType)",
+                "Specified count: \(specifiedArguments.count)",
+                "Received count: \(actualArguments.count)",
+                "Specified arguments: \(descriptionOfArguments(specifiedArguments))",
+                "Actual arguments: \(descriptionOfArguments(actualArguments))",
+            ]
 
             fatalError(title: title, entries: entries)
         }
@@ -46,24 +48,30 @@ internal enum Constant {
 
         static func shouldNotConformToOptionalType(_ value: Any) -> Never {
             let title = "Not allowed to conform to 'OptionalType'"
-            let entries = ["Violating Type: \(type(of: value))",
-                           "Nothing should NOT conform to OptionalType. This is reserved for Optional<Wrapped>"]
+            let entries = [
+                "Violating Type: \(type(of: value))",
+                "Nothing should NOT conform to OptionalType. This is reserved for Optional<Wrapped>",
+            ]
 
             fatalError(title: title, entries: entries)
         }
 
         static func argumentCaptorCouldNotReturnSpecifiedType<T>(value: Any?, type _: T.Type) -> Never {
             let title = "Argument Capture: wrong argument type"
-            let entries = ["Captured argument: \(value as Any)",
-                           "Specified type: \(T.self)"]
+            let entries = [
+                "Captured argument: \(value as Any)",
+                "Specified type: \(T.self)",
+            ]
 
             fatalError(title: title, entries: entries)
         }
 
         static func capturedArgumentsOutOfBounds(index: Int, capturedArguments: [Any?]) -> Never {
             let title = "Argument Capture: index out of bounds"
-            let entries = ["Index \(index) is out of bounds for captured arguments",
-                           "Current captured arguments: \(descriptionOfArguments(capturedArguments))"]
+            let entries = [
+                "Index \(index) is out of bounds for captured arguments",
+                "Current captured arguments: \(descriptionOfArguments(capturedArguments))",
+            ]
 
             fatalError(title: title, entries: entries)
         }
@@ -96,21 +104,25 @@ internal enum Constant {
             let probableMessage = "case \(caseName) = \"\(functionName)\""
 
             let title = "Unable to find function"
-            let entries = ["Type: \(type)",
-                           "Function signature: \(functionName)",
-                           "Error occured on: \(routeString(filePath: file, line: "\(line)"))",
-                           "Possible Fix: ↴",
-                           probableMessage]
+            let entries = [
+                "Type: \(type)",
+                "Function signature: \(functionName)",
+                "Error occured on: \(routeString(filePath: file, line: "\(line)"))",
+                "Possible Fix: ↴",
+                probableMessage,
+            ]
 
             fatalError(title: title, entries: entries)
         }
 
         static func stubbingSameFunctionWithSameArguments(stub: Stub) -> Never {
             let title = "Stubbing the same function with the same arguments"
-            let entries = ["Function: \(stub.functionName)",
-                           "Arguments: \(descriptionOfArguments(stub.arguments))",
-                           "In most cases, stubbing the same function with the same arguments is a \"code smell\"",
-                           "However, if this is intentional then use `.stubAgain()`"]
+            let entries = [
+                "Function: \(stub.functionName)",
+                "Arguments: \(descriptionOfArguments(stub.arguments))",
+                "In most cases, stubbing the same function with the same arguments is a \"code smell\"",
+                "However, if this is intentional then use `.stubAgain()`",
+            ]
 
             fatalError(title: title, entries: entries)
         }
@@ -119,20 +131,24 @@ internal enum Constant {
 
         private static func noReturnValueFoundForFunction<S, R>(stubbableType _: S.Type, functionName: String, arguments: [Any?], returnType _: R.Type, stubsDictionary: StubsDictionary) -> Never {
             let title = "No return value found"
-            let entries = ["Stubbable: \(S.self)",
-                           "Function: \(functionName)",
-                           "Arguments: \(descriptionOfArguments(arguments))",
-                           "Return Type: \(R.self)",
-                           "Current stubs: \(stubsDictionary.stubs)"]
+            let entries = [
+                "Stubbable: \(S.self)",
+                "Function: \(functionName)",
+                "Arguments: \(descriptionOfArguments(arguments))",
+                "Return Type: \(R.self)",
+                "Current stubs: \(stubsDictionary.stubs)",
+            ]
 
             fatalError(title: title, entries: entries)
         }
 
         private static func andThrowOnNonThrowingFunction<T>(type _: T.Type, functionName: String) -> Never {
             let title = "Used '.andThrow()' on non-throwing function"
-            let entries = ["Stubbable: \(T.self)",
-                           "Function: \(functionName)",
-                           "If this function can throw, then ensure that the fake is calling 'spryifyThrows()' or 'stubbedValueThrows()' as the return value of this function."]
+            let entries = [
+                "Stubbable: \(T.self)",
+                "Function: \(functionName)",
+                "If this function can throw, then ensure that the fake is calling 'spryifyThrows()' or 'stubbedValueThrows()' as the return value of this function.",
+            ]
 
             fatalError(title: title, entries: entries)
         }

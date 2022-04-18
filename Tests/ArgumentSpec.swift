@@ -56,12 +56,16 @@ final class ArgumentSpec: QuickSpec {
                 describe("Argument enum") {
                     describe(".anything") {
                         beforeEach {
-                            specifiedArgs = [Argument.anything,
-                                             Argument.anything,
-                                             Argument.anything]
-                            actualArgs = ["asdf",
-                                          3 as Int?,
-                                          NSObject()]
+                            specifiedArgs = [
+                                Argument.anything,
+                                Argument.anything,
+                                Argument.anything,
+                            ]
+                            actualArgs = [
+                                "asdf",
+                                3 as Int?,
+                                NSObject(),
+                            ]
 
                             subjectAction()
                         }
@@ -102,10 +106,14 @@ final class ArgumentSpec: QuickSpec {
                     describe(".nil") {
                         context("when the actual arg is nil") {
                             beforeEach {
-                                specifiedArgs = [Argument.nil,
-                                                 Argument.nil]
-                                actualArgs = [nil as String?,
-                                              nil as Int?]
+                                specifiedArgs = [
+                                    Argument.nil,
+                                    Argument.nil,
+                                ]
+                                actualArgs = [
+                                    nil as String?,
+                                    nil as Int?,
+                                ]
 
                                 subjectAction()
                             }
@@ -187,10 +195,14 @@ final class ArgumentSpec: QuickSpec {
 
                 describe("ArgumentCaptor") {
                     beforeEach {
-                        specifiedArgs = [Argument.captor(),
-                                         ArgumentCaptor()]
-                        actualArgs = ["",
-                                      ""]
+                        specifiedArgs = [
+                            Argument.captor(),
+                            ArgumentCaptor(),
+                        ]
+                        actualArgs = [
+                            "",
+                            "",
+                        ]
 
                         subjectAction()
                     }

@@ -15,8 +15,7 @@ final class SpryEquatableTestHelper: SpryEquatable {
     }
 }
 
-class NotSpryEquatable {
-}
+class NotSpryEquatable {}
 
 final class AnyObjectAndEquatable: Equatable, SpryEquatable {
     public static func ==(_: AnyObjectAndEquatable, _: AnyObjectAndEquatable) -> Bool {
@@ -24,5 +23,4 @@ final class AnyObjectAndEquatable: Equatable, SpryEquatable {
     }
 }
 
-final class AnyObjectOnly: SpryEquatable {
-}
+final class AnyObjectOnly: SpryEquatable {}
