@@ -26,7 +26,7 @@ internal enum Constant {
                 "Specified count: \(specifiedArguments.count)",
                 "Received count: \(actualArguments.count)",
                 "Specified arguments: \(descriptionOfArguments(specifiedArguments))",
-                "Actual arguments: \(descriptionOfArguments(actualArguments))",
+                "Actual arguments: \(descriptionOfArguments(actualArguments))"
             ]
 
             fatalError(title: title, entries: entries)
@@ -50,7 +50,7 @@ internal enum Constant {
             let title = "Not allowed to conform to 'OptionalType'"
             let entries = [
                 "Violating Type: \(type(of: value))",
-                "Nothing should NOT conform to OptionalType. This is reserved for Optional<Wrapped>",
+                "Nothing should NOT conform to OptionalType. This is reserved for Optional<Wrapped>"
             ]
 
             fatalError(title: title, entries: entries)
@@ -60,7 +60,7 @@ internal enum Constant {
             let title = "Argument Capture: wrong argument type"
             let entries = [
                 "Captured argument: \(value as Any)",
-                "Specified type: \(T.self)",
+                "Specified type: \(T.self)"
             ]
 
             fatalError(title: title, entries: entries)
@@ -70,7 +70,7 @@ internal enum Constant {
             let title = "Argument Capture: index out of bounds"
             let entries = [
                 "Index \(index) is out of bounds for captured arguments",
-                "Current captured arguments: \(descriptionOfArguments(capturedArguments))",
+                "Current captured arguments: \(descriptionOfArguments(capturedArguments))"
             ]
 
             fatalError(title: title, entries: entries)
@@ -109,7 +109,7 @@ internal enum Constant {
                 "Function signature: \(functionName)",
                 "Error occured on: \(routeString(filePath: file, line: "\(line)"))",
                 "Possible Fix: ↴",
-                probableMessage,
+                probableMessage
             ]
 
             fatalError(title: title, entries: entries)
@@ -121,7 +121,7 @@ internal enum Constant {
                 "Function: \(stub.functionName)",
                 "Arguments: \(descriptionOfArguments(stub.arguments))",
                 "In most cases, stubbing the same function with the same arguments is a \"code smell\"",
-                "However, if this is intentional then use `.stubAgain()`",
+                "However, if this is intentional then use `.stubAgain()`"
             ]
 
             fatalError(title: title, entries: entries)
@@ -136,7 +136,7 @@ internal enum Constant {
                 "Function: \(functionName)",
                 "Arguments: \(descriptionOfArguments(arguments))",
                 "Return Type: \(R.self)",
-                "Current stubs: \(stubsDictionary.stubs)",
+                "Current stubs: \(stubsDictionary.stubs)"
             ]
 
             fatalError(title: title, entries: entries)
@@ -147,7 +147,7 @@ internal enum Constant {
             let entries = [
                 "Stubbable: \(T.self)",
                 "Function: \(functionName)",
-                "If this function can throw, then ensure that the fake is calling 'spryifyThrows()' or 'stubbedValueThrows()' as the return value of this function.",
+                "If this function can throw, then ensure that the fake is calling 'spryifyThrows()' or 'stubbedValueThrows()' as the return value of this function."
             ]
 
             fatalError(title: title, entries: entries)

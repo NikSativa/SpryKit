@@ -60,7 +60,7 @@ final class SpryEquatableSpec: QuickSpec {
                     it("should be able to properly equate arrays") {
                         let baseDict = [
                             1: 1,
-                            2: 2,
+                            2: 2
                         ]
 
                         expect(baseDict._isEqual(to: [1: 1, 2: 2] as SpryEquatable)).to(beTrue())
