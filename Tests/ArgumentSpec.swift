@@ -59,12 +59,12 @@ final class ArgumentSpec: QuickSpec {
                             specifiedArgs = [
                                 Argument.anything,
                                 Argument.anything,
-                                Argument.anything,
+                                Argument.anything
                             ]
                             actualArgs = [
                                 "asdf",
                                 3 as Int?,
-                                NSObject(),
+                                NSObject()
                             ]
 
                             subjectAction()
@@ -108,11 +108,11 @@ final class ArgumentSpec: QuickSpec {
                             beforeEach {
                                 specifiedArgs = [
                                     Argument.nil,
-                                    Argument.nil,
+                                    Argument.nil
                                 ]
                                 actualArgs = [
                                     nil as String?,
-                                    nil as Int?,
+                                    nil as Int?
                                 ]
 
                                 subjectAction()
@@ -197,11 +197,11 @@ final class ArgumentSpec: QuickSpec {
                     beforeEach {
                         specifiedArgs = [
                             Argument.captor(),
-                            ArgumentCaptor(),
+                            ArgumentCaptor()
                         ]
                         actualArgs = [
                             "",
-                            "",
+                            ""
                         ]
 
                         subjectAction()
