@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name = 'NSpry_Nimble'
-  spec.version = '1.2.6'
+  spec.version = '1.2.9'
   spec.summary = 'NSpry is spying and stubbing framework for Apple\'s Swift language.'
 
   spec.description = <<-DESC
@@ -18,7 +18,7 @@ Pod::Spec.new do |spec|
   spec.ios.deployment_target = '11.0'
 
   spec.dependency 'NSpry'
-  spec.dependency 'Nimble', '~> 9.2.0'
+  spec.dependency 'Nimble', '~> 10.0.0'
 
   spec.source_files = 'Source/Nimble/*'
 end
