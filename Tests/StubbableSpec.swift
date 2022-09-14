@@ -124,7 +124,9 @@ final class StubbableSpec: QuickSpec {
                     let expectedString = "string from closure"
 
                     beforeEach {
-                        subject.stub(.hereComesAClosure).andReturn { expectedString }
+                        subject.stub(.hereComesAClosure).andReturn({
+                            return expectedString
+                        })
                     }
 
                     it("should get a closure from the stubbed service") {
