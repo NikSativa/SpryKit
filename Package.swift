@@ -16,17 +16,22 @@ let package = Package(
     ],
     targets: [
         .target(name: "NSpry",
-                dependencies: [],
+                dependencies: [
+                ],
                 path: "Source/Core"),
         .target(name: "NSpry_Nimble",
-                dependencies: ["NSpry",
-                               "Nimble"],
+                dependencies: [
+                    "NSpry",
+                    "Nimble"
+                ],
                 path: "Source/Nimble"),
         .testTarget(name: "NSpryTests",
-                    dependencies: ["NSpry",
-                                   "NSpry_Nimble",
-                                   "Nimble",
-                                   "Quick"],
+                    dependencies: [
+                        "NSpry",
+                        "NSpry_Nimble",
+                        "Nimble",
+                        "Quick"
+                    ],
                     path: "Tests")
     ]
 )
