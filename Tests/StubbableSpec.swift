@@ -124,6 +124,7 @@ final class StubbableSpec: QuickSpec {
                     let expectedString = "string from closure"
 
                     beforeEach {
+                        // swiftformat:disable:next all
                         subject.stub(.hereComesAClosure).andReturn({
                             return expectedString
                         })
