@@ -1,11 +1,9 @@
 import Foundation
 
-/**
- Used internally. Should never need to use or know about this type.
-
- * function: String - The function signature of a recorded call. Defaults to `#function`.
- * arguments: [Any] - The arguments passed in when the function was recorded.
- */
+/// Used internally. Should never need to use or know about this type.
+///
+/// * function: String - The function signature of a recorded call. Defaults to `#function`.
+/// * arguments: [Any] - The arguments passed in when the function was recorded.
 public class RecordedCall: CustomStringConvertible {
     // MARK: - Public Properties
 
@@ -44,9 +42,7 @@ public class RecordedCall: CustomStringConvertible {
     }
 }
 
-/**
- This exists because a dictionary is needed as a class. Instances of this type are put into an NSMapTable.
- */
+/// This exists because a dictionary is needed as a class. Instances of this type are put into an NSMapTable.
 public class RecordedCallsDictionary: CustomStringConvertible {
     // MARK: - Public Properties
 
@@ -104,12 +100,10 @@ public class RecordedCallsDictionary: CustomStringConvertible {
     }
 }
 
-/**
- The resulting information when using the `didCall()` function.
-
- * success: Bool - `true` if the function was called given the criteria specified, otherwise `false`.
- * recordedCallsDescription: String - A list of all recorded calls. Helpful information if success if `false`.
- */
+/// The resulting information when using the `didCall()` function.
+///
+/// * success: Bool - `true` if the function was called given the criteria specified, otherwise `false`.
+/// * recordedCallsDescription: String - A list of all recorded calls. Helpful information if success if `false`.
 public struct DidCallResult {
     public let success: Bool
     public let recordedCallsDescription: String
@@ -120,13 +114,11 @@ public struct DidCallResult {
     }
 }
 
-/**
- Used when specifying if a function was called.
-
- * .exactly - Will only succeed if the function was called exactly the number of times specified.
- * .atLeast - Will only succeed if the function was called the number of times specified or more.
- * .atMost - Will only succeed if the function was called the number of times specified or less.
- */
+/// Used when specifying if a function was called.
+///
+/// * .exactly - Will only succeed if the function was called exactly the number of times specified.
+/// * .atLeast - Will only succeed if the function was called the number of times specified or more.
+/// * .atMost - Will only succeed if the function was called the number of times specified or less.
 public enum CountSpecifier {
     case exactly(Int)
     case atLeast(Int)

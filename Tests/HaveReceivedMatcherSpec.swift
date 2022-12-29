@@ -1,8 +1,7 @@
 import Nimble
-import Quick
-
 import NSpry
 import NSpry_Nimble
+import Quick
 
 final class HaveReceivedMatcherSpec: QuickSpec {
     override func spec() {

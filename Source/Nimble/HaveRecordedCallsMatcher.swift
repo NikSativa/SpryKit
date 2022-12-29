@@ -1,11 +1,9 @@
 import Nimble
 import NSpry
 
-/**
- Nimble matcher used to determine if at least one call has been made.
-
- - Important: This function respects `resetCalls()`. If calls have been made, then afterward `resetCalls()` is called. It is expected that hasRecordedCalls to be false.
- */
+/// Nimble matcher used to determine if at least one call has been made.
+///
+/// - Important: This function respects `resetCalls()`. If calls have been made, then afterward `resetCalls()` is called. It is expected that hasRecordedCalls to be false.
 public func haveRecordedCalls<T: Spyable>() -> Predicate<T> {
     return Predicate.define("have recorded calls") { actualExpression, msg in
         guard let spyable = try actualExpression.evaluate() else {
@@ -20,11 +18,9 @@ public func haveRecordedCalls<T: Spyable>() -> Predicate<T> {
     }
 }
 
-/**
- Nimble matcher used to determine if at least one call has been made.
-
- - Important: This function respects `resetCalls()`. If calls have been made, then afterward `resetCalls()` is called. It is expected that hasRecordedCalls to be false.
- */
+/// Nimble matcher used to determine if at least one call has been made.
+///
+/// - Important: This function respects `resetCalls()`. If calls have been made, then afterward `resetCalls()` is called. It is expected that hasRecordedCalls to be false.
 public func haveRecordedCalls<T: Spyable>() -> Predicate<T.Type> {
     return Predicate.define("have recorded calls") { actualExpression, msg in
         guard let spyable = try actualExpression.evaluate() else {

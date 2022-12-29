@@ -13,11 +13,9 @@ internal extension Optional {
     }
 }
 
-/**
- This is a helper function to find out if a value is nil.
-
- (x == nil) will only return yes if x is Optional<Type>.none but will return true if x is Optional<Optional<Type\>>.some(Optional<Type>.none)
- */
+/// This is a helper function to find out if a value is nil.
+///
+/// (x == nil) will only return yes if x is Optional<Type>.none but will return true if x is Optional<Optional<Type\>>.some(Optional<Type>.none)
 internal func isNil(_ value: Any?) -> Bool {
     if let unwrappedValue = value {
         let mirror = Mirror(reflecting: unwrappedValue)
@@ -54,11 +52,9 @@ extension String {
 // MARK: - Array Extensions
 
 internal extension Array {
-    /**
-     Splits the array into two separate arrays.
-
-     - Parameter closure: The closure to determine which array each element will be put into. Return `true` to put item in first array and `false` to put it into the second array.
-     */
+    /// Splits the array into two separate arrays.
+    ///
+    /// - Parameter closure: The closure to determine which array each element will be put into. Return `true` to put item in first array and `false` to put it into the second array.
     func bisect(_ closure: (Element) -> Bool) -> ([Element], [Element]) {
         var arrays = ([Element](), [Element]())
         forEach { closure($0) ? arrays.0.append($0) : arrays.1.append($0) }

@@ -9,12 +9,12 @@ struct StubbableError: Error, Equatable {
     }
 }
 
-// basic protocol
+/// basic protocol
 protocol SpecialString {
     func myStringValue() -> String
 }
 
-// final class
+/// final class
 final class AlwaysLowerCase: SpecialString {
     let value: String
 
@@ -27,7 +27,7 @@ final class AlwaysLowerCase: SpecialString {
     }
 }
 
-// Non-final class
+/// Non-final class
 final class NumbersOnly: SpecialString {
     let value: Int
 
@@ -40,7 +40,7 @@ final class NumbersOnly: SpecialString {
     }
 }
 
-// stubbed version
+/// stubbed version
 final class StubSpecialString: SpecialString, Stubbable {
     enum ClassFunction: String, StringRepresentable {
         case none
@@ -55,7 +55,7 @@ final class StubSpecialString: SpecialString, Stubbable {
     }
 }
 
-// protocol with self or associated type requirements
+/// protocol with self or associated type requirements
 protocol ProtocolWithSelfRequirement {
     func me() -> Self
 }
@@ -66,7 +66,7 @@ final class ProtocolWithSelfRequirementImplemented: ProtocolWithSelfRequirement 
     }
 }
 
-// Stubbable example class
+/// Stubbable example class
 final class StubbableTestHelper: Stubbable {
     enum ClassFunction: String, StringRepresentable {
         case classFunction = "classFunction()"
