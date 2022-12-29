@@ -28,7 +28,7 @@ final class SpyableTestHelper: Spyable {
         }
     }
 
-    // This is here to show that you shouldn't try to spy on a readonly property
+    /// This is here to show that you shouldn't try to spy on a readonly property
     var readOnlyProperty: String {
         return ""
     }

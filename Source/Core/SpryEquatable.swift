@@ -1,11 +1,9 @@
 import Foundation
 
-/**
- Used to compare any two arguments. Uses Equatable's `==(lhs:rhs:)` operator for comparision.
-
- - Important: Never manually implement `_isEqual(to:)` when conform to `SpryEquatable`. Instead rely on the provided extensions.
- - Note: If a compiler error says you do NOT conform to `SpryEquatable` then conform to `Equatable`. This will remove the error.
- */
+/// Used to compare any two arguments. Uses Equatable's `==(lhs:rhs:)` operator for comparision.
+///
+/// - Important: Never manually implement `_isEqual(to:)` when conform to `SpryEquatable`. Instead rely on the provided extensions.
+/// - Note: If a compiler error says you do NOT conform to `SpryEquatable` then conform to `Equatable`. This will remove the error.
 public protocol SpryEquatable {
     func _isEqual(to actual: SpryEquatable?) -> Bool
 }
@@ -110,9 +108,7 @@ public extension Dictionary {
 
 // MARK: - OptionalType
 
-/**
- Used to specify an `Optional` constraint. This is needed until Swift supports extensions where Self can be constrained to a type.
- */
+/// Used to specify an `Optional` constraint. This is needed until Swift supports extensions where Self can be constrained to a type.
 public protocol OptionalType {}
 
 extension Optional: OptionalType {}

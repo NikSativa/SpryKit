@@ -1,7 +1,6 @@
 import Foundation
 import Nimble
 import Quick
-
 @testable import NSpry
 
 final class ArgumentSpec: QuickSpec {
