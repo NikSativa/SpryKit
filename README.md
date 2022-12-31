@@ -1,9 +1,5 @@
 # NSpry
 
-[![Version](https://img.shields.io/cocoapods/v/NSpry.svg?style=flat)](http://cocoapods.org/pods/NSpry)
-[![License](https://img.shields.io/cocoapods/l/NSpry.svg?style=flat)](http://cocoapods.org/pods/NSpry)
-[![Platform](https://img.shields.io/cocoapods/p/NSpry.svg?style=flat)](http://cocoapods.org/pods/NSpry)
-
 NSpry is a framework that allows spying and stubbing in Apple's Swift language. Also included is a [Nimble](https://github.com/Quick/Nimble "Nimble") matcher for the spied objects.
 
 __Table of Contents__
@@ -379,36 +375,7 @@ let secondArgFromFirstCall = captor.getValue(as: String.self) // `at:` defaults 
 let secondArgFromSecondCall = captor.getValue(at: 1, as: String.self)
 ```
 
-## Xcode Templates
-
-Templates for creating fakes can be found in this repository in the "Templates" folder.
-
-__Usage__
-
-When you go to create a new file in Xcode, you will notice a new section called "NSpry" with templates called "Class Fake" and "Protocol Fake". Select the template according to the type being faked, click "Next", enter the name of the type or protocol you want to fake (the word "Fake" will be added automatically), select the target(s) and folder location for the fake, and start testing with ease!
-
-## Installation
-
-NSpry is available through [CocoaPods](http://cocoapods.org). To install, simply add them your Podfile.
-
-```ruby
-platform :ios, '9.0'
-
-source 'https://github.com/CocoaPods/Specs.git'
-
-use_frameworks!
-
-target "<YOUR_TARGET>" do
-    target '<YOUR_TARGET>Tests' do
-        inherit! :search_paths
-
-        pod 'NSpry'
-        pod 'Quick'
-        pod 'Nimble'
-    end
-end
-```
-
 ## Contributing
 
 If you have an idea that can make NSpry better, please don't hesitate to submit a pull request!
+Based on [Spry](https://github.com/Rivukis/Spry "Spry")

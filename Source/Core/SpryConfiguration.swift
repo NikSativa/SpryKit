@@ -1,7 +1,7 @@
 import Foundation
 
 /// This is used to house all of Spry's configuration settings.
-class SpryConfiguration {
+public enum SpryConfiguration {
     /// This closure is ran everytime Spry calls fatal error.
     ///
     /// This is a convenience against Xcode not printing out fatal error messages when `fatalError()` is called.

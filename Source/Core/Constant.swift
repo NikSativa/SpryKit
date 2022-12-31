@@ -12,7 +12,6 @@ private func fatalError(title: String, entries: [String]) -> Never {
 
 private func routeString(filePath: String, line: String) -> String {
     let file = filePath.components(separatedBy: "/").last ?? filePath
-
     return file + ":" + line
 }
 
