@@ -2,7 +2,7 @@ import Foundation
 
 // Object return by `stub()` call. Used to specify arguments and return values when stubbing.
 
-public class Stub: CustomStringConvertible {
+public final class Stub: CustomStringConvertible {
     enum StubType {
         case andReturn(Any?)
         case andDo(([Any?]) -> Any?)
@@ -170,7 +170,7 @@ public class Stub: CustomStringConvertible {
 }
 
 /// This exists because a dictionary is needed as a class. Instances of this type are put into an NSMapTable.
-public class StubsDictionary: CustomStringConvertible {
+public final class StubsDictionary: CustomStringConvertible {
     // MARK: - Public Properties
 
     /// A beautified description. Used for debugging purposes.
@@ -200,7 +200,7 @@ public class StubsDictionary: CustomStringConvertible {
     }
 
     /// Number of stubs that have been added. This number is NOT reset when stubs are removed (i.e. `stubAgain()`, `resetStubs()`)
-    public private(set) var stubsCount = 0
+    private var chronologicalIndex: Int = .min
 
     // MARK: - Private Properties
 
@@ -209,8 +209,8 @@ public class StubsDictionary: CustomStringConvertible {
     func add(stub: Stub) {
         var stubs = stubsDict[stub.functionName] ?? []
 
-        stubsCount += 1
-        stub.chronologicalIndex = stubsCount
+        chronologicalIndex &+= 1
+        stub.chronologicalIndex = chronologicalIndex
 
         stubs.insert(stub, at: 0)
         stubsDict[stub.functionName] = stubs

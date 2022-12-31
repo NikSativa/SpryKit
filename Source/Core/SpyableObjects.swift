@@ -4,7 +4,7 @@ import Foundation
 ///
 /// * function: String - The function signature of a recorded call. Defaults to `#function`.
 /// * arguments: [Any] - The arguments passed in when the function was recorded.
-public class RecordedCall: CustomStringConvertible {
+public final class RecordedCall: CustomStringConvertible {
     // MARK: - Public Properties
 
     /// A beautified description. Used for debugging purposes.
@@ -43,7 +43,7 @@ public class RecordedCall: CustomStringConvertible {
 }
 
 /// This exists because a dictionary is needed as a class. Instances of this type are put into an NSMapTable.
-public class RecordedCallsDictionary: CustomStringConvertible {
+public final class RecordedCallsDictionary: CustomStringConvertible {
     // MARK: - Public Properties
 
     /// A beautified description. Used for debugging purposes.

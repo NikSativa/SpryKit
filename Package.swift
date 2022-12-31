@@ -4,7 +4,10 @@ import PackageDescription
 
 let package = Package(
     name: "NSpry",
-    platforms: [.iOS(.v13), .macOS(.v10_15)],
+    platforms: [
+        .iOS(.v13),
+        .macOS(.v10_15)
+    ],
     products: [
         .library(name: "NSpry", targets: ["NSpry"]),
         .library(name: "NSpry_Nimble", targets: ["NSpry_Nimble"])

@@ -207,7 +207,7 @@ func methodsSpryify(_ methods: [SourceryRuntime.Method], spacing: String, attrib
     return result.joined(separator: "\n\n" + spacing)
 }
 
-func overrideidNeeded(_ type: Type) -> String {
+func overrideIfNeeded(_ type: Type) -> String {
     if type.kind == "class" {
         return "override "
     }
@@ -233,7 +233,8 @@ if (sVariables + iVariables + sMethods + iMethods).isEmpty {
 %>
 
 // sourcery:file:Fake<%= type.name %>.swift
-import Spry
+import Foundation
+import NSpry
 
 final class Fake<%= type.name %>: <%= type.name %>, Spryable {
     enum ClassFunction: String, StringRepresentable {
@@ -255,16 +256,16 @@ final class Fake<%= type.name %>: <%= type.name %>, Spryable {
     <%= nonescaping(type.allMethods) %>
 
     // MARK: - static variables
-    <%= variablesSpryify(type.allVariables.onlyStatic, spacing: Constant.tab, attributes: overrideidNeeded(type)) %>
+    <%= variablesSpryify(type.allVariables.onlyStatic, spacing: Constant.tab, attributes: overrideIfNeeded(type)) %>
 
     // MARK: - variables
-    <%= variablesSpryify(type.allVariables.onlyInstance, spacing: Constant.tab, attributes: overrideidNeeded(type)) %>
+    <%= variablesSpryify(type.allVariables.onlyInstance, spacing: Constant.tab, attributes: overrideIfNeeded(type)) %>
 
     // MARK: - static|class methods
-    <%= methodsSpryify(type.allMethods.onlyStatic, spacing: Constant.tab, attributes: overrideidNeeded(type)) %>
+    <%= methodsSpryify(type.allMethods.onlyStatic, spacing: Constant.tab, attributes: overrideIfNeeded(type)) %>
 
     // MARK: - methods
-    <%= methodsSpryify(type.allMethods.onlyInstance, spacing: Constant.tab, attributes: overrideidNeeded(type)) %>
+    <%= methodsSpryify(type.allMethods.onlyInstance, spacing: Constant.tab, attributes: overrideIfNeeded(type)) %>
 }
 
 // sourcery:end

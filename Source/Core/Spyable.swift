@@ -203,9 +203,12 @@ public extension Spyable {
     func didCall(_ function: Function, withArguments arguments: [SpryEquatable?] = [], countSpecifier: CountSpecifier = .atLeast(1)) -> DidCallResult {
         let success: Bool
         switch countSpecifier {
-        case .exactly(let count): success = timesCalled(function, arguments: arguments) == count
-        case .atLeast(let count): success = timesCalled(function, arguments: arguments) >= count
-        case .atMost(let count): success = timesCalled(function, arguments: arguments) <= count
+        case .exactly(let count):
+            success = timesCalled(function, arguments: arguments) == count
+        case .atLeast(let count):
+            success = timesCalled(function, arguments: arguments) >= count
+        case .atMost(let count):
+            success = timesCalled(function, arguments: arguments) <= count
         }
 
         let recordedCallsDescription = _callsDictionary.friendlyDescription
@@ -295,6 +298,5 @@ private func matchingIndexesFor(functionName: String, functionList: [String]) ->
 
 private func isOptional(_ value: Any) -> Bool {
     let mirror = Mirror(reflecting: value)
-
     return mirror.displayStyle == .optional
 }
