@@ -1,18 +1,18 @@
-// swift-tools-version:5.2
+// swift-tools-version:5.6
 
 import PackageDescription
 
 // swiftformat:disable all
 let package = Package(
     name: "NSpry",
-    platforms: [.iOS(.v10), .macOS(.v10_12)],
+    platforms: [.iOS(.v13), .macOS(.v10_15)],
     products: [
         .library(name: "NSpry", targets: ["NSpry"]),
         .library(name: "NSpry_Nimble", targets: ["NSpry_Nimble"])
     ],
     dependencies: [
-        .package(url: "https://github.com/Quick/Quick.git", .upToNextMajor(from: "5.0.1")),
-        .package(url: "https://github.com/Quick/Nimble.git", .upToNextMajor(from: "10.0.0"))
+        .package(url: "https://github.com/Quick/Quick.git", .upToNextMajor(from: "6.1.0")),
+        .package(url: "https://github.com/Quick/Nimble.git", .upToNextMajor(from: "11.2.1"))
     ],
     targets: [
         .target(name: "NSpry",
