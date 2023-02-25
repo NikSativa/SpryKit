@@ -1,8 +1,7 @@
 // swift-tools-version:5.6
-
+// swiftformat:disable all
 import PackageDescription
 
-// swiftformat:disable all
 let package = Package(
     name: "NSpry",
     platforms: [.iOS(.v13), .macOS(.v10_15)],
