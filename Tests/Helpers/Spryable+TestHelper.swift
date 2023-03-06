@@ -12,7 +12,8 @@ final class SpryableTestClass: Spryable {
 
     enum Function: String, StringRepresentable {
         case firstName
-        case getAString = "getAString(string:)"
+        case getAStringWithArguments = "getAString(string:)"
+        case getAString = "getAString()"
     }
 
     var firstName: String {
@@ -26,5 +27,9 @@ final class SpryableTestClass: Spryable {
 
     func getAString(string: String) -> String {
         return spryify(arguments: string)
+    }
+
+    func getAString() -> String {
+        return spryify()
     }
 }
