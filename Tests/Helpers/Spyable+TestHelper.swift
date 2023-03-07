@@ -18,8 +18,8 @@ final class SpyableTestHelper: Spyable {
     enum Function: String, StringRepresentable {
         case ivarProperty
         case doStuff = "doStuff()"
-        case doStuffWith = "doStuffWith(string:)"
-        case doStuffWithWith = "doStuffWithWith(int1:int2:)"
+        case doStuffWithString = "doStuffWith(string:)"
+        case doStuffWithInts = "doStuffWith(int1:int2:)"
     }
 
     var ivarProperty: String = "" {
@@ -41,7 +41,7 @@ final class SpyableTestHelper: Spyable {
         recordCall(arguments: string)
     }
 
-    func doStuffWithWith(int1: Int, int2: Int) {
+    func doStuffWith(int1: Int, int2: Int) {
         recordCall(arguments: int1, int2)
     }
 }

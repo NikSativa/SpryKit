@@ -28,7 +28,7 @@ final class SpyableSpec: QuickSpec {
                     it("should forget all recorded calls before resetting") {
                         expect(subject.didCall(.doStuff).success).to(beFalse())
 
-                        expect(subject.didCall(.doStuffWith).success).to(beTrue())
+                        expect(subject.didCall(.doStuffWithString).success).to(beTrue())
                     }
                 }
 
@@ -73,7 +73,7 @@ final class SpyableSpec: QuickSpec {
                     }
 
                     it("should NOT succeed for functions NOT called") {
-                        expect(subject.didCall(.doStuffWith).success).to(beFalse())
+                        expect(subject.didCall(.doStuffWithString).success).to(beFalse())
                     }
                 }
 
@@ -130,7 +130,7 @@ final class SpyableSpec: QuickSpec {
                         }
 
                         it("should succeed") {
-                            let success = subject.didCall(.doStuffWith, withArguments: [actualString]).success
+                            let success = subject.didCall(.doStuffWithString, withArguments: [actualString]).success
                             expect(success).to(beTrue())
                         }
                     }
@@ -141,7 +141,7 @@ final class SpyableSpec: QuickSpec {
                         }
 
                         it("should fail") {
-                            let success = subject.didCall(.doStuffWith, withArguments: ["wrong string"]).success
+                            let success = subject.didCall(.doStuffWithString, withArguments: ["wrong string"]).success
                             expect(success).to(beFalse())
                         }
                     }
@@ -151,7 +151,7 @@ final class SpyableSpec: QuickSpec {
                     let actualString = "correct string"
 
                     let getSuccessValue: (CountSpecifier) -> Bool = { countSpecifier in
-                        return subject.didCall(.doStuffWith, withArguments: [actualString], countSpecifier: countSpecifier).success
+                        return subject.didCall(.doStuffWithString, withArguments: [actualString], countSpecifier: countSpecifier).success
                     }
 
                     beforeEach {
@@ -245,12 +245,12 @@ final class SpyableSpec: QuickSpec {
                     let secondArg = 2
 
                     beforeEach {
-                        subject.doStuffWithWith(int1: firstArg, int2: secondArg)
+                        subject.doStuffWith(int1: firstArg, int2: secondArg)
                     }
 
                     it("should show the function name") {
                         let description = subject.didCall(.doStuff).recordedCallsDescription
-                        let functionName = SpyableTestHelper.Function.doStuffWithWith.rawValue
+                        let functionName = SpyableTestHelper.Function.doStuffWithInts.rawValue
                         let expectedDescription = "<\(functionName)> with <\(firstArg)>, <\(secondArg)>"
                         expect(description).to(equal(expectedDescription))
                     }
@@ -262,13 +262,13 @@ final class SpyableSpec: QuickSpec {
 
                     beforeEach {
                         subject.doStuff()
-                        subject.doStuffWithWith(int1: secondCallFirstArg, int2: secondCallSecondArg)
+                        subject.doStuffWith(int1: secondCallFirstArg, int2: secondCallSecondArg)
                     }
 
                     it("should show the function name") {
                         let description = subject.didCall(.doStuff).recordedCallsDescription
                         let firstFunctionName = SpyableTestHelper.Function.doStuff.rawValue
-                        let secondFunctionName = SpyableTestHelper.Function.doStuffWithWith.rawValue
+                        let secondFunctionName = SpyableTestHelper.Function.doStuffWithInts.rawValue
 
                         let expectedDescription = "<\(firstFunctionName)>; <\(secondFunctionName)> with <\(secondCallFirstArg)>, <\(secondCallSecondArg)>"
                         expect(description).to(equal(expectedDescription))

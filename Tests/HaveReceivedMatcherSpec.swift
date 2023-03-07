@@ -21,12 +21,13 @@ final class HaveReceivedMatcherSpec: QuickSpec {
                     }
 
                     it("should use did call to determine test result") {
-                        expect(subject).to(haveReceived(.doStuffWith))
-                        expect(subject).to(haveReceived(.doStuffWith, with: actualArgument))
-                        expect(subject).to(haveReceived(.doStuffWith, countSpecifier: .exactly(1)))
-                        expect(subject).to(haveReceived(.doStuffWith, with: actualArgument, countSpecifier: .exactly(1)))
+                        expect(subject).to(haveReceived(.doStuffWithString))
+                        expect(subject).to(haveReceived(.doStuffWithString, with: actualArgument))
+                        expect(subject).to(haveReceived(.doStuffWithString, countSpecifier: .exactly(1)))
+                        expect(subject).to(haveReceived(.doStuffWithString, with: actualArgument, countSpecifier: .exactly(1)))
 
                         expect(subject).toNot(haveReceived(.doStuff))
+                        expect(subject).toNot(haveReceived(.doStuffWithInts))
                     }
                 }
 
@@ -58,7 +59,7 @@ final class HaveReceivedMatcherSpec: QuickSpec {
                         let expectedFailureMessage = "expected to receive function, got <nil> (use beNil() to match nils)"
 
                         failsWithErrorMessage(expectedFailureMessage) {
-                            expect(nil as SpyableTestHelper?).to(haveReceived(.doStuffWith))
+                            expect(nil as SpyableTestHelper?).to(haveReceived(.doStuffWithString))
                         }
                     }
                 }
@@ -69,22 +70,22 @@ final class HaveReceivedMatcherSpec: QuickSpec {
                     }
 
                     it("should include the recorded calls description in the 'got' part of the message") {
-                        let recordedCallsDescription = subject.didCall(.doStuffWith).recordedCallsDescription
+                        let recordedCallsDescription = subject.didCall(.doStuffWithString).recordedCallsDescription
                         let expectedFailureMessage = "expected to receive <doStuffWith(string:)> on <SpyableTestHelper>, got \(recordedCallsDescription)"
 
                         failsWithErrorMessage(expectedFailureMessage) {
-                            expect(subject).to(haveReceived(.doStuffWith))
+                            expect(subject).to(haveReceived(.doStuffWithString))
                         }
                     }
                 }
 
                 describe("expected function; no arguments; no count specifier") {
                     it("should include the function name and the class name") {
-                        let functionName = SpyableTestHelper.Function.doStuffWith.rawValue
+                        let functionName = SpyableTestHelper.Function.doStuffWithString.rawValue
                         let expectedFailureMessage = "expected to receive <\(functionName)> on <\(SpyableTestHelper.self)>, got <>"
 
                         failsWithErrorMessage(expectedFailureMessage) {
-                            expect(subject).to(haveReceived(.doStuffWith))
+                            expect(subject).to(haveReceived(.doStuffWithString))
                         }
                     }
                 }
@@ -101,7 +102,7 @@ final class HaveReceivedMatcherSpec: QuickSpec {
                             let expectedMultipleFailureMessage = beginningPartOfMessage + multipleCountSpecifierPart + endingPartOfMessage
 
                             failsWithErrorMessage(expectedMultipleFailureMessage) {
-                                expect(subject).to(haveReceived(.doStuffWith, countSpecifier: .exactly(multipleSpecifiedCount)))
+                                expect(subject).to(haveReceived(.doStuffWithString, countSpecifier: .exactly(multipleSpecifiedCount)))
                             }
 
                             let singleSpecifiedCount = 1
@@ -109,7 +110,7 @@ final class HaveReceivedMatcherSpec: QuickSpec {
                             let expectedSingleFailureMessage = beginningPartOfMessage + singleCountSpecifierPart + endingPartOfMessage
 
                             failsWithErrorMessage(expectedSingleFailureMessage) {
-                                expect(subject).to(haveReceived(.doStuffWith, countSpecifier: .exactly(singleSpecifiedCount)))
+                                expect(subject).to(haveReceived(.doStuffWithString, countSpecifier: .exactly(singleSpecifiedCount)))
                             }
                         }
                     }
@@ -122,7 +123,7 @@ final class HaveReceivedMatcherSpec: QuickSpec {
                                 let expectedSingleFailureMessage = beginningPartOfMessage + endingPartOfMessage
 
                                 failsWithErrorMessage(expectedSingleFailureMessage) {
-                                    expect(subject).to(haveReceived(.doStuffWith, countSpecifier: .atLeast(1)))
+                                    expect(subject).to(haveReceived(.doStuffWithString, countSpecifier: .atLeast(1)))
                                 }
                             }
                         }
@@ -134,7 +135,7 @@ final class HaveReceivedMatcherSpec: QuickSpec {
                                 let expectedFailureMessage = beginningPartOfMessage + countSpecifierPart + endingPartOfMessage
 
                                 failsWithErrorMessage(expectedFailureMessage) {
-                                    expect(subject).to(haveReceived(.doStuffWith, countSpecifier: .atLeast(specifiedCount)))
+                                    expect(subject).to(haveReceived(.doStuffWithString, countSpecifier: .atLeast(specifiedCount)))
                                 }
                             }
                         }
@@ -155,7 +156,7 @@ final class HaveReceivedMatcherSpec: QuickSpec {
                             let expectedMultipleFailureMessage = beginningPartOfMessage + multipleCountSpecifierPart + endingPartOfMessage
 
                             failsWithErrorMessage(expectedMultipleFailureMessage) {
-                                expect(subject).to(haveReceived(.doStuffWith, countSpecifier: .atMost(multipleSpecifiedCount)))
+                                expect(subject).to(haveReceived(.doStuffWithString, countSpecifier: .atMost(multipleSpecifiedCount)))
                             }
 
                             let singleSpecifiedCount = 1
@@ -163,7 +164,7 @@ final class HaveReceivedMatcherSpec: QuickSpec {
                             let expectedSingleFailureMessage = beginningPartOfMessage + singleCountSpecifierPart + endingPartOfMessage
 
                             failsWithErrorMessage(expectedSingleFailureMessage) {
-                                expect(subject).to(haveReceived(.doStuffWith, countSpecifier: .atMost(singleSpecifiedCount)))
+                                expect(subject).to(haveReceived(.doStuffWithString, countSpecifier: .atMost(singleSpecifiedCount)))
                             }
                         }
                     }
@@ -174,11 +175,11 @@ final class HaveReceivedMatcherSpec: QuickSpec {
                     let expectedSecondArg = 2
 
                     it("should include comma separated arguments") {
-                        let functionName = SpyableTestHelper.Function.doStuffWithWith.rawValue
+                        let functionName = SpyableTestHelper.Function.doStuffWithInts.rawValue
                         let expectedFailureMessage = "expected to receive <\(functionName)> on <\(SpyableTestHelper.self)> with <\(expectedFirstArg)>, <\(expectedSecondArg)>, got <>"
 
                         failsWithErrorMessage(expectedFailureMessage) {
-                            expect(subject).to(haveReceived(.doStuffWithWith, with: expectedFirstArg, expectedSecondArg))
+                            expect(subject).to(haveReceived(.doStuffWithInts, with: expectedFirstArg, expectedSecondArg))
                         }
                     }
                 }
@@ -195,7 +196,7 @@ final class HaveReceivedMatcherSpec: QuickSpec {
                             let expectedMultipleFailureMessage = beginningPartOfMessage + multipleCountSpecifierPart + endingPartOfMessage
 
                             failsWithErrorMessage(expectedMultipleFailureMessage) {
-                                expect(subject).to(haveReceived(.doStuffWith, with: specifiedArgument, countSpecifier: .exactly(multipleSpecifiedCount)))
+                                expect(subject).to(haveReceived(.doStuffWithString, with: specifiedArgument, countSpecifier: .exactly(multipleSpecifiedCount)))
                             }
 
                             let singleSpecifiedCount = 1
@@ -203,7 +204,7 @@ final class HaveReceivedMatcherSpec: QuickSpec {
                             let expectedSingleFailureMessage = beginningPartOfMessage + singleCountSpecifierPart + endingPartOfMessage
 
                             failsWithErrorMessage(expectedSingleFailureMessage) {
-                                expect(subject).to(haveReceived(.doStuffWith, with: specifiedArgument, countSpecifier: .exactly(singleSpecifiedCount)))
+                                expect(subject).to(haveReceived(.doStuffWithString, with: specifiedArgument, countSpecifier: .exactly(singleSpecifiedCount)))
                             }
                         }
                     }
@@ -218,7 +219,7 @@ final class HaveReceivedMatcherSpec: QuickSpec {
                                 let expectedSingleFailureMessage = beginningPartOfMessage + endingPartOfMessage
 
                                 failsWithErrorMessage(expectedSingleFailureMessage) {
-                                    expect(subject).to(haveReceived(.doStuffWith, with: specifiedArgument, countSpecifier: .atLeast(1)))
+                                    expect(subject).to(haveReceived(.doStuffWithString, with: specifiedArgument, countSpecifier: .atLeast(1)))
                                 }
                             }
                         }
@@ -230,7 +231,7 @@ final class HaveReceivedMatcherSpec: QuickSpec {
                                 let expectedFailureMessage = beginningPartOfMessage + countSpecifierPart + endingPartOfMessage
 
                                 failsWithErrorMessage(expectedFailureMessage) {
-                                    expect(subject).to(haveReceived(.doStuffWith, with: specifiedArgument, countSpecifier: .atLeast(specifiedCount)))
+                                    expect(subject).to(haveReceived(.doStuffWithString, with: specifiedArgument, countSpecifier: .atLeast(specifiedCount)))
                                 }
                             }
                         }
@@ -253,7 +254,7 @@ final class HaveReceivedMatcherSpec: QuickSpec {
                             let expectedMultipleFailureMessage = beginningPartOfMessage + multipleCountSpecifierPart + endingPartOfMessage
 
                             failsWithErrorMessage(expectedMultipleFailureMessage) {
-                                expect(subject).to(haveReceived(.doStuffWith, with: specifiedArgument, countSpecifier: .atMost(multipleSpecifiedCount)))
+                                expect(subject).to(haveReceived(.doStuffWithString, with: specifiedArgument, countSpecifier: .atMost(multipleSpecifiedCount)))
                             }
 
                             let singleSpecifiedCount = 1
@@ -261,7 +262,7 @@ final class HaveReceivedMatcherSpec: QuickSpec {
                             let expectedSingleFailureMessage = beginningPartOfMessage + singleCountSpecifierPart + endingPartOfMessage
 
                             failsWithErrorMessage(expectedSingleFailureMessage) {
-                                expect(subject).to(haveReceived(.doStuffWith, with: specifiedArgument, countSpecifier: .atMost(singleSpecifiedCount)))
+                                expect(subject).to(haveReceived(.doStuffWithString, with: specifiedArgument, countSpecifier: .atMost(singleSpecifiedCount)))
                             }
                         }
                     }
