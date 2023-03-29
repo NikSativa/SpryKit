@@ -41,11 +41,11 @@ final class XCTAssertTests: XCTestCase {
     }
 
     func testHaveRecordedCalls() {
-        XCTAssertHaveNotRecordedCalls(subject)
+        XCTAssertHaveNoRecordedCalls(subject)
         subject.doStuff()
         XCTAssertHaveRecordedCalls(subject)
 
-        XCTAssertHaveNotRecordedCalls(SpyableTestHelper.self)
+        XCTAssertHaveNoRecordedCalls(SpyableTestHelper.self)
         SpyableTestHelper.doClassStuff()
         XCTAssertHaveRecordedCalls(SpyableTestHelper.self)
     }

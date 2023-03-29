@@ -18,9 +18,9 @@ public func XCTAssertHaveRecordedCalls<T: Spyable>(_ spyable: T,
 ///
 /// - Important: This function respects `resetCalls()`. If calls have been made, then afterward `resetCalls()` is called. It is expected that hasRecordedCalls to be false.
 @inline(__always)
-public func XCTAssertHaveNotRecordedCalls<T: Spyable>(_ spyable: T,
-                                                      file: StaticString = #filePath,
-                                                      line: UInt = #line) {
+public func XCTAssertHaveNoRecordedCalls<T: Spyable>(_ spyable: T,
+                                                     file: StaticString = #filePath,
+                                                     line: UInt = #line) {
     XCTAssertTrue(spyable._callsDictionary.calls.isEmpty,
                   descriptionOfActual(count: spyable._callsDictionary.calls.count),
                   file: file,
@@ -44,9 +44,9 @@ public func XCTAssertHaveRecordedCalls<T: Spyable>(_ spyable: T.Type,
 ///
 /// - Important: This function respects `resetCalls()`. If calls have been made, then afterward `resetCalls()` is called. It is expected that hasRecordedCalls to be false.
 @inline(__always)
-public func XCTAssertHaveNotRecordedCalls<T: Spyable>(_ spyable: T.Type,
-                                                      file: StaticString = #filePath,
-                                                      line: UInt = #line) {
+public func XCTAssertHaveNoRecordedCalls<T: Spyable>(_ spyable: T.Type,
+                                                     file: StaticString = #filePath,
+                                                     line: UInt = #line) {
     XCTAssertTrue(spyable._callsDictionary.calls.isEmpty,
                   descriptionOfActual(count: spyable._callsDictionary.calls.count),
                   file: file,
