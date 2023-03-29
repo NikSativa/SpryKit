@@ -3,10 +3,6 @@ import NSpry
 
 struct StubbableError: Error, Equatable {
     let id: String
-
-    public static func ==(lhs: StubbableError, rhs: StubbableError) -> Bool {
-        return lhs.id == rhs.id
-    }
 }
 
 /// basic protocol
@@ -67,7 +63,7 @@ final class ProtocolWithSelfRequirementImplemented: ProtocolWithSelfRequirement 
 }
 
 /// Stubbable example class
-final class StubbableTestHelper: Stubbable {
+final class StubbableTestHelper: Spryable {
     enum ClassFunction: String, StringRepresentable {
         case classFunction = "classFunction()"
     }
@@ -92,71 +88,71 @@ final class StubbableTestHelper: Stubbable {
     }
 
     var myProperty: String {
-        return stubbedValue()
+        return spryify()
     }
 
     func giveMeAString() -> String {
-        return stubbedValue()
+        return spryify()
     }
 
     func hereAreTwoStrings(string1: String, string2: String) -> Bool {
-        return stubbedValue(arguments: string1, string2)
+        return spryify(arguments: string1, string2)
     }
 
     func hereComesATuple() -> (String, String) {
-        return stubbedValue()
+        return spryify()
     }
 
     func hereComesAProtocol() -> SpecialString {
-        return stubbedValue()
+        return spryify()
     }
 
     func hereComesProtocolsInATuple() -> (SpecialString, SpecialString) {
-        return stubbedValue()
+        return spryify()
     }
 
     func hereComesProtocolWithSelfRequirements<T: ProtocolWithSelfRequirement>(object _: T) -> T {
-        return stubbedValue()
+        return spryify()
     }
 
     func hereComesAClosure() -> () -> String {
-        return stubbedValue()
+        return spryify()
     }
 
     var fallbackValueForgiveMeAStringWithFallbackValue: String?
     func giveMeAStringWithFallbackValue() -> String? {
-        return stubbedValue(fallbackValue: fallbackValueForgiveMeAStringWithFallbackValue)
+        return spryify(fallbackValue: fallbackValueForgiveMeAStringWithFallbackValue)
     }
 
     func giveMeAnOptional() -> String? {
-        return stubbedValue()
+        return spryify()
     }
 
     func giveMeAString(string: String) -> String {
-        return stubbedValue(arguments: string)
+        return spryify(arguments: string)
     }
 
     func giveMeAVoid() {
-        return stubbedValue()
+        return spryify()
     }
 
     func takeAnOptionalString(string: String?) -> String {
-        return stubbedValue(arguments: string)
+        return spryify(arguments: string)
     }
 
     func takeUnnamedArgument(_ unnamed: String) -> Bool {
-        return stubbedValue(arguments: unnamed)
+        return spryify(arguments: unnamed)
     }
 
     func callThisCompletion(string: String, closure: @escaping () -> Void) {
-        return stubbedValue(arguments: string, closure)
+        return spryify(arguments: string, closure)
     }
 
     func throwingFunction() throws {
-        return try stubbedValueThrows()
+        return try spryifyThrows()
     }
 
     static func classFunction() -> String {
-        return stubbedValue()
+        return spryify()
     }
 }
