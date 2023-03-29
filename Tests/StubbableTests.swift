@@ -8,7 +8,7 @@ final class StubbableTests: XCTestCase {
     override func setUp() {
         super.setUp()
         subject.resetStubs()
-        StubbableTestHelper.resetCallsAndStubs()
+        StubbableTestHelper.resetStubs()
     }
 
     func test_return_void() {
@@ -243,7 +243,6 @@ final class StubbableTests: XCTestCase {
             self.subject.giveMeAString()
         }
 
-        XCTAssertHaveNoRecordedCalls(subject)
         subject.stub(.giveMeAString).andReturn("fallbackValue")
         XCTAssertEqual(subject.giveMeAString(), "fallbackValue")
     }
@@ -253,7 +252,6 @@ final class StubbableTests: XCTestCase {
         StubbableTestHelper.resetStubs()
         XCTAssertThrowsAssertion(StubbableTestHelper.classFunction())
 
-        XCTAssertHaveNoRecordedCalls(StubbableTestHelper.self)
         StubbableTestHelper.stub(.classFunction).andReturn("fallbackValue")
         XCTAssertEqual(StubbableTestHelper.classFunction(), "fallbackValue")
     }

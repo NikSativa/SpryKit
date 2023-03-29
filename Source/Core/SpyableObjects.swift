@@ -1,9 +1,6 @@
 import Foundation
 
 /// Used internally. Should never need to use or know about this type.
-///
-/// * function: String - The function signature of a recorded call. Defaults to `#function`.
-/// * arguments: [Any] - The arguments passed in when the function was recorded.
 public final class RecordedCall: CustomStringConvertible {
     // MARK: - Public Properties
 
@@ -29,7 +26,9 @@ public final class RecordedCall: CustomStringConvertible {
 
     // MARK: - Internal Properties
 
+    /// The function signature of a recorded call. Defaults to `#function`.
     let functionName: String
+    /// The arguments passed in when the function was recorded.
     let arguments: [Any?]
 
     var chronologicalIndex = -1
@@ -101,11 +100,10 @@ public final class RecordedCallsDictionary: CustomStringConvertible {
 }
 
 /// The resulting information when using the `didCall()` function.
-///
-/// * success: Bool - `true` if the function was called given the criteria specified, otherwise `false`.
-/// * recordedCallsDescription: String - A list of all recorded calls. Helpful information if success if `false`.
 public struct DidCallResult {
+    /// `true` if the function was called given the criteria specified, otherwise `false`.
     public let success: Bool
+    /// A list of all recorded calls. Helpful information if success if `false`.
     public let recordedCallsDescription: String
 
     internal init(success: Bool, recordedCallsDescription: String) {
@@ -115,12 +113,11 @@ public struct DidCallResult {
 }
 
 /// Used when specifying if a function was called.
-///
-/// * .exactly - Will only succeed if the function was called exactly the number of times specified.
-/// * .atLeast - Will only succeed if the function was called the number of times specified or more.
-/// * .atMost - Will only succeed if the function was called the number of times specified or less.
 public enum CountSpecifier {
+    /// Will only succeed if the function was called exactly the number of times specified.
     case exactly(Int)
+    /// Will only succeed if the function was called the number of times specified or more.
     case atLeast(Int)
+    ///Will only succeed if the function was called the number of times specified or less.
     case atMost(Int)
 }
