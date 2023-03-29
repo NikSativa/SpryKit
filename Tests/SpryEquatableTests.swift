@@ -3,14 +3,6 @@ import NSpry
 import XCTest
 
 final class SpryEquatableTests: XCTestCase {
-    let subject: SpyableTestHelper = .init()
-
-    override func setUp() {
-        super.setUp()
-        subject.resetCalls()
-        SpyableTestHelper.resetCalls()
-    }
-
     func test_NOT_Equatable_and_AnyObject() {
         let myObject1 = AnyObjectOnly()
         let myObject2 = AnyObjectOnly()
