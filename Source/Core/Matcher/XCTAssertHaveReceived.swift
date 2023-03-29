@@ -32,7 +32,7 @@ public func XCTAssertHaveReceived<T: Spyable>(_ spyable: T?,
 
     let descriptionOfAttempted = descriptionOfExpectation(actualType: type(of: spyable), functionName: function.rawValue, arguments: arguments, countSpecifier: countSpecifier)
     let result = spyable.didCall(function, withArguments: arguments, countSpecifier: countSpecifier)
-    XCTAssertTrue(result.success, descriptionOfAttempted + "(\(result.recordedCallsDescription)", file: file, line: line)
+    XCTAssertTrue(result.success, descriptionOfAttempted + " \(result.recordedCallsDescription)", file: file, line: line)
 }
 
 /// Matcher used to test whether or not a function or property has been called on an object.
@@ -63,7 +63,7 @@ public func XCTAssertHaveReceived<T: Spyable>(_ spyable: T?,
 
     let descriptionOfAttempted = descriptionOfExpectation(actualType: type(of: spyable), functionName: function.rawValue, arguments: arguments, countSpecifier: countSpecifier)
     let result = spyable.didCall(function, withArguments: arguments, countSpecifier: countSpecifier)
-    XCTAssertTrue(result.success, descriptionOfAttempted + "(\(result.recordedCallsDescription)", file: file, line: line)
+    XCTAssertTrue(result.success, descriptionOfAttempted + " \(result.recordedCallsDescription)", file: file, line: line)
 }
 
 // MARK: - HaveNotReceived
@@ -97,7 +97,7 @@ public func XCTAssertHaveNotReceived<T: Spyable>(_ spyable: T?,
 
     let descriptionOfAttempted = descriptionOfExpectation(actualType: type(of: spyable), functionName: function.rawValue, arguments: arguments, countSpecifier: countSpecifier)
     let result = spyable.didCall(function, withArguments: arguments, countSpecifier: countSpecifier)
-    XCTAssertTrue(!result.success, descriptionOfAttempted + "(\(result.recordedCallsDescription)", file: file, line: line)
+    XCTAssertTrue(!result.success, descriptionOfAttempted + " \(result.recordedCallsDescription)", file: file, line: line)
 }
 
 /// Matcher used to test whether or not a function or property has not been called on an object.
@@ -128,7 +128,7 @@ public func XCTAssertHaveNotReceived<T: Spyable>(_ spyable: T?,
 
     let descriptionOfAttempted = descriptionOfExpectation(actualType: type(of: spyable), functionName: function.rawValue, arguments: arguments, countSpecifier: countSpecifier)
     let result = spyable.didCall(function, withArguments: arguments, countSpecifier: countSpecifier)
-    XCTAssertTrue(!result.success, descriptionOfAttempted + "(\(result.recordedCallsDescription)", file: file, line: line)
+    XCTAssertTrue(!result.success, descriptionOfAttempted + " \(result.recordedCallsDescription)", file: file, line: line)
 }
 
 // MARK: - HaveReceived on a class
@@ -162,7 +162,7 @@ public func XCTAssertHaveReceived<T: Spyable>(_ spyable: T.Type?,
 
     let descriptionOfAttempted = descriptionOfExpectation(actualType: type(of: spyable), functionName: function.rawValue, arguments: arguments, countSpecifier: countSpecifier)
     let result = spyable.didCall(function, withArguments: arguments, countSpecifier: countSpecifier)
-    XCTAssertTrue(result.success, descriptionOfAttempted + "(\(result.recordedCallsDescription)", file: file, line: line)
+    XCTAssertTrue(result.success, descriptionOfAttempted + " \(result.recordedCallsDescription)", file: file, line: line)
 }
 
 /// Matcher used to test whether or not a function or property has been called on a class.
@@ -194,7 +194,7 @@ public func XCTAssertHaveReceived<T: Spyable>(_ spyable: T.Type?,
 
     let descriptionOfAttempted = descriptionOfExpectation(actualType: type(of: spyable), functionName: function.rawValue, arguments: arguments, countSpecifier: countSpecifier)
     let result = spyable.didCall(function, withArguments: arguments, countSpecifier: countSpecifier)
-    XCTAssertTrue(result.success, descriptionOfAttempted + "(\(result.recordedCallsDescription)", file: file, line: line)
+    XCTAssertTrue(result.success, descriptionOfAttempted + " \(result.recordedCallsDescription)", file: file, line: line)
 }
 
 // MARK: - HaveNotReceived on a class
@@ -228,7 +228,7 @@ public func XCTAssertHaveNotReceived<T: Spyable>(_ spyable: T.Type?,
 
     let descriptionOfAttempted = descriptionOfExpectation(actualType: type(of: spyable), functionName: function.rawValue, arguments: arguments, countSpecifier: countSpecifier)
     let result = spyable.didCall(function, withArguments: arguments, countSpecifier: countSpecifier)
-    XCTAssertTrue(!result.success, descriptionOfAttempted + "(\(result.recordedCallsDescription)", file: file, line: line)
+    XCTAssertTrue(!result.success, descriptionOfAttempted + " \(result.recordedCallsDescription)", file: file, line: line)
 }
 
 /// Matcher used to test whether or not a function or property has not been called on a class.
@@ -259,7 +259,7 @@ public func XCTAssertHaveNotReceived<T: Spyable>(_ spyable: T.Type?,
 
     let descriptionOfAttempted = descriptionOfExpectation(actualType: type(of: spyable), functionName: function.rawValue, arguments: arguments, countSpecifier: countSpecifier)
     let result = spyable.didCall(function, withArguments: arguments, countSpecifier: countSpecifier)
-    XCTAssertTrue(!result.success, descriptionOfAttempted + "(\(result.recordedCallsDescription)", file: file, line: line)
+    XCTAssertTrue(!result.success, descriptionOfAttempted + " \(result.recordedCallsDescription)", file: file, line: line)
 }
 
 // MARK: Private
