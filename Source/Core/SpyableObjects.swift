@@ -118,6 +118,6 @@ public enum CountSpecifier {
     case exactly(Int)
     /// Will only succeed if the function was called the number of times specified or more.
     case atLeast(Int)
-    ///Will only succeed if the function was called the number of times specified or less.
+    /// Will only succeed if the function was called the number of times specified or less.
     case atMost(Int)
 }
