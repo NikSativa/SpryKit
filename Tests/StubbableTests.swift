@@ -145,7 +145,9 @@ final class StubbableTests: XCTestCase {
     func test_cant_throw() {
         let stubbedError = StubbableError(id: "my error")
         subject.stub(.giveMeAString).andThrow(stubbedError)
-        XCTAssertThrowsAssertion(self.subject.giveMeAString())
+        XCTAssertThrowsAssertion {
+            self.subject.giveMeAString()
+        }
     }
 
     func test_stubbing_property() {
@@ -169,7 +171,9 @@ final class StubbableTests: XCTestCase {
 
     func test_passing_in_arguments_when_the_arguments_do_NOT_match_what_is_stubbed() {
         subject.stub(.giveMeAString_string).with("not expected").andReturn("return value")
-        XCTAssertThrowsAssertion(self.subject.giveMeAString(string: "blah"))
+        XCTAssertThrowsAssertion {
+            self.subject.giveMeAString(string: "blah")
+        }
     }
 
     func test_passing_in_arguments_when_there_are_no_arguments_passed_in() {
@@ -220,18 +224,24 @@ final class StubbableTests: XCTestCase {
     }
 
     func test_improper_stubbing_without_a_fallback_value() {
-        XCTAssertThrowsAssertion(self.subject.giveMeAString())
+        XCTAssertThrowsAssertion {
+            self.subject.giveMeAString()
+        }
     }
 
     func test_when_the_value_is_stubbed_with_the_wrong_type() {
         subject.stub(.giveMeAString).andReturn(50)
-        XCTAssertThrowsAssertion(self.subject.giveMeAString())
+        XCTAssertThrowsAssertion {
+            self.subject.giveMeAString()
+        }
     }
 
     func test_resetting_stubs() {
         subject.stub(.giveMeAString).andReturn("fallbackValue")
         subject.resetStubs()
-        XCTAssertThrowsAssertion(self.subject.giveMeAString())
+        XCTAssertThrowsAssertion {
+            self.subject.giveMeAString()
+        }
 
         XCTAssertHaveNoRecordedCalls(subject)
         subject.stub(.giveMeAString).andReturn("fallbackValue")
@@ -252,7 +262,9 @@ final class StubbableTests: XCTestCase {
         let originalString = "original string"
         subject.stub(.giveMeAString_string).with(originalString).andReturn("original return value")
         subject.stub(.giveMeAString_string).with("different string").andReturn("other return value")
-        XCTAssertThrowsAssertion(self.subject.stub(.giveMeAString_string).with(originalString).andReturn("other return value"))
+        XCTAssertThrowsAssertion {
+            self.subject.stub(.giveMeAString_string).with(originalString).andReturn("other return value")
+        }
 
         let newReturnValue = "new return value"
         subject.stubAgain(.giveMeAString_string).with(originalString).andReturn(newReturnValue)
@@ -261,7 +273,9 @@ final class StubbableTests: XCTestCase {
 
     func test_stubbing_again_without_with() {
         subject.stub(.giveMeAString_string).andReturn("original return value")
-        XCTAssertThrowsAssertion(self.subject.stub(.giveMeAString_string).andReturn("other return value"))
+        XCTAssertThrowsAssertion {
+            self.subject.stub(.giveMeAString_string).andReturn("other return value")
+        }
 
         let newReturnValue = "new return value"
         subject.stubAgain(.giveMeAString_string).andReturn(newReturnValue)
