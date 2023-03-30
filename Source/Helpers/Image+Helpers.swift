@@ -18,6 +18,16 @@ public extension Image {
     enum spry {
         // namespace
     }
+
+    func testData() -> Data? {
+        #if os(macOS)
+        return png
+        #elseif os(iOS) || os(tvOS) || os(watchOS)
+        return pngData()
+        #else
+        #error("unsupported os")
+        #endif
+    }
 }
 
 public extension Image.spry {
@@ -37,3 +47,17 @@ public extension Image.spry {
     #error("unsupported os")
     #endif
 }
+
+#if os(macOS)
+private extension NSBitmapImageRep {
+    var png: Data? { representation(using: .png, properties: [:]) }
+}
+
+private extension Data {
+    var bitmap: NSBitmapImageRep? { NSBitmapImageRep(data: self) }
+}
+
+private extension NSImage {
+    var png: Data? { tiffRepresentation?.bitmap?.png }
+}
+#endif
