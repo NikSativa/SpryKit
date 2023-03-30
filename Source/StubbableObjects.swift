@@ -149,7 +149,7 @@ public final class Stub: CustomStringConvertible {
     // MARK: - Internal Functions
 
     internal func returnValue(for args: [Any?]) throws -> Any? {
-        guard let stubType = stubType else {
+        guard let stubType else {
             Constant.FatalError.noReturnValueSourceFound(functionName: functionName)
         }
 

@@ -28,7 +28,7 @@ public func XCTAssertThrowsError(_ expression: @autoclosure () throws -> some An
 public func XCTAssertNoThrowError<T>(_ message: @autoclosure () -> String = "",
                                      file: StaticString = #file,
                                      line: UInt = #line,
-                                     _ expression: () throws -> T) -> T? {
+                                     _ expression: () throws -> T?) -> T? {
     do {
         return try expression()
     } catch {
@@ -39,7 +39,7 @@ public func XCTAssertNoThrowError<T>(_ message: @autoclosure () -> String = "",
 
 @inline(__always)
 @discardableResult
-public func XCTAssertNoThrowError<T>(_ expression: @autoclosure () throws -> T,
+public func XCTAssertNoThrowError<T>(_ expression: @autoclosure () throws -> T?,
                                      _ message: @autoclosure () -> String = "",
                                      file: StaticString = #file,
                                      line: UInt = #line) -> T? {

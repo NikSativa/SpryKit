@@ -282,7 +282,7 @@ public extension Spyable {
 
 // MARK: Private Functions
 
-private func numberOfMatchingCalls<T>(fakeType: T.Type, functionName: String, arguments: [SpryEquatable?], callsDictionary: RecordedCallsDictionary) -> Int {
+private func numberOfMatchingCalls(fakeType: (some Any).Type, functionName: String, arguments: [SpryEquatable?], callsDictionary: RecordedCallsDictionary) -> Int {
     let matchingFunctions = callsDictionary.getCalls(for: functionName)
 
     // if no args passed in then only check if function was called (allows user to not care about args being passed in)
