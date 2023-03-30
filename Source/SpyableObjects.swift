@@ -1,7 +1,7 @@
 import Foundation
 
 /// Used internally. Should never need to use or know about this type.
-public final class RecordedCall: CustomStringConvertible {
+public final class RecordedCall: CustomStringConvertible, FriendlyStringConvertible {
     // MARK: - Public Properties
 
     /// A beautified description. Used for debugging purposes.
@@ -12,16 +12,12 @@ public final class RecordedCall: CustomStringConvertible {
 
     /// A beautified description. Used for logging.
     public var friendlyDescription: String {
-        let functionStringRepresentation = "<" + functionName + ">"
-        let arguementListStringRepresentation = arguments
-            .map { "<\($0.stringRepresentation())>" }
-            .joined(separator: ", ")
-
-        if !arguementListStringRepresentation.isEmpty {
-            return functionStringRepresentation + " with " + arguementListStringRepresentation
+        if arguments.isEmpty {
+            return functionName
         }
 
-        return functionStringRepresentation
+        let arguementListStringRepresentation = makeFriendlyDescription(for: arguments, separator: ", ", closeEach: true)
+        return functionName + " with " + arguementListStringRepresentation
     }
 
     // MARK: - Internal Properties
@@ -42,7 +38,7 @@ public final class RecordedCall: CustomStringConvertible {
 }
 
 /// This exists because a dictionary is needed as a class. Instances of this type are put into an NSMapTable.
-public final class RecordedCallsDictionary: CustomStringConvertible {
+public final class RecordedCallsDictionary: CustomStringConvertible, FriendlyStringConvertible {
     // MARK: - Public Properties
 
     /// A beautified description. Used for debugging purposes.
@@ -52,15 +48,7 @@ public final class RecordedCallsDictionary: CustomStringConvertible {
 
     /// A beautified description. Used for logging.
     public var friendlyDescription: String {
-        guard !calls.isEmpty else {
-            return "<>"
-        }
-
-        let friendlyCallsString = calls
-            .map(\.friendlyDescription)
-            .joined(separator: "; ")
-
-        return friendlyCallsString
+        return makeFriendlyDescription(for: calls, separator: "; ", closeEach: false)
     }
 
     /// Array of all calls in chronological order
@@ -100,15 +88,25 @@ public final class RecordedCallsDictionary: CustomStringConvertible {
 }
 
 /// The resulting information when using the `didCall()` function.
-public struct DidCallResult {
+public final class DidCallResult: CustomStringConvertible, FriendlyStringConvertible {
     /// `true` if the function was called given the criteria specified, otherwise `false`.
     public let success: Bool
-    /// A list of all recorded calls. Helpful information if success if `false`.
-    public let recordedCallsDescription: String
 
-    internal init(success: Bool, recordedCallsDescription: String) {
+    /// A list of all recorded calls. Helpful information if success if `false`.
+    public private(set) lazy var friendlyDescription: String = friendlyDescriptionClosure()
+
+    /// A textual representation of this instance.
+    public private(set) lazy var description: String = descriptionClosure()
+
+    private let friendlyDescriptionClosure: () -> String
+    private let descriptionClosure: () -> String
+
+    internal init(success: Bool,
+                  friendlyDescription: @escaping @autoclosure () -> String,
+                  description: @escaping @autoclosure () -> String) {
         self.success = success
-        self.recordedCallsDescription = recordedCallsDescription
+        self.friendlyDescriptionClosure = friendlyDescription
+        self.descriptionClosure = description
     }
 }
 

@@ -1,18 +1,5 @@
 import Foundation
 
-// MARK: - Optional Extensions
-
-internal extension Optional {
-    func stringRepresentation() -> String {
-        switch self {
-        case .some(let wrapped):
-            return String(describing: wrapped)
-        case .none:
-            return "nil"
-        }
-    }
-}
-
 /// This is a helper function to find out if a value is nil.
 ///
 /// (x == nil) will only return yes if x is Optional<Type>.none but will return true if x is Optional<Optional<Type\>>.some(Optional<Type>.none)

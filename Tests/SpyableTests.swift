@@ -132,23 +132,23 @@ final class SpyableTests: XCTestCase {
     }
 
     func test_result_recordedCallsDescription() {
-        XCTAssertEqual(subject.didCall(.doStuff).recordedCallsDescription, "<>")
+        XCTAssertEqual(subject.didCall(.doStuff).friendlyDescription, "<>")
 
         subject.doStuff()
-        XCTAssertEqual(subject.didCall(.doStuff).recordedCallsDescription, "<\(SpyableTestHelper.Function.doStuff.rawValue)>")
+        XCTAssertEqual(subject.didCall(.doStuff).friendlyDescription, "\(SpyableTestHelper.Function.doStuff.rawValue)")
 
         let firstArg = 1
         let secondArg = 2
 
         subject.resetCalls()
         subject.doStuffWith(int1: firstArg, int2: secondArg)
-        let expectedDescription = "<\(SpyableTestHelper.Function.doStuffWithInts.rawValue)> with <\(firstArg)>, <\(secondArg)>"
-        XCTAssertEqual(subject.didCall(.doStuff).recordedCallsDescription, expectedDescription)
+        let expectedDescription = "\(SpyableTestHelper.Function.doStuffWithInts.rawValue) with <\(firstArg)>, <\(secondArg)>"
+        XCTAssertEqual(subject.didCall(.doStuff).friendlyDescription, expectedDescription)
 
         subject.resetCalls()
         subject.doStuff()
         subject.doStuffWith(int1: firstArg, int2: secondArg)
-        let expectedDescription2 = "<\(SpyableTestHelper.Function.doStuff.rawValue)>; <\(SpyableTestHelper.Function.doStuffWithInts.rawValue)> with <\(firstArg)>, <\(secondArg)>"
-        XCTAssertEqual(subject.didCall(.doStuff).recordedCallsDescription, expectedDescription2)
+        let expectedDescription2 = "\(SpyableTestHelper.Function.doStuff.rawValue); \(SpyableTestHelper.Function.doStuffWithInts.rawValue) with <\(firstArg)>, <\(secondArg)>"
+        XCTAssertEqual(subject.didCall(.doStuff).friendlyDescription, expectedDescription2)
     }
 }
