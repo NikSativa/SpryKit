@@ -4,15 +4,15 @@ import XCTest
 
 final class XCTAssertEqualImageTests: XCTestCase {
     func test_images() {
-        XCTAssertEqualImage(Image.testImage, Image.testImage)
-        XCTAssertNotEqualImage(Image.testImage, Image.testImage2)
+        XCTAssertEqualImage(Image.spry.testImage, Image.spry.testImage)
+        XCTAssertNotEqualImage(Image.spry.testImage, Image.spry.testImage2)
 
-        XCTAssertEqualImage(Image.testImage) {
-            return Image.testImage
+        XCTAssertEqualImage(Image.spry.testImage) {
+            return Image.spry.testImage
         }
 
-        XCTAssertNotEqualImage(Image.testImage) {
-            return Image.testImage2
+        XCTAssertNotEqualImage(Image.spry.testImage) {
+            return Image.spry.testImage2
         }
     }
 }

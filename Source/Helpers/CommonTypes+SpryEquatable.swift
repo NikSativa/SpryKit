@@ -25,3 +25,6 @@ extension Notification.Name: SpryEquatable {}
 extension Data: SpryEquatable {}
 extension DispatchTime: SpryEquatable {}
 extension DispatchTimeInterval: SpryEquatable {}
+extension URL: SpryEquatable {}
+extension URLRequest: SpryEquatable {}
+extension TimeZone: SpryEquatable {}
