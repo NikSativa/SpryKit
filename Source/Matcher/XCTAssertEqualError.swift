@@ -69,18 +69,18 @@ private func AssertEqual(condition: Bool,
                          file: StaticString,
                          line: UInt) {
     guard let rhs = rhs() else {
-        XCTFail("expected error is nil, use `XCTAssertNil` instead. " + message())
+        XCTFail("expected error is nil, use `XCTAssertNil` instead. " + message(), file: file, line: line)
         return
     }
 
     guard let lhs = lhs() else {
-        XCTFail("actual error is nil, use `XCTAssertNil` instead. " + message())
+        XCTFail("actual error is nil, use `XCTAssertNil` instead. " + message(), file: file, line: line)
         return
     }
 
     if condition {
-        XCTAssertEqual(lhs as NSError, rhs as NSError, message())
+        XCTAssertEqual(lhs as NSError, rhs as NSError, message(), file: file, line: line)
     } else {
-        XCTAssertNotEqual(lhs as NSError, rhs as NSError, message())
+        XCTAssertNotEqual(lhs as NSError, rhs as NSError, message(), file: file, line: line)
     }
 }
