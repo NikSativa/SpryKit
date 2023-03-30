@@ -76,42 +76,14 @@ private func AssertEqual(condition: Bool,
             XCTAssertEqual(lhs.size.width, rhs.size.width, accuracy: 0.001)
             XCTAssertEqual(lhs.size.height, rhs.size.height, accuracy: 0.001)
             XCTAssertEqual(lhs, rhs, message(), file: file, line: line)
-
-            #if os(iOS) || os(tvOS) || os(watchOS)
-            XCTAssertEqual(lhs.pngData(), rhs.pngData(), message(), file: file, line: line)
-            #elseif os(macOS)
-            XCTAssertEqual(lhs.png, rhs.png, message(), file: file, line: line)
-            #else
-            #error("unsupported os")
-            #endif
+            XCTAssertEqual(lhs.testData(), rhs.testData(), message(), file: file, line: line)
         } else {
             XCTAssertNotEqual(lhs.size.width, rhs.size.width, accuracy: 0.001)
             XCTAssertNotEqual(lhs.size.height, rhs.size.height, accuracy: 0.001)
             XCTAssertNotEqual(lhs, rhs, message(), file: file, line: line)
-
-            #if os(iOS) || os(tvOS) || os(watchOS)
-            XCTAssertNotEqual(lhs.pngData(), rhs.pngData(), message(), file: file, line: line)
-            #elseif os(macOS)
-            XCTAssertNotEqual(lhs.png, rhs.png, message(), file: file, line: line)
-            #else
-            #error("unsupported os")
-            #endif
+            XCTAssertNotEqual(lhs.testData(), rhs.testData(), message(), file: file, line: line)
         }
     } catch {
         XCTFail(message() + ". " + error.localizedDescription, file: file, line: line)
     }
 }
-
-#if os(macOS)
-private extension NSBitmapImageRep {
-    var png: Data? { representation(using: .png, properties: [:]) }
-}
-
-private extension Data {
-    var bitmap: NSBitmapImageRep? { NSBitmapImageRep(data: self) }
-}
-
-private extension NSImage {
-    var png: Data? { tiffRepresentation?.bitmap?.png }
-}
-#endif
