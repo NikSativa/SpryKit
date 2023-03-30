@@ -1,7 +1,7 @@
 import Foundation
 import XCTest
 
-// MARK: - HaveReceived
+// MARK: - public
 
 /// Matcher used to test whether or not a function or property has been called on an object.
 ///
@@ -262,14 +262,14 @@ public func XCTAssertHaveNotReceived<T: Spyable>(_ spyable: T.Type?,
     XCTAssertTrue(!result.success, descriptionOfAttempted + " \(result.recordedCallsDescription)", file: file, line: line)
 }
 
-// MARK: Private
+// MARK: - Private
 
 private func descriptionOfExpectation(actualType: Any.Type, functionName: String, arguments: [SpryEquatable?], countSpecifier: CountSpecifier) -> String {
     var descriptionOfAttempt = "receive <\(functionName)> on <\(actualType)>"
 
     if !arguments.isEmpty {
         let argumentsDescription = arguments.map { element in
-            if let element = element {
+            if let element {
                 return "<\(element)>"
             } else {
                 return "<nil>"

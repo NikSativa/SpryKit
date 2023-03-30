@@ -19,7 +19,7 @@ public protocol StringRepresentable: RawRepresentable {
 private let singleUnnamedArgumentFunctionaSuffix = "(_:)"
 
 public extension StringRepresentable {
-    init<T>(functionName: String, type: T.Type, file: String, line: Int) {
+    init(functionName: String, type: (some Any).Type, file: String, line: Int) {
         let hasUnnamedArgumentSuffix = functionName.hasSuffix(singleUnnamedArgumentFunctionaSuffix)
 
         if let function = Self(rawValue: functionName) {

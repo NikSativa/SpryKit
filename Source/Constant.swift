@@ -1,12 +1,16 @@
 import Foundation
 
+/// This is a convenience against Xcode not printing out fatal error messages when `fatalError()` is called.
+///
+/// - Note: Xcode sometimes crashes when `fatalError()` is called. I recommend putting a break point on `fatalError()`. Then, let the default printing of the error message print the message instead of `fatalError()`. This will prevent Xcode from running the `fatalError()` line of code, thus preventing it from ever crashing.
 private func fatalError(title: String, entries: [String]) -> Never {
     let titleString = "\n --- FATAL ERROR: \(title) ---"
     let entriesString = entries.map { "\n  ￫ " + $0 }.joined() + "\n"
     let errorString = titleString + entriesString
 
-    SpryConfiguration.fatalErrorClosure(errorString)
-    fatalError()
+    print(errorString)
+    print("----- fatalError -----")
+    fatalError(errorString)
 }
 
 private func routeString(filePath: String, line: String) -> String {
@@ -97,7 +101,7 @@ internal enum Constant {
             andThrowOnNonThrowingFunction(type: S.self, functionName: function.rawValue)
         }
 
-        static func noFunctionFound<T>(functionName: String, type: T.Type, file: String, line: Int) -> Never {
+        static func noFunctionFound(functionName: String, type: (some Any).Type, file: String, line: Int) -> Never {
             let caseName = functionName.removeAfter(startingCharacter: "(") ?? functionName
             let probableMessage = "case \(caseName) = \"\(functionName)\""
 

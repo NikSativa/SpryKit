@@ -132,7 +132,7 @@ public extension SpryEquatable where Self: OptionalType {
         if isNil(selfsWrappedValue), isNil(actual) {
             return true
         }
-        guard let selfsWrappedValueAsNonOptional = selfsWrappedValue, let actual = actual else {
+        guard let selfsWrappedValueAsNonOptional = selfsWrappedValue, let actual else {
             return false
         }
 
