@@ -2,7 +2,7 @@ import Foundation
 
 // Object return by `stub()` call. Used to specify arguments and return values when stubbing.
 
-public final class Stub: CustomStringConvertible {
+public final class Stub: CustomStringConvertible, FriendlyStringConvertible {
     enum StubType {
         case andReturn(Any?)
         case andDo(([Any?]) -> Any?)
@@ -21,16 +21,12 @@ public final class Stub: CustomStringConvertible {
 
     /// A beautified description. Used for logging.
     public var friendlyDescription: String {
-        let functionStringRepresentation = "<" + functionName + ">"
-        let arguementListStringRepresentation = arguments
-            .map { "<\($0)>" }
-            .joined(separator: ", ")
-
-        if !arguementListStringRepresentation.isEmpty {
-            return functionStringRepresentation + " with " + arguementListStringRepresentation
+        if arguments.isEmpty {
+            return functionName
         }
 
-        return functionStringRepresentation
+        let arguementListStringRepresentation = makeFriendlyDescription(for: arguments, separator: ", ", closeEach: true)
+        return functionName + " with " + arguementListStringRepresentation
     }
 
     // MARK: - Internal Properties
@@ -170,7 +166,7 @@ public final class Stub: CustomStringConvertible {
 }
 
 /// This exists because a dictionary is needed as a class. Instances of this type are put into an NSMapTable.
-public final class StubsDictionary: CustomStringConvertible {
+public final class StubsDictionary: CustomStringConvertible, FriendlyStringConvertible {
     // MARK: - Public Properties
 
     /// A beautified description. Used for debugging purposes.
@@ -180,15 +176,7 @@ public final class StubsDictionary: CustomStringConvertible {
 
     /// A beautified description. Used for logging.
     public var friendlyDescription: String {
-        guard !stubs.isEmpty else {
-            return "<>"
-        }
-
-        let friendlyStubsString = stubs
-            .map(\.friendlyDescription)
-            .joined(separator: "; ")
-
-        return friendlyStubsString
+        return makeFriendlyDescription(for: stubs, separator: "; ", closeEach: false)
     }
 
     /// Array of all stubs in chronological order.

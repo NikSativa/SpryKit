@@ -211,8 +211,10 @@ public extension Spyable {
             success = timesCalled(function, arguments: arguments) <= count
         }
 
-        let recordedCallsDescription = _callsDictionary.friendlyDescription
-        return DidCallResult(success: success, recordedCallsDescription: recordedCallsDescription)
+        let _callsDictionary = _callsDictionary
+        return DidCallResult(success: success,
+                             friendlyDescription: _callsDictionary.friendlyDescription,
+                             description: _callsDictionary.description)
     }
 
     func resetCalls() {
@@ -247,8 +249,10 @@ public extension Spyable {
             success = timesCalled(function, arguments: arguments) <= count
         }
 
-        let recordedCallsDescription = _callsDictionary.friendlyDescription
-        return DidCallResult(success: success, recordedCallsDescription: recordedCallsDescription)
+        let _callsDictionary = _callsDictionary
+        return DidCallResult(success: success,
+                             friendlyDescription: _callsDictionary.friendlyDescription,
+                             description: _callsDictionary.description)
     }
 
     static func resetCalls() {
@@ -293,13 +297,4 @@ private func numberOfMatchingCalls(fakeType: (some Any).Type, functionName: Stri
     return matchingFunctions.reduce(0) {
         return $0 + isEqualArgsLists(fakeType: fakeType, functionName: functionName, specifiedArgs: arguments, actualArgs: $1.arguments).toInt()
     }
-}
-
-private func matchingIndexesFor(functionName: String, functionList: [String]) -> [Int] {
-    return functionList.enumerated().map { $1 == functionName ? $0 : -1 }.filter { $0 != -1 }
-}
-
-private func isOptional(_ value: Any) -> Bool {
-    let mirror = Mirror(reflecting: value)
-    return mirror.displayStyle == .optional
 }
