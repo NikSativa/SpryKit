@@ -5,8 +5,8 @@ import XCTest
 final class SpryableTests: XCTestCase {
     let subject: SpryableTestClass = .init()
 
-    override func setUp() {
-        super.setUp()
+    override func tearDown() {
+        super.tearDown()
         subject.resetCallsAndStubs()
         SpryableTestClass.resetCallsAndStubs()
     }

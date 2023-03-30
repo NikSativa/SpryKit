@@ -5,8 +5,8 @@ import XCTest
 final class StubbableTests: XCTestCase {
     let subject: StubbableTestHelper = .init()
 
-    override func setUp() {
-        super.setUp()
+    override func tearDown() {
+        super.tearDown()
         subject.resetStubs()
         StubbableTestHelper.resetStubs()
     }

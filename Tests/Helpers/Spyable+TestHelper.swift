@@ -3,8 +3,8 @@ import NSpry
 
 final class SpyableTestHelper: Spyable {
     enum ClassFunction: String, StringRepresentable {
-        case doClassStuff = "doClassStuff()"
-        case doClassStuffWith = "doClassStuffWith(string:)"
+        case doStuff = "doClassStuff()"
+        case doStuffWithString = "doClassStuffWith(string:)"
     }
 
     static func doClassStuff() {

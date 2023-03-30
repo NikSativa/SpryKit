@@ -5,8 +5,8 @@ import XCTest
 final class SpyableTests: XCTestCase {
     let subject: SpyableTestHelper = .init()
 
-    override func setUp() {
-        super.setUp()
+    override func tearDown() {
+        super.tearDown()
         subject.resetCalls()
         SpyableTestHelper.resetCalls()
     }
@@ -25,8 +25,8 @@ final class SpyableTests: XCTestCase {
         SpyableTestHelper.resetCalls()
         SpyableTestHelper.doClassStuffWith(string: "")
 
-        XCTAssertFalse(SpyableTestHelper.didCall(.doClassStuff).success)
-        XCTAssertTrue(SpyableTestHelper.didCall(.doClassStuffWith).success)
+        XCTAssertFalse(SpyableTestHelper.didCall(.doStuff).success)
+        XCTAssertTrue(SpyableTestHelper.didCall(.doStuffWithString).success)
     }
 
     func test_set_property() {
@@ -42,24 +42,38 @@ final class SpyableTests: XCTestCase {
         XCTAssertFalse(subject.didCall(.doStuffWithString).success)
     }
 
+    func test_call_class_function_no_args_count_specifier() {
+        SpyableTestHelper.doClassStuff()
+        SpyableTestHelper.doClassStuff()
+
+        XCTAssertHaveNotReceived(SpyableTestHelper.self, .doStuff, countSpecifier: .exactly(1))
+        XCTAssertHaveReceived(SpyableTestHelper.self, .doStuff, countSpecifier: .exactly(2))
+        XCTAssertHaveNotReceived(SpyableTestHelper.self, .doStuff, countSpecifier: .exactly(3))
+
+        XCTAssertHaveReceived(SpyableTestHelper.self, .doStuff, countSpecifier: .atLeast(1))
+        XCTAssertHaveReceived(SpyableTestHelper.self, .doStuff, countSpecifier: .atLeast(2))
+        XCTAssertHaveNotReceived(SpyableTestHelper.self, .doStuff, countSpecifier: .atLeast(3))
+
+        XCTAssertHaveNotReceived(SpyableTestHelper.self, .doStuff, countSpecifier: .atMost(1))
+        XCTAssertHaveReceived(SpyableTestHelper.self, .doStuff, countSpecifier: .atMost(2))
+        XCTAssertHaveReceived(SpyableTestHelper.self, .doStuff, countSpecifier: .atMost(3))
+    }
+
     func test_call_function_no_args_count_specifier() {
-        let getSuccessValue: (CountSpecifier) -> Bool = { countSpecifier in
-            return self.subject.didCall(.doStuff, countSpecifier: countSpecifier).success
-        }
         subject.doStuff()
         subject.doStuff()
 
-        XCTAssertFalse(getSuccessValue(.exactly(1)))
-        XCTAssertTrue(getSuccessValue(.exactly(2)))
-        XCTAssertFalse(getSuccessValue(.exactly(3)))
+        XCTAssertHaveNotReceived(subject, .doStuff, countSpecifier: .exactly(1))
+        XCTAssertHaveReceived(subject, .doStuff, countSpecifier: .exactly(2))
+        XCTAssertHaveNotReceived(subject, .doStuff, countSpecifier: .exactly(3))
 
-        XCTAssertTrue(getSuccessValue(.atLeast(1)))
-        XCTAssertTrue(getSuccessValue(.atLeast(2)))
-        XCTAssertFalse(getSuccessValue(.atLeast(3)))
+        XCTAssertHaveReceived(subject, .doStuff, countSpecifier: .atLeast(1))
+        XCTAssertHaveReceived(subject, .doStuff, countSpecifier: .atLeast(2))
+        XCTAssertHaveNotReceived(subject, .doStuff, countSpecifier: .atLeast(3))
 
-        XCTAssertFalse(getSuccessValue(.atMost(1)))
-        XCTAssertTrue(getSuccessValue(.atMost(2)))
-        XCTAssertTrue(getSuccessValue(.atMost(3)))
+        XCTAssertHaveNotReceived(subject, .doStuff, countSpecifier: .atMost(1))
+        XCTAssertHaveReceived(subject, .doStuff, countSpecifier: .atMost(2))
+        XCTAssertHaveReceived(subject, .doStuff, countSpecifier: .atMost(3))
     }
 
     func test_call_function_no_count_specifier() {
@@ -71,34 +85,50 @@ final class SpyableTests: XCTestCase {
 
     func test_call_function_with_args_count_specifier() {
         let actualString = "correct string"
-        let getSuccessValue: (CountSpecifier) -> Bool = { countSpecifier in
-            return self.subject.didCall(.doStuffWithString, withArguments: [actualString], countSpecifier: countSpecifier).success
-        }
         subject.doStuffWith(string: actualString)
-        subject.doStuffWith(string: "wrong string")
+        subject.doStuffWith(string: "other string")
         subject.doStuffWith(string: actualString)
 
-        XCTAssertFalse(getSuccessValue(.exactly(1)))
-        XCTAssertTrue(getSuccessValue(.exactly(2)))
-        XCTAssertFalse(getSuccessValue(.exactly(3)))
+        XCTAssertHaveNotReceived(subject, .doStuffWithString, with: actualString, countSpecifier: .exactly(1))
+        XCTAssertHaveReceived(subject, .doStuffWithString, with: actualString, countSpecifier: .exactly(2))
+        XCTAssertHaveNotReceived(subject, .doStuffWithString, with: actualString, countSpecifier: .exactly(3))
 
-        XCTAssertTrue(getSuccessValue(.atLeast(1)))
-        XCTAssertTrue(getSuccessValue(.atLeast(2)))
-        XCTAssertFalse(getSuccessValue(.atLeast(3)))
+        XCTAssertHaveReceived(subject, .doStuffWithString, with: actualString, countSpecifier: .atLeast(1))
+        XCTAssertHaveReceived(subject, .doStuffWithString, with: actualString, countSpecifier: .atLeast(2))
+        XCTAssertHaveNotReceived(subject, .doStuffWithString, with: actualString, countSpecifier: .atLeast(3))
 
-        XCTAssertFalse(getSuccessValue(.atMost(1)))
-        XCTAssertTrue(getSuccessValue(.atMost(2)))
-        XCTAssertTrue(getSuccessValue(.atMost(3)))
+        XCTAssertHaveNotReceived(subject, .doStuffWithString, with: actualString, countSpecifier: .atMost(1))
+        XCTAssertHaveReceived(subject, .doStuffWithString, with: actualString, countSpecifier: .atMost(2))
+        XCTAssertHaveReceived(subject, .doStuffWithString, with: actualString, countSpecifier: .atMost(3))
+    }
+
+    func test_call_class_function_with_args_count_specifier() {
+        let arg = "arg"
+        SpyableTestHelper.doClassStuffWith(string: arg)
+        SpyableTestHelper.doClassStuffWith(string: "other arg")
+        SpyableTestHelper.doClassStuffWith(string: arg)
+
+        XCTAssertHaveNotReceived(SpyableTestHelper.self, .doStuffWithString, with: arg, countSpecifier: .exactly(1))
+        XCTAssertHaveReceived(SpyableTestHelper.self, .doStuffWithString, with: arg, countSpecifier: .exactly(2))
+        XCTAssertHaveNotReceived(SpyableTestHelper.self, .doStuffWithString, with: arg, countSpecifier: .exactly(3))
+
+        XCTAssertHaveReceived(SpyableTestHelper.self, .doStuffWithString, with: arg, countSpecifier: .atLeast(1))
+        XCTAssertHaveReceived(SpyableTestHelper.self, .doStuffWithString, with: arg, countSpecifier: .atLeast(2))
+        XCTAssertHaveNotReceived(SpyableTestHelper.self, .doStuffWithString, with: arg, countSpecifier: .atLeast(3))
+
+        XCTAssertHaveNotReceived(SpyableTestHelper.self, .doStuffWithString, with: arg, countSpecifier: .atMost(1))
+        XCTAssertHaveReceived(SpyableTestHelper.self, .doStuffWithString, with: arg, countSpecifier: .atMost(2))
+        XCTAssertHaveReceived(SpyableTestHelper.self, .doStuffWithString, with: arg, countSpecifier: .atMost(3))
     }
 
     func test_call_class_function() {
         let actualArgument = "correct string"
         SpyableTestHelper.doClassStuffWith(string: actualArgument)
-        XCTAssertTrue(SpyableTestHelper.didCall(.doClassStuffWith).success)
-        XCTAssertTrue(SpyableTestHelper.didCall(.doClassStuffWith, withArguments: [actualArgument]).success)
-        XCTAssertTrue(SpyableTestHelper.didCall(.doClassStuffWith, countSpecifier: .exactly(1)).success)
-        XCTAssertTrue(SpyableTestHelper.didCall(.doClassStuffWith, withArguments: [actualArgument], countSpecifier: .exactly(1)).success)
-        XCTAssertFalse(SpyableTestHelper.didCall(.doClassStuff).success)
+        XCTAssertTrue(SpyableTestHelper.didCall(.doStuffWithString).success)
+        XCTAssertTrue(SpyableTestHelper.didCall(.doStuffWithString, withArguments: [actualArgument]).success)
+        XCTAssertTrue(SpyableTestHelper.didCall(.doStuffWithString, countSpecifier: .exactly(1)).success)
+        XCTAssertTrue(SpyableTestHelper.didCall(.doStuffWithString, withArguments: [actualArgument], countSpecifier: .exactly(1)).success)
+        XCTAssertFalse(SpyableTestHelper.didCall(.doStuff).success)
     }
 
     func test_result_recordedCallsDescription() {
