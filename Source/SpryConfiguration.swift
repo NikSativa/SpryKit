@@ -8,6 +8,6 @@ public enum SpryConfiguration {
     ///
     /// - Note: Xcode sometimes crashes when `fatalError()` is called. I recommend putting a break point on `fatalError()` in file FatalError.swift (near the top of the file). Then, let the default printing of the error message in `fatalErrorClosure` print the message instead of `fatalError()`. This will prevent Xcode from running the `fatalError()` line of code, thus preventing it from ever crashing.
     public static var fatalErrorClosure: (String) -> Void = { errorString in
-        print(errorString)
+        fatalError(errorString)
     }
 }

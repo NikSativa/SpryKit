@@ -6,8 +6,7 @@ private func fatalError(title: String, entries: [String]) -> Never {
     let errorString = titleString + entriesString
 
     SpryConfiguration.fatalErrorClosure(errorString)
-
-    fatalError(errorString)
+    fatalError()
 }
 
 private func routeString(filePath: String, line: String) -> String {

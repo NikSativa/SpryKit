@@ -6,6 +6,11 @@ final class XCTAssertTests: XCTestCase {
     let actualArgument = "correct arg"
     let subject: SpyableTestHelper = .init()
 
+    override func tearDown() {
+        super.tearDown()
+        SpyableTestHelper.resetCalls()
+    }
+
     func testHaveReceived() {
         subject.doStuff()
 

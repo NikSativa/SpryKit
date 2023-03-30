@@ -19,7 +19,7 @@ let package = Package(
                 dependencies: [
                     "CwlPreconditionTesting"
                 ],
-                path: "Source/Core"),
+                path: "Source"),
         .testTarget(name: "NSpryTests",
                     dependencies: [
                         "NSpry"
