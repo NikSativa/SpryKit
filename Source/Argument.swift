@@ -23,6 +23,15 @@ public class ArgumentCaptor: SpryEquatable {
         return captured
     }
 
+    public subscript<T>(_ index: Int) -> T {
+        return getValue(at: index)
+    }
+
+    public func isType<T>(_: T.Type, at index: Int = 0) -> Bool {
+        let value: T.Type? = getValue(at: index)
+        return value != nil
+    }
+
     internal func capture(_ argument: Any?) {
         capturedArguments.append(argument)
     }
@@ -64,10 +73,14 @@ public enum Argument: CustomStringConvertible, SpryEquatable {
         case (.validator(_), .validator(_)):
             return true
 
-        case (.anything, _): return false
-        case (.nonNil, _): return false
-        case (.nil, _): return false
-        case (.validator(_), _): return false
+        case (.anything, _):
+            return false
+        case (.nonNil, _):
+            return false
+        case (.nil, _):
+            return false
+        case (.validator(_), _):
+            return false
         }
     }
 
@@ -78,6 +91,12 @@ public enum Argument: CustomStringConvertible, SpryEquatable {
     /// - Returns: A new ArgumentCaptor.
     public static func captor() -> ArgumentCaptor {
         return ArgumentCaptor()
+    }
+
+    public static func isType<T>(_: T.Type) -> Self {
+        return .validator {
+            return ($0 as? T.Type) != nil
+        }
     }
 }
 

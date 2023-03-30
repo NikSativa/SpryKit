@@ -1,20 +1,6 @@
 import Foundation
 import XCTest
 
-// MARK: - cross platform image
-
-#if os(iOS) || os(tvOS) || os(watchOS)
-import UIKit
-
-public typealias Image = UIImage
-#elseif os(macOS)
-import Cocoa
-
-public typealias Image = NSImage
-#else
-#error("unsupported os")
-#endif
-
 // MARK: - public
 
 @inline(__always)
@@ -89,6 +75,7 @@ private func AssertEqual(condition: Bool,
         if condition {
             XCTAssertEqual(lhs.size.width, rhs.size.width, accuracy: 0.001)
             XCTAssertEqual(lhs.size.height, rhs.size.height, accuracy: 0.001)
+            XCTAssertEqual(lhs, rhs, message(), file: file, line: line)
 
             #if os(iOS) || os(tvOS) || os(watchOS)
             XCTAssertEqual(lhs.pngData(), rhs.pngData(), message(), file: file, line: line)
@@ -100,6 +87,7 @@ private func AssertEqual(condition: Bool,
         } else {
             XCTAssertNotEqual(lhs.size.width, rhs.size.width, accuracy: 0.001)
             XCTAssertNotEqual(lhs.size.height, rhs.size.height, accuracy: 0.001)
+            XCTAssertNotEqual(lhs, rhs, message(), file: file, line: line)
 
             #if os(iOS) || os(tvOS) || os(watchOS)
             XCTAssertNotEqual(lhs.pngData(), rhs.pngData(), message(), file: file, line: line)
