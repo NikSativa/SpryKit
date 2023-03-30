@@ -2,13 +2,36 @@ import Foundation
 import NSpry
 import XCTest
 
-final class XCTAssertTests: XCTestCase {
+final class XCTAssertHaveReceivedTests: XCTestCase {
     let actualArgument = "correct arg"
     let subject: SpyableTestHelper = .init()
 
     override func tearDown() {
         super.tearDown()
+        subject.resetCalls()
         SpyableTestHelper.resetCalls()
+    }
+
+    func test_have_received_success_result() {
+        // instance
+        subject.doStuffWith(string: actualArgument)
+
+        XCTAssertHaveReceived(subject, .doStuffWithString)
+        XCTAssertHaveReceived(subject, .doStuffWithString, with: actualArgument)
+        XCTAssertHaveReceived(subject, .doStuffWithString, countSpecifier: .exactly(1))
+        XCTAssertHaveReceived(subject, .doStuffWithString, with: actualArgument, countSpecifier: .exactly(1))
+
+        XCTAssertHaveNotReceived(subject, .doStuff)
+        XCTAssertHaveNotReceived(subject, .doStuffWithInts)
+
+        // class
+        SpyableTestHelper.doClassStuffWith(string: actualArgument)
+        XCTAssertHaveReceived(SpyableTestHelper.self, .doStuffWithString)
+        XCTAssertHaveReceived(SpyableTestHelper.self, .doStuffWithString, with: actualArgument)
+        XCTAssertHaveReceived(SpyableTestHelper.self, .doStuffWithString, countSpecifier: .exactly(1))
+        XCTAssertHaveReceived(SpyableTestHelper.self, .doStuffWithString, with: actualArgument, countSpecifier: .exactly(1))
+
+        XCTAssertHaveNotReceived(SpyableTestHelper.self, .doStuff)
     }
 
     func testHaveReceived() {
@@ -43,15 +66,5 @@ final class XCTAssertTests: XCTestCase {
 
         XCTAssertHaveNotReceived(subject, .doStuff)
         XCTAssertHaveNotReceived(subject, .doStuffWithString)
-    }
-
-    func testHaveRecordedCalls() {
-        XCTAssertHaveNoRecordedCalls(subject)
-        subject.doStuff()
-        XCTAssertHaveRecordedCalls(subject)
-
-        XCTAssertHaveNoRecordedCalls(SpyableTestHelper.self)
-        SpyableTestHelper.doClassStuff()
-        XCTAssertHaveRecordedCalls(SpyableTestHelper.self)
     }
 }

@@ -18,11 +18,11 @@ public typealias Image = NSImage
 // MARK: - public
 
 @inline(__always)
-func XCTAssertEqualImage(_ expression1: @autoclosure () throws -> Image?,
-                         _ expression2: @autoclosure () throws -> Image?,
-                         _ message: @autoclosure () -> String = "",
-                         file: StaticString = #filePath,
-                         line: UInt = #line) {
+public func XCTAssertEqualImage(_ expression1: @autoclosure () throws -> Image?,
+                                _ expression2: @autoclosure () throws -> Image?,
+                                _ message: @autoclosure () -> String = "",
+                                file: StaticString = #filePath,
+                                line: UInt = #line) {
     AssertEqual(condition: true,
                 expression1: expression1,
                 expression2: expression2,
@@ -32,11 +32,11 @@ func XCTAssertEqualImage(_ expression1: @autoclosure () throws -> Image?,
 }
 
 @inline(__always)
-func XCTAssertNotEqualImage(_ expression1: @autoclosure () throws -> Image?,
-                            _ expression2: @autoclosure () throws -> Image?,
-                            _ message: @autoclosure () -> String = "",
-                            file: StaticString = #filePath,
-                            line: UInt = #line) {
+public func XCTAssertNotEqualImage(_ expression1: @autoclosure () throws -> Image?,
+                                   _ expression2: @autoclosure () throws -> Image?,
+                                   _ message: @autoclosure () -> String = "",
+                                   file: StaticString = #filePath,
+                                   line: UInt = #line) {
     AssertEqual(condition: false,
                 expression1: expression1,
                 expression2: expression2,
@@ -46,11 +46,11 @@ func XCTAssertNotEqualImage(_ expression1: @autoclosure () throws -> Image?,
 }
 
 @inline(__always)
-func XCTAssertEqualImage(_ expression2: @autoclosure () throws -> Image?,
-                         _ message: @autoclosure () -> String = "",
-                         file: StaticString = #filePath,
-                         line: UInt = #line,
-                         _ expression1: () throws -> Image?) {
+public func XCTAssertEqualImage(_ expression2: @autoclosure () throws -> Image?,
+                                _ message: @autoclosure () -> String = "",
+                                file: StaticString = #filePath,
+                                line: UInt = #line,
+                                _ expression1: () throws -> Image?) {
     AssertEqual(condition: true,
                 expression1: expression1,
                 expression2: expression2,
@@ -60,11 +60,11 @@ func XCTAssertEqualImage(_ expression2: @autoclosure () throws -> Image?,
 }
 
 @inline(__always)
-func XCTAssertNotEqualImage(_ expression2: @autoclosure () throws -> Image?,
-                            _ message: @autoclosure () -> String = "",
-                            file: StaticString = #filePath,
-                            line: UInt = #line,
-                            _ expression1: () throws -> Image?) {
+public func XCTAssertNotEqualImage(_ expression2: @autoclosure () throws -> Image?,
+                                   _ message: @autoclosure () -> String = "",
+                                   file: StaticString = #filePath,
+                                   line: UInt = #line,
+                                   _ expression1: () throws -> Image?) {
     AssertEqual(condition: false,
                 expression1: expression1,
                 expression2: expression2,
