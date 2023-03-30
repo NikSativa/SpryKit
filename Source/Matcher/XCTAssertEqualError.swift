@@ -4,7 +4,7 @@ import XCTest
 // MARK: - public
 
 @inline(__always)
-public func XCTAssertEqualError(_ lhs: @autoclosure () throws -> Error?,
+public func XCTAssertEqualError(_ lhs: @autoclosure () -> Error?,
                                 _ rhs: @autoclosure () -> Error?,
                                 _ message: @autoclosure () -> String = "",
                                 file: StaticString = #filePath,
@@ -18,8 +18,8 @@ public func XCTAssertEqualError(_ lhs: @autoclosure () throws -> Error?,
 }
 
 @inline(__always)
-public func XCTAssertNotEqualError(_ lhs: @autoclosure () throws -> Error?,
-                                   _ rhs: @autoclosure () throws -> Error?,
+public func XCTAssertNotEqualError(_ lhs: @autoclosure () -> Error?,
+                                   _ rhs: @autoclosure () -> Error?,
                                    _ message: @autoclosure () -> String = "",
                                    file: StaticString = #filePath,
                                    line: UInt = #line) {
@@ -36,7 +36,7 @@ public func XCTAssertEqualError(_ rhs: @autoclosure () -> Error?,
                                 _ message: @autoclosure () -> String = "",
                                 file: StaticString = #filePath,
                                 line: UInt = #line,
-                                _ lhs: () throws -> Error?) {
+                                _ lhs: () -> Error?) {
     AssertEqual(condition: true,
                 lhs: lhs,
                 rhs: rhs,
@@ -46,11 +46,11 @@ public func XCTAssertEqualError(_ rhs: @autoclosure () -> Error?,
 }
 
 @inline(__always)
-public func XCTAssertNotEqualError(_ rhs: @autoclosure () throws -> Error?,
+public func XCTAssertNotEqualError(_ rhs: @autoclosure () -> Error?,
                                    _ message: @autoclosure () -> String = "",
                                    file: StaticString = #filePath,
                                    line: UInt = #line,
-                                   _ lhs: () throws -> Error?) {
+                                   _ lhs: () -> Error?) {
     AssertEqual(condition: false,
                 lhs: lhs,
                 rhs: rhs,
@@ -63,21 +63,24 @@ public func XCTAssertNotEqualError(_ rhs: @autoclosure () throws -> Error?,
 
 @inline(__always)
 private func AssertEqual(condition: Bool,
-                         lhs: () throws -> Error?,
-                         rhs: () throws -> Error?,
+                         lhs: () -> Error?,
+                         rhs: () -> Error?,
                          message: () -> String,
                          file: StaticString,
                          line: UInt) {
-    do {
-        let lhs = try XCTUnwrap(try lhs(), message(), file: file, line: line)
-        let rhs = try XCTUnwrap(try rhs(), message(), file: file, line: line)
+    guard let rhs = rhs() else {
+        XCTFail("expected error is nil, use `XCTAssertNil` instead. " + message())
+        return
+    }
 
-        if condition {
-            XCTAssertEqual(lhs as NSError, rhs as NSError, message(), file: file, line: line)
-        } else {
-            XCTAssertNotEqual(lhs as NSError, rhs as NSError, message(), file: file, line: line)
-        }
-    } catch {
-        XCTFail(message() + ". " + error.localizedDescription, file: file, line: line)
+    guard let lhs = lhs() else {
+        XCTFail("actual error is nil, use `XCTAssertNil` instead. " + message())
+        return
+    }
+
+    if condition {
+        XCTAssertEqual(lhs as NSError, rhs as NSError, message())
+    } else {
+        XCTAssertNotEqual(lhs as NSError, rhs as NSError, message())
     }
 }
