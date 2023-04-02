@@ -20,6 +20,19 @@ private func routeString(filePath: String, line: String) -> String {
 
 internal enum Constant {
     enum FatalError {
+        static func wrongNumberOfArgsBeingStubbed<T>(fakeType: T.Type, functionName _: String, specifiedArguments: [Any?], actualCount: Int) -> Never {
+            let title = "Wrong number of arguments"
+            let entries = [
+                "Type: \(T.self)",
+                "Function: \(fakeType)",
+                "Function count: \(actualCount)",
+                "Actual count: \(specifiedArguments.count)",
+                "Arguments: \(descriptionOfArguments(specifiedArguments))"
+            ]
+
+            fatalError(title: title, entries: entries)
+        }
+
         static func wrongNumberOfArgsBeingCompared<T>(fakeType: T.Type, functionName _: String, specifiedArguments: [SpryEquatable?], actualArguments: [Any?]) -> Never {
             let title = "Wrong number of arguments to compare"
             let entries = [
@@ -117,7 +130,7 @@ internal enum Constant {
             fatalError(title: title, entries: entries)
         }
 
-        static func stubbingSameFunctionWithSameArguments(stub: Stub) -> Never {
+        static func stubbingSameFunctionWithSameArguments(stub: StubInfo) -> Never {
             let title = "Stubbing the same function with the same arguments"
             let entries = [
                 "Function: \(stub.functionName)",
@@ -131,14 +144,14 @@ internal enum Constant {
 
         // MARK: - Private
 
-        private static func noReturnValueFoundForFunction<S, R>(stubbableType _: S.Type, functionName: String, arguments: [Any?], returnType _: R.Type, stubsDictionary: StubsDictionary) -> Never {
+        private static func noReturnValueFoundForFunction<S, R>(stubbableType _: S.Type, functionName: String, arguments: [Any?], returnType _: R.Type, stubsDictionary: SpryDictionary<StubInfo>) -> Never {
             let title = "No return value found"
             let entries = [
                 "Stubbable: \(S.self)",
                 "Function: \(functionName)",
                 "Arguments: \(descriptionOfArguments(arguments))",
                 "Return Type: \(R.self)",
-                "Current stubs: \(stubsDictionary.stubs)"
+                "Current stubs: \(stubsDictionary.values)"
             ]
 
             fatalError(title: title, entries: entries)

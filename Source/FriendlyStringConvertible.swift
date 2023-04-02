@@ -1,6 +1,7 @@
 import Foundation
 
 public protocol FriendlyStringConvertible {
+    /// A beautified description. Used for logging.
     var friendlyDescription: String { get }
 }
 
