@@ -13,7 +13,6 @@ import Foundation
 public protocol StringRepresentable: RawRepresentable {
     var rawValue: String { get }
     init?(rawValue: String)
-    init<T>(functionName: String, type: T.Type, file: String, line: Int)
 }
 
 private let singleUnnamedArgumentFunctionaSuffix = "(_:)"

@@ -8,8 +8,8 @@ import XCTest
 public func XCTAssertHaveRecordedCalls(_ spyable: some Spyable,
                                        file: StaticString = #filePath,
                                        line: UInt = #line) {
-    XCTAssertTrue(!spyable._callsDictionary.calls.isEmpty,
-                  descriptionOfActual(count: spyable._callsDictionary.calls.count),
+    XCTAssertTrue(!spyable._callsDictionary.values.isEmpty,
+                  descriptionOfActual(count: spyable._callsDictionary.values.count),
                   file: file,
                   line: line)
 }
@@ -21,8 +21,8 @@ public func XCTAssertHaveRecordedCalls(_ spyable: some Spyable,
 public func XCTAssertHaveNoRecordedCalls(_ spyable: some Spyable,
                                          file: StaticString = #filePath,
                                          line: UInt = #line) {
-    XCTAssertTrue(spyable._callsDictionary.calls.isEmpty,
-                  descriptionOfActual(count: spyable._callsDictionary.calls.count),
+    XCTAssertTrue(spyable._callsDictionary.values.isEmpty,
+                  descriptionOfActual(count: spyable._callsDictionary.values.count),
                   file: file,
                   line: line)
 }
@@ -34,8 +34,8 @@ public func XCTAssertHaveNoRecordedCalls(_ spyable: some Spyable,
 public func XCTAssertHaveRecordedCalls(_ spyable: (some Spyable).Type,
                                        file: StaticString = #filePath,
                                        line: UInt = #line) {
-    XCTAssertTrue(!spyable._callsDictionary.calls.isEmpty,
-                  descriptionOfActual(count: spyable._callsDictionary.calls.count),
+    XCTAssertTrue(!spyable._callsDictionary.values.isEmpty,
+                  descriptionOfActual(count: spyable._callsDictionary.values.count),
                   file: file,
                   line: line)
 }
@@ -47,8 +47,8 @@ public func XCTAssertHaveRecordedCalls(_ spyable: (some Spyable).Type,
 public func XCTAssertHaveNoRecordedCalls(_ spyable: (some Spyable).Type,
                                          file: StaticString = #filePath,
                                          line: UInt = #line) {
-    XCTAssertTrue(spyable._callsDictionary.calls.isEmpty,
-                  descriptionOfActual(count: spyable._callsDictionary.calls.count),
+    XCTAssertTrue(spyable._callsDictionary.values.isEmpty,
+                  descriptionOfActual(count: spyable._callsDictionary.values.count),
                   file: file,
                   line: line)
 }

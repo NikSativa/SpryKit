@@ -3,14 +3,12 @@ import NSpry
 
 final class SpryEquatableTestHelper: SpryEquatable {
     let isEqual: Bool
-    private(set) var lastValueCompared: SpryEquatable?
 
     init(isEqual: Bool) {
         self.isEqual = isEqual
     }
 
-    func _isEqual(to actual: SpryEquatable?) -> Bool {
-        lastValueCompared = actual
+    func _isEqual(to actual: Any?) -> Bool {
         return isEqual
     }
 }

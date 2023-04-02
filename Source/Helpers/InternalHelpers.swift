@@ -15,14 +15,6 @@ internal func isNil(_ value: Any?) -> Bool {
     }
 }
 
-// MARK: - Bool Extensions
-
-internal extension Bool {
-    func toInt() -> Int {
-        return self ? 1 : 0
-    }
-}
-
 // MARK: - String Extensions
 
 extension String {
@@ -69,13 +61,5 @@ internal extension Array {
         }
 
         return remove(at: index)
-    }
-}
-
-// MARK: - Dictionary Extensions
-
-internal extension Dictionary {
-    func has(key: Key) -> Bool {
-        return contains { $0.key == key }
     }
 }

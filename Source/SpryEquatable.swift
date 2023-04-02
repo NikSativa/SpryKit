@@ -5,141 +5,77 @@ import Foundation
 /// - Important: Never manually implement `_isEqual(to:)` when conform to `SpryEquatable`. Instead rely on the provided extensions.
 /// - Note: If a compiler error says you do NOT conform to `SpryEquatable` then conform to `Equatable`. This will remove the error.
 public protocol SpryEquatable {
-    func _isEqual(to actual: SpryEquatable?) -> Bool
+    func _isEqual(to actual: Any?) -> Bool
 }
 
+extension Optional: SpryEquatable where Wrapped: SpryEquatable {}
+extension NSObject: SpryEquatable {}
+extension String: SpryEquatable {}
+extension Bool: SpryEquatable {}
+extension CGFloat: SpryEquatable {}
+extension Float: SpryEquatable {}
+extension Double: SpryEquatable {}
+extension Int: SpryEquatable {}
+extension Int8: SpryEquatable {}
+extension Int16: SpryEquatable {}
+extension Int32: SpryEquatable {}
+extension Int64: SpryEquatable {}
+extension UInt: SpryEquatable {}
+extension UInt8: SpryEquatable {}
+extension UInt16: SpryEquatable {}
+extension UInt32: SpryEquatable {}
+extension UInt64: SpryEquatable {}
+extension Notification: SpryEquatable {}
+extension Notification.Name: SpryEquatable {}
+extension Data: SpryEquatable {}
+extension DispatchTime: SpryEquatable {}
+extension DispatchTimeInterval: SpryEquatable {}
+extension URL: SpryEquatable {}
+extension URLRequest: SpryEquatable {}
+extension TimeZone: SpryEquatable {}
+
+// MARK: - common implementation
+
 public extension SpryEquatable {
-    func _isEqual(to _: SpryEquatable?) -> Bool {
+    func _isEqual(to actual: Any?) -> Bool {
         Constant.FatalError.doesNotConformToEquatable(self)
     }
 }
 
-// MARK: - SpryEquatable where Self: Equatable
+// MARK: - Equatable
 
 public extension SpryEquatable where Self: Equatable {
-    func _isEqual(to actual: SpryEquatable?) -> Bool {
-        guard let castedActual = actual as? Self else {
-            return false
+    func _isEqual(to actual: Any?) -> Bool {
+        if let actual = actual as? Self {
+            return self == actual
         }
-
-        return self == castedActual
+        return false
     }
 }
 
-// MARK: - SpryEquatable where Self: AnyObject
+// MARK: - AnyObject
 
 public extension SpryEquatable where Self: AnyObject {
-    func _isEqual(to actual: SpryEquatable?) -> Bool {
-        guard let castedActual = actual as? Self else {
-            return false
+    func _isEqual(to actual: Any?) -> Bool {
+        if let actual = actual as? Self {
+            return self === actual
         }
-
-        return self === castedActual
+        return false
     }
 }
 
-// MARK: - SpryEquatable where Self: AnyObject & Equatable
+// MARK: - AnyObject & Equatable
 
 public extension SpryEquatable where Self: AnyObject & Equatable {
-    func _isEqual(to actual: SpryEquatable?) -> Bool {
-        guard let castedActual = actual as? Self else {
-            return false
+    func _isEqual(to actual: Any?) -> Bool {
+        if let actual = actual as? Self {
+            return self == actual
         }
 
-        return self == castedActual
-    }
-}
-
-// MARK: - SpryEquatable for Arrays
-
-public extension Array {
-    func _isEqual(to actual: SpryEquatable?) -> Bool {
-        guard let castedActual = actual as? [Element] else {
-            return false
+        if let actual = actual as? AnyObject {
+            return self === actual
         }
 
-        if count != castedActual.count {
-            return false
-        }
-
-        return zip(self, castedActual).reduce(true) { result, zippedElements in
-            if !result {
-                return false
-            }
-
-            if let selfElement = zippedElements.0 as? SpryEquatable, let actualElement = zippedElements.1 as? SpryEquatable {
-                return selfElement._isEqual(to: actualElement)
-            }
-
-            Constant.FatalError.doesNotConformToSpryEquatable(zippedElements.0)
-        }
-    }
-}
-
-// MARK: - SpryEquatable for Dictionaries
-
-public extension Dictionary {
-    func _isEqual(to actual: SpryEquatable?) -> Bool {
-        guard let castedActual = actual as? [Key: Value] else {
-            return false
-        }
-
-        if count != castedActual.count {
-            return false
-        }
-
-        for (key, value) in self {
-            guard castedActual.has(key: key), let actualValue = castedActual[key] else {
-                return false
-            }
-
-            guard let castedValue = value as? SpryEquatable, let castedActualValue = actualValue as? SpryEquatable else {
-                Constant.FatalError.doesNotConformToSpryEquatable(value)
-            }
-
-            if !castedValue._isEqual(to: castedActualValue) {
-                return false
-            }
-        }
-
-        return true
-    }
-}
-
-// MARK: - OptionalType
-
-/// Used to specify an `Optional` constraint. This is needed until Swift supports extensions where Self can be constrained to a type.
-public protocol OptionalType {}
-
-extension Optional: OptionalType {}
-
-// MARK: - SpryEquatable where Self: OptionalType
-
-public extension SpryEquatable where Self: OptionalType {
-    func _isEqual(to actual: SpryEquatable?) -> Bool {
-        let selfMirror = Mirror(reflecting: self)
-
-        guard selfMirror.displayStyle == .optional else {
-            Constant.FatalError.shouldNotConformToOptionalType(self)
-        }
-
-        guard type(of: self) == type(of: actual) else {
-            return false
-        }
-
-        let selfsWrappedValue = selfMirror.children.first?.value
-
-        if isNil(selfsWrappedValue), isNil(actual) {
-            return true
-        }
-        guard let selfsWrappedValueAsNonOptional = selfsWrappedValue, let actual else {
-            return false
-        }
-
-        guard let selfsContainedValueAsSE = selfsWrappedValueAsNonOptional as? SpryEquatable else {
-            Constant.FatalError.doesNotConformToSpryEquatable(selfsWrappedValue!)
-        }
-
-        return selfsContainedValueAsSE._isEqual(to: actual)
+        return false
     }
 }

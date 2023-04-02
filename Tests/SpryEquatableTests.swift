@@ -43,12 +43,12 @@ final class SpryEquatableTests: XCTestCase {
             2: 2
         ]
 
-        XCTAssertTrue(baseDict._isEqual(to: [1: 1, 2: 2] as SpryEquatable))
-        XCTAssertTrue(baseDict._isEqual(to: [2: 2, 1: 1] as SpryEquatable))
+        XCTAssertTrue(baseDict._isEqual(to: [1: 1, 2: 2]))
+        XCTAssertTrue(baseDict._isEqual(to: [2: 2, 1: 1]))
 
-        XCTAssertFalse(baseDict._isEqual(to: [1: 5, 2: 5] as SpryEquatable))
-        XCTAssertFalse(baseDict._isEqual(to: [1: 1, 2: 2, 3: 3] as SpryEquatable))
-        XCTAssertFalse(baseDict._isEqual(to: [1: 1] as SpryEquatable))
+        XCTAssertFalse(baseDict._isEqual(to: [1: 5, 2: 5]))
+        XCTAssertFalse(baseDict._isEqual(to: [1: 1, 2: 2, 3: 3]))
+        XCTAssertFalse(baseDict._isEqual(to: [1: 1]))
     }
 
     func test_dictionary_Value_does_NOT_conforms_to_SpryEquatable() {
@@ -56,5 +56,40 @@ final class SpryEquatableTests: XCTestCase {
             let notSpryEquatable = NotSpryEquatable()
             _ = [1: notSpryEquatable]._isEqual(to: [1: notSpryEquatable])
         }
+    }
+
+    func test_optional() {
+        var a: Int?
+        var b: Int?
+        var c: Int = 2
+        let d: String? = nil
+        let e: String = "e"
+
+        XCTAssertTrue(a._isEqual(to: b))
+        a = 0
+        XCTAssertFalse(a._isEqual(to: b))
+        b = 1
+        XCTAssertFalse(a._isEqual(to: b))
+        b = 2
+        XCTAssertFalse(a._isEqual(to: b))
+        a = 2
+        XCTAssertTrue(a._isEqual(to: b))
+
+        XCTAssertTrue(a._isEqual(to: c))
+        XCTAssertTrue(c._isEqual(to: b))
+
+        c = 0
+        XCTAssertFalse(a._isEqual(to: c))
+        XCTAssertFalse(c._isEqual(to: b))
+
+        XCTAssertFalse(c._isEqual(to: d))
+        XCTAssertFalse(d._isEqual(to: c))
+        XCTAssertFalse(a._isEqual(to: d))
+        XCTAssertFalse(d._isEqual(to: a))
+
+        XCTAssertFalse(c._isEqual(to: e))
+        XCTAssertFalse(e._isEqual(to: c))
+        XCTAssertFalse(a._isEqual(to: e))
+        XCTAssertFalse(e._isEqual(to: a))
     }
 }

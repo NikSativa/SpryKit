@@ -1,55 +1,67 @@
 import Foundation
 
-/// Used to capture an argument for more detailed testing on an argument.
-public class ArgumentCaptor: SpryEquatable {
-    private var capturedArguments: [Any?] = []
+/// Argument specifier used by Spyable and Stubbable. Used for non-Equatable comparision.
+public enum Argument {
+    /// Only Optional.nil matches this qualification.
+    case `nil`
+    /// Every value matches this qualification except Optional.none
+    case nonNil
 
-    /// Get an argument that was captured.
+    /// Every value matches this qualification.
+    case anything
+
+    /// Custom validator
+    case validator((Any?) -> Bool)
+
+    /// Convenience function to get an `ArgumentCaptor`.
     ///
-    /// - Parameter at: The index of the captured argument. The index cooresponds the number of times the specified function was called (when argument specifiers passed validation). For instance if the function was called 5 times and you want the argument captured during the 2nd call then ask for index 1, `getValue(at: 1)`. Defaults to 0. Asking for the an index that is out of bounds will result in a `fatalError()`.
-    /// - Parameter as: The expected type of the argument captured. Asking for the wrong type will result in a `fatalError()`
+    /// Used during stubbing to capture the actual arguments. Allows for more detailed testing on an argument being passed into a `Stubbable`
     ///
-    /// - Returns: The captured argument or fatal error if there was an issue.
-    public func getValue<T>(at index: Int = 0, as _: T.Type = T.self) -> T {
-        guard index >= 0, capturedArguments.count > index else {
-            Constant.FatalError.capturedArgumentsOutOfBounds(index: index, capturedArguments: capturedArguments)
+    /// - Returns: A new ArgumentCaptor.
+    public static func captor() -> ArgumentCaptor {
+        return ArgumentCaptor()
+    }
+
+    /// Type is exactly the type passed in match this qualification (subtypes do NOT qualify).
+    public static func isType<T>(_: T.Type) -> Self {
+        return .validator {
+            return ($0 as? T.Type) != nil
         }
+    }
 
-        let capturedAsUnknownType = capturedArguments[index]
-        guard let captured = capturedAsUnknownType as? T else {
-            Constant.FatalError.argumentCaptorCouldNotReturnSpecifiedType(value: capturedAsUnknownType, type: T.self)
+    /// Only objects whose type is exactly the type passed in match this qualification (subtypes do NOT qualify).
+    public static func instanceOf<T>(_: T.Type) -> Self {
+        return .validator {
+            return $0 is T
         }
-
-        return captured
-    }
-
-    public subscript<T>(_ index: Int) -> T {
-        return getValue(at: index)
-    }
-
-    public func isType<T>(_: T.Type, at index: Int = 0) -> Bool {
-        let value: T.Type? = getValue(at: index)
-        return value != nil
-    }
-
-    internal func capture(_ argument: Any?) {
-        capturedArguments.append(argument)
     }
 }
 
-/// Argument specifier used by Spyable and Stubbable. Used for non-Equatable comparision.
-///
-/// * .anything - Every value matches this qualification.
-/// * .nonNil - Every value matches this qualification except Optional.none
-/// * .nil - Only Optional.nil matches this qualification.
-/// * .instanceOf(type:) - Only objects whose type is exactly the type passed in match this qualification (subtypes do NOT qualify).
-public enum Argument: CustomStringConvertible, SpryEquatable {
-    case anything
-    case nonNil
-    case `nil`
-    case validator((Any?) -> Bool)
+extension Argument: SpryEquatable {}
 
-    public var description: String {
+// MARK: - Equatable
+
+extension Argument: Equatable {
+    public static func ==(lhs: Self, rhs: Self) -> Bool {
+        switch (lhs, rhs) {
+        case (.nil, .nil),
+             (.nonNil, .nonNil),
+             (.validator, .validator):
+            return true
+
+        case (.anything, _),
+             (.nil, _),
+             (.nonNil, _),
+             (.validator(_), _):
+            return false
+        }
+    }
+}
+
+// MARK: - CustomStringConvertible
+
+extension Argument: CustomStringConvertible {
+    private func makeDescription() -> String {
         switch self {
         case .anything:
             return "Argument.anything"
@@ -62,43 +74,28 @@ public enum Argument: CustomStringConvertible, SpryEquatable {
         }
     }
 
-    public static func ==(lhs: Argument, rhs: Argument) -> Bool {
-        switch (lhs, rhs) {
-        case (.anything, .anything):
-            return true
-        case (.nonNil, .nonNil):
-            return true
-        case (.nil, .nil):
-            return true
-        case (.validator(_), .validator(_)):
-            return true
-
-        case (.anything, _):
-            return false
-        case (.nonNil, _):
-            return false
-        case (.nil, _):
-            return false
-        case (.validator(_), _):
-            return false
-        }
-    }
-
-    /// Convenience function to get an `ArgumentCaptor`. Used during stubbing to capture the actual arguments. Allows for more detailed testing on an argument being passed into a `Stubbable`
-    ///
-    /// - SeeAlso: `ArgumentCaptor`
-    ///
-    /// - Returns: A new ArgumentCaptor.
-    public static func captor() -> ArgumentCaptor {
-        return ArgumentCaptor()
-    }
-
-    public static func isType<T>(_: T.Type) -> Self {
-        return .validator {
-            return ($0 as? T.Type) != nil
-        }
+    public var description: String {
+        return makeDescription()
     }
 }
+
+// MARK: - CustomDebugStringConvertible
+
+extension Argument: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        return makeDescription()
+    }
+}
+
+// MARK: - FriendlyStringConvertible
+
+extension Argument: FriendlyStringConvertible {
+    public var friendlyDescription: String {
+        return makeDescription()
+    }
+}
+
+// MARK: -
 
 internal func isEqualArgsLists(fakeType: (some Any).Type, functionName: String, specifiedArgs: [SpryEquatable?], actualArgs: [Any?]) -> Bool {
     guard specifiedArgs.count == actualArgs.count else {
