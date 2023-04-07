@@ -8,7 +8,7 @@ private var callsMapTable: NSMapTable<AnyObject, SpryDictionary<RecordedCall>> =
 public extension Spyable {
     // MARK: Instance
 
-    internal var _callsDictionary: SpryDictionary<RecordedCall> {
+    private var _callsDictionary: SpryDictionary<RecordedCall> {
         guard let callsDict = callsMapTable.object(forKey: self) else {
             let callsDict = SpryDictionary<RecordedCall>()
             callsMapTable.setObject(callsDict, forKey: self)
@@ -16,6 +16,14 @@ public extension Spyable {
         }
 
         return callsDict
+    }
+
+    var haveRecordedCalls: Bool {
+        return !_callsDictionary.values.isEmpty
+    }
+
+    var recordedCallsCount: Int {
+        return _callsDictionary.values.count
     }
 
     func recordCall(functionName: String = #function, arguments: Any?..., file: String = #file, line: Int = #line) {
@@ -51,7 +59,7 @@ public extension Spyable {
 
     // MARK: Static
 
-    internal static var _callsDictionary: SpryDictionary<RecordedCall> {
+    private static var _callsDictionary: SpryDictionary<RecordedCall> {
         guard let callsDict = callsMapTable.object(forKey: self) else {
             let callsDict = SpryDictionary<RecordedCall>()
             callsMapTable.setObject(callsDict, forKey: self)
@@ -59,6 +67,14 @@ public extension Spyable {
         }
 
         return callsDict
+    }
+
+    static var haveRecordedCalls: Bool {
+        return !_callsDictionary.values.isEmpty
+    }
+
+    static var recordedCallsCount: Int {
+        return _callsDictionary.values.count
     }
 
     static func recordCall(functionName: String = #function, arguments: Any?..., file: String = #file, line: Int = #line) {

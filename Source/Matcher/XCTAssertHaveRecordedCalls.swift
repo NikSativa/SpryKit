@@ -8,8 +8,8 @@ import XCTest
 public func XCTAssertHaveRecordedCalls(_ spyable: some Spyable,
                                        file: StaticString = #filePath,
                                        line: UInt = #line) {
-    XCTAssertTrue(!spyable._callsDictionary.values.isEmpty,
-                  descriptionOfActual(count: spyable._callsDictionary.values.count),
+    XCTAssertTrue(spyable.haveRecordedCalls,
+                  descriptionOfActual(count: spyable.recordedCallsCount),
                   file: file,
                   line: line)
 }
@@ -21,10 +21,10 @@ public func XCTAssertHaveRecordedCalls(_ spyable: some Spyable,
 public func XCTAssertHaveNoRecordedCalls(_ spyable: some Spyable,
                                          file: StaticString = #filePath,
                                          line: UInt = #line) {
-    XCTAssertTrue(spyable._callsDictionary.values.isEmpty,
-                  descriptionOfActual(count: spyable._callsDictionary.values.count),
-                  file: file,
-                  line: line)
+    XCTAssertFalse(spyable.haveRecordedCalls,
+                   descriptionOfActual(count: spyable.recordedCallsCount),
+                   file: file,
+                   line: line)
 }
 
 /// Matcher used to determine if at least one call has been made.
@@ -34,8 +34,8 @@ public func XCTAssertHaveNoRecordedCalls(_ spyable: some Spyable,
 public func XCTAssertHaveRecordedCalls(_ spyable: (some Spyable).Type,
                                        file: StaticString = #filePath,
                                        line: UInt = #line) {
-    XCTAssertTrue(!spyable._callsDictionary.values.isEmpty,
-                  descriptionOfActual(count: spyable._callsDictionary.values.count),
+    XCTAssertTrue(spyable.haveRecordedCalls,
+                  descriptionOfActual(count: spyable.recordedCallsCount),
                   file: file,
                   line: line)
 }
@@ -47,10 +47,10 @@ public func XCTAssertHaveRecordedCalls(_ spyable: (some Spyable).Type,
 public func XCTAssertHaveNoRecordedCalls(_ spyable: (some Spyable).Type,
                                          file: StaticString = #filePath,
                                          line: UInt = #line) {
-    XCTAssertTrue(spyable._callsDictionary.values.isEmpty,
-                  descriptionOfActual(count: spyable._callsDictionary.values.count),
-                  file: file,
-                  line: line)
+    XCTAssertFalse(spyable.haveRecordedCalls,
+                   descriptionOfActual(count: spyable.recordedCallsCount),
+                   file: file,
+                   line: line)
 }
 
 // MARK: - Private Helpers
