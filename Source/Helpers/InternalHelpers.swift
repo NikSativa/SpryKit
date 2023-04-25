@@ -40,6 +40,28 @@ internal extension Array {
 
         return arrays
     }
+
+    func compare(with actual: Any?) -> Bool {
+        guard let castedActual = actual as? [Element] else {
+            return false
+        }
+
+        if count != castedActual.count {
+            return false
+        }
+
+        return zip(self, castedActual).reduce(true) { result, zippedElements in
+            if !result {
+                return false
+            }
+
+            if let selfElement = zippedElements.0 as? SpryEquatable, let actualElement = zippedElements.1 as? SpryEquatable {
+                return selfElement._isEqual(to: actualElement)
+            }
+
+            Constant.FatalError.doesNotConformToSpryEquatable(zippedElements.0)
+        }
+    }
 }
 
 internal extension Array where Element: Equatable {
@@ -61,5 +83,37 @@ internal extension Array {
         }
 
         return remove(at: index)
+    }
+}
+
+internal extension Dictionary {
+    func compare(with actual: Any?) -> Bool {
+        guard let castedActual = actual as? [Key: Value] else {
+            return false
+        }
+
+        if count != castedActual.count {
+            return false
+        }
+
+        for (key, value) in self {
+            guard castedActual.has(key: key), let actualValue = castedActual[key] else {
+                return false
+            }
+
+            guard let castedValue = value as? SpryEquatable, let castedActualValue = actualValue as? SpryEquatable else {
+                Constant.FatalError.doesNotConformToSpryEquatable(value)
+            }
+
+            if !castedValue._isEqual(to: castedActualValue) {
+                return false
+            }
+        }
+
+        return true
+    }
+
+    private func has(key: Key) -> Bool {
+        return contains { $0.key == key }
     }
 }
