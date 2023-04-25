@@ -58,7 +58,7 @@ extension StubInfo: Equatable {
     static func ==(lhs: StubInfo, rhs: StubInfo) -> Bool {
         return lhs.functionName == rhs.functionName
             && lhs.arguments.count == rhs.arguments.count
-            && lhs.arguments._isEqual(to: rhs.arguments)
+            && lhs.arguments.compare(with: rhs.arguments)
     }
 }
 

@@ -1,6 +1,7 @@
 import Foundation
-import NSpry
 import XCTest
+
+@testable import NSpry
 
 final class SpryEquatableTests: XCTestCase {
     func test_NOT_Equatable_and_AnyObject() {
@@ -33,7 +34,7 @@ final class SpryEquatableTests: XCTestCase {
     func test_array_Element_does_NOT_conforms_to_SpryEquatable() {
         XCTAssertThrowsAssertion {
             let notSpryEquatable = NotSpryEquatable()
-            _ = [notSpryEquatable]._isEqual(to: [notSpryEquatable])
+            _ = [notSpryEquatable].compare(with: [notSpryEquatable])
         }
     }
 
@@ -53,8 +54,8 @@ final class SpryEquatableTests: XCTestCase {
 
     func test_dictionary_Value_does_NOT_conforms_to_SpryEquatable() {
         XCTAssertThrowsAssertion {
-            let notSpryEquatable = NotSpryEquatable()
-            _ = [1: notSpryEquatable]._isEqual(to: [1: notSpryEquatable])
+            let notSpryEquatable: Any = NotSpryEquatable()
+            _ = [1: notSpryEquatable].compare(with: [1: notSpryEquatable])
         }
     }
 
