@@ -8,7 +8,7 @@ final class SpryEquatableTestHelper: SpryEquatable {
         self.isEqual = isEqual
     }
 
-    func _isEqual(to actual: Any?) -> Bool {
+    func _DO_NOT_OVERRIDE_isEqual(to actual: Any?) -> Bool {
         return isEqual
     }
 }
@@ -16,9 +16,21 @@ final class SpryEquatableTestHelper: SpryEquatable {
 final class NotSpryEquatable {}
 
 final class AnyObjectAndEquatable: Equatable, SpryEquatable {
-    public static func ==(_: AnyObjectAndEquatable, _: AnyObjectAndEquatable) -> Bool {
+    static func ==(_: AnyObjectAndEquatable, _: AnyObjectAndEquatable) -> Bool {
         return true
     }
 }
 
-final class AnyObjectOnly: SpryEquatable {}
+final class AnyObjectOnly: SpryEquatable {
+    let p: Int
+
+    init(p: Int) {
+        self.p = p
+    }
+}
+
+extension SpryEquatable {
+    func _isEqual(to actual: Any?) -> Bool {
+        return _DO_NOT_OVERRIDE_isEqual(to: actual)
+    }
+}

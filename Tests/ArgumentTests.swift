@@ -12,12 +12,10 @@ final class ArgumentTests: XCTestCase {
     }
 
     func test_is_equal_args_list() {
-        var subjectActionRanCount: Int = 0
         var specifiedArgs: [SpryEquatable?]!
         var actualArgs: [Any?]!
 
         let subjectAction: () -> Bool = {
-            subjectActionRanCount = subjectActionRanCount + 1
             return isEqualArgsLists(fakeType: Any.self, functionName: "", specifiedArgs: specifiedArgs, actualArgs: actualArgs)
         }
 
