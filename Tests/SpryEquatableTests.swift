@@ -5,8 +5,8 @@ import XCTest
 
 final class SpryEquatableTests: XCTestCase {
     func test_NOT_Equatable_and_AnyObject() {
-        let myObject1 = AnyObjectOnly()
-        let myObject2 = AnyObjectOnly()
+        let myObject1 = AnyObjectOnly(p: 1)
+        let myObject2 = AnyObjectOnly(p: 2)
 
         XCTAssertTrue(myObject1._isEqual(to: myObject1))
         XCTAssertFalse(myObject1._isEqual(to: myObject2))
@@ -40,16 +40,19 @@ final class SpryEquatableTests: XCTestCase {
 
     func test_dictionary_Value_conforms_to_SpryEquatable() {
         let baseDict = [
-            1: 1,
-            2: 2
+            "1": 1,
+            "2": 2
         ]
 
-        XCTAssertTrue(baseDict._isEqual(to: [1: 1, 2: 2]))
-        XCTAssertTrue(baseDict._isEqual(to: [2: 2, 1: 1]))
+        XCTAssertTrue(baseDict._isEqual(to: ["1": 1, "2": 2]))
+        XCTAssertTrue(baseDict._isEqual(to: ["2": 2, "1": 1]))
 
-        XCTAssertFalse(baseDict._isEqual(to: [1: 5, 2: 5]))
-        XCTAssertFalse(baseDict._isEqual(to: [1: 1, 2: 2, 3: 3]))
-        XCTAssertFalse(baseDict._isEqual(to: [1: 1]))
+        XCTAssertFalse(baseDict._isEqual(to: ["1": 5, "2": 5]))
+        XCTAssertFalse(baseDict._isEqual(to: ["1": 1, "2": 2, "3": 3]))
+        XCTAssertFalse(baseDict._isEqual(to: ["1": 1]))
+
+        XCTAssertFalse(baseDict._isEqual(to: [1: 1, 2: 2]))
+        XCTAssertFalse(baseDict._isEqual(to: [1: 1, 2: 2]))
     }
 
     func test_dictionary_Value_does_NOT_conforms_to_SpryEquatable() {
@@ -57,6 +60,19 @@ final class SpryEquatableTests: XCTestCase {
             let notSpryEquatable: Any = NotSpryEquatable()
             _ = [1: notSpryEquatable].compare(with: [1: notSpryEquatable])
         }
+    }
+
+    func test_set_Value_conforms_to_SpryEquatable() {
+        let baseDict: Set<String> = [
+            "1",
+            "2"
+        ]
+
+        XCTAssertTrue(baseDict._isEqual(to: Set(["1", "2"])))
+        XCTAssertTrue(baseDict._isEqual(to: Set(["2", "1"])))
+
+        XCTAssertFalse(baseDict._isEqual(to: Set([1, 2])))
+        XCTAssertFalse(baseDict._isEqual(to: Set([2, 1])))
     }
 
     func test_optional() {

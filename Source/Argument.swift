@@ -140,5 +140,5 @@ private func isEqualArgs(specifiedArg: SpryEquatable?, actualArg: Any?) -> Bool 
         Constant.FatalError.doesNotConformToSpryEquatable(actualArgReal)
     }
 
-    return specifiedArgReal._isEqual(to: actualArgRealAsSE)
+    return specifiedArgReal._DO_NOT_OVERRIDE_isEqual(to: actualArgRealAsSE)
 }

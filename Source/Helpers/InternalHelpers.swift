@@ -56,7 +56,7 @@ internal extension Array {
             }
 
             if let selfElement = zippedElements.0 as? SpryEquatable, let actualElement = zippedElements.1 as? SpryEquatable {
-                return selfElement._isEqual(to: actualElement)
+                return selfElement._DO_NOT_OVERRIDE_isEqual(to: actualElement)
             }
 
             Constant.FatalError.doesNotConformToSpryEquatable(zippedElements.0)
@@ -101,13 +101,11 @@ internal extension Dictionary {
                 return false
             }
 
-            guard let castedValue = value as? SpryEquatable, let castedActualValue = actualValue as? SpryEquatable else {
-                Constant.FatalError.doesNotConformToSpryEquatable(value)
+            if let castedValue = value as? SpryEquatable, let castedActualValue = actualValue as? SpryEquatable {
+                return castedValue._DO_NOT_OVERRIDE_isEqual(to: castedActualValue)
             }
 
-            if !castedValue._isEqual(to: castedActualValue) {
-                return false
-            }
+            Constant.FatalError.doesNotConformToSpryEquatable(value)
         }
 
         return true

@@ -3,6 +3,7 @@ import Foundation
 
 extension Optional: SpryEquatable where Wrapped: SpryEquatable {}
 extension Array: SpryEquatable where Element: SpryEquatable {}
+extension Set: SpryEquatable where Element: SpryEquatable {}
 extension Dictionary: SpryEquatable where Value: SpryEquatable {}
 
 extension NSObject: SpryEquatable {}
