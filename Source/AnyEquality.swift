@@ -21,11 +21,12 @@ private func isAnyEqual(_ lhs: Any, _ rhs: Any) -> Bool {
 
     switch (lhsStyle, rhsStyle) {
     case (.class, .class),
-         (.dictionary, .dictionary),
          (.struct, .struct):
         guard lhsMirror.subjectType == rhsMirror.subjectType else {
             return false
         }
+        return manualDictionaryEquality(lhsMirror: lhsMirror, rhsMirror: rhsMirror)
+    case (.dictionary, .dictionary):
         return manualDictionaryEquality(lhsMirror: lhsMirror, rhsMirror: rhsMirror)
     case (.enum, .enum):
         guard lhsMirror.subjectType == rhsMirror.subjectType else {
