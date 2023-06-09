@@ -2,8 +2,8 @@ import Foundation
 
 /// Used to compare any two arguments. Uses Equatable's `==(lhs:rhs:)` operator for comparision.
 ///
+/// - Remark: Use it if you are using your custom implementation of 'Equatable'
 /// - Important: Never manually implement `_DO_NOT_OVERRIDE_isEqual(to:)` when conform to `SpryEquatable`. Instead rely on the provided extensions.
-/// - Note: If a compiler error says you do NOT conform to `SpryEquatable` then conform to `Equatable`. This will remove the error.
 public protocol SpryEquatable {
     func _DO_NOT_OVERRIDE_isEqual(to actual: Any?) -> Bool
 }

@@ -12,7 +12,7 @@ final class ArgumentTests: XCTestCase {
     }
 
     func test_is_equal_args_list() {
-        var specifiedArgs: [SpryEquatable?]!
+        var specifiedArgs: [Any?]!
         var actualArgs: [Any?]!
 
         let subjectAction: () -> Bool = {
@@ -118,7 +118,7 @@ final class ArgumentTests: XCTestCase {
             _ = subjectAction()
         }
 
-        specifiedArgs = [SpryEquatableTestHelper(isEqual: false)]
+        specifiedArgs = [SpryEquatableTestHelper(isEqual: true)]
         actualArgs = [SpryEquatableTestHelper(isEqual: false)]
         XCTAssertFalse(subjectAction())
 

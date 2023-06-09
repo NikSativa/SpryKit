@@ -31,3 +31,9 @@ extension URLRequest: SpryEquatable {}
 extension TimeZone: SpryEquatable {}
 extension Date: SpryEquatable {}
 extension Data: SpryEquatable {}
+
+/// internal
+extension ArgumentCaptor: SpryEquatable {}
+extension Argument: SpryEquatable {}
+extension RecordedCall: SpryEquatable {}
+extension StubInfo: SpryEquatable {}

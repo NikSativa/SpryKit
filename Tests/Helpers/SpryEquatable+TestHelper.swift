@@ -28,9 +28,3 @@ final class AnyObjectOnly: SpryEquatable {
         self.p = p
     }
 }
-
-extension SpryEquatable {
-    func _isEqual(to actual: Any?) -> Bool {
-        return _DO_NOT_OVERRIDE_isEqual(to: actual)
-    }
-}

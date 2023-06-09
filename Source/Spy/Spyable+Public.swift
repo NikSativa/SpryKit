@@ -67,7 +67,7 @@ public protocol Spyable: AnyObject {
     /// - Parameter countSpecifier: Used to specify the amount of times this function needs to be called for a successful result. See `CountSpecifier` for more detials.
     ///
     /// - Returns: A DidCallResult. See `DidCallResult` for more details.
-    func didCall(_ function: Function, withArguments arguments: [SpryEquatable?], countSpecifier: CountSpecifier) -> DidCallResult
+    func didCall(_ function: Function, withArguments arguments: [Any?], countSpecifier: CountSpecifier) -> DidCallResult
 
     /// Removes all recorded calls.
     ///
@@ -137,7 +137,7 @@ public protocol Spyable: AnyObject {
     /// - Parameter countSpecifier: Used to specify the amount of times this function needs to be called for a successful result. See `CountSpecifier` for more detials.
     ///
     /// - Returns: A DidCallResult. See `DidCallResult` for more details.
-    static func didCall(_ function: ClassFunction, withArguments arguments: [SpryEquatable?], countSpecifier: CountSpecifier) -> DidCallResult
+    static func didCall(_ function: ClassFunction, withArguments arguments: [Any?], countSpecifier: CountSpecifier) -> DidCallResult
 
     /// Removes all recorded calls.
     ///

@@ -8,34 +8,27 @@ final class SpryEquatableTests: XCTestCase {
         let myObject1 = AnyObjectOnly(p: 1)
         let myObject2 = AnyObjectOnly(p: 2)
 
-        XCTAssertTrue(myObject1._isEqual(to: myObject1))
-        XCTAssertFalse(myObject1._isEqual(to: myObject2))
+        XCTAssertTrue(isAnyEqual(myObject1, myObject1))
+        XCTAssertFalse(isAnyEqual(myObject1, myObject2))
     }
 
     func test_Equatable_and_AnyObject() {
         let myObject1 = AnyObjectAndEquatable()
         let myObject2 = AnyObjectAndEquatable()
 
-        XCTAssertTrue(myObject1._isEqual(to: myObject1))
-        XCTAssertTrue(myObject1._isEqual(to: myObject2))
+        XCTAssertTrue(isAnyEqual(myObject1, myObject1))
+        XCTAssertTrue(isAnyEqual(myObject1, myObject2))
     }
 
     func test_array_Element_conforms_to_SpryEquatable() {
         let baseArray = [1, 2, 3]
 
-        XCTAssertTrue(baseArray._isEqual(to: [1, 2, 3]))
+        XCTAssertTrue(isAnyEqual(baseArray, [1, 2, 3]))
 
-        XCTAssertFalse(baseArray._isEqual(to: [1, 2, 1]))
-        XCTAssertFalse(baseArray._isEqual(to: [1, 3, 2]))
-        XCTAssertFalse(baseArray._isEqual(to: [1, 2, 3, 4]))
-        XCTAssertFalse(baseArray._isEqual(to: [1, 2]))
-    }
-
-    func test_array_Element_does_NOT_conforms_to_SpryEquatable() {
-        XCTAssertThrowsAssertion {
-            let notSpryEquatable = NotSpryEquatable()
-            _ = [notSpryEquatable].compare(with: [notSpryEquatable])
-        }
+        XCTAssertFalse(isAnyEqual(baseArray, [1, 2, 1]))
+        XCTAssertFalse(isAnyEqual(baseArray, [1, 3, 2]))
+        XCTAssertFalse(isAnyEqual(baseArray, [1, 2, 3, 4]))
+        XCTAssertFalse(isAnyEqual(baseArray, [1, 2]))
     }
 
     func test_dictionary_Value_conforms_to_SpryEquatable() {
@@ -44,22 +37,15 @@ final class SpryEquatableTests: XCTestCase {
             "2": 2
         ]
 
-        XCTAssertTrue(baseDict._isEqual(to: ["1": 1, "2": 2]))
-        XCTAssertTrue(baseDict._isEqual(to: ["2": 2, "1": 1]))
+        XCTAssertTrue(isAnyEqual(baseDict, ["1": 1, "2": 2]))
+        XCTAssertTrue(isAnyEqual(baseDict, ["2": 2, "1": 1]))
 
-        XCTAssertFalse(baseDict._isEqual(to: ["1": 5, "2": 5]))
-        XCTAssertFalse(baseDict._isEqual(to: ["1": 1, "2": 2, "3": 3]))
-        XCTAssertFalse(baseDict._isEqual(to: ["1": 1]))
+        XCTAssertFalse(isAnyEqual(baseDict, ["1": 5, "2": 5]))
+        XCTAssertFalse(isAnyEqual(baseDict, ["1": 1, "2": 2, "3": 3]))
+        XCTAssertFalse(isAnyEqual(baseDict, ["1": 1]))
 
-        XCTAssertFalse(baseDict._isEqual(to: [1: 1, 2: 2]))
-        XCTAssertFalse(baseDict._isEqual(to: [1: 1, 2: 2]))
-    }
-
-    func test_dictionary_Value_does_NOT_conforms_to_SpryEquatable() {
-        XCTAssertThrowsAssertion {
-            let notSpryEquatable: Any = NotSpryEquatable()
-            _ = [1: notSpryEquatable].compare(with: [1: notSpryEquatable])
-        }
+        XCTAssertFalse(isAnyEqual(baseDict, [1: 1, 2: 2]))
+        XCTAssertFalse(isAnyEqual(baseDict, [1: 1, 2: 2]))
     }
 
     func test_set_Value_conforms_to_SpryEquatable() {
@@ -68,11 +54,11 @@ final class SpryEquatableTests: XCTestCase {
             "2"
         ]
 
-        XCTAssertTrue(baseDict._isEqual(to: Set(["1", "2"])))
-        XCTAssertTrue(baseDict._isEqual(to: Set(["2", "1"])))
+        XCTAssertTrue(isAnyEqual(baseDict, Set(["1", "2"])))
+        XCTAssertTrue(isAnyEqual(baseDict, Set(["2", "1"])))
 
-        XCTAssertFalse(baseDict._isEqual(to: Set([1, 2])))
-        XCTAssertFalse(baseDict._isEqual(to: Set([2, 1])))
+        XCTAssertFalse(isAnyEqual(baseDict, Set([1, 2])))
+        XCTAssertFalse(isAnyEqual(baseDict, Set([2, 1])))
     }
 
     func test_optional() {
@@ -82,31 +68,31 @@ final class SpryEquatableTests: XCTestCase {
         let d: String? = nil
         let e: String = "e"
 
-        XCTAssertTrue(a._isEqual(to: b))
+        XCTAssertTrue(isAnyEqual(a, b))
         a = 0
-        XCTAssertFalse(a._isEqual(to: b))
+        XCTAssertFalse(isAnyEqual(a, b))
         b = 1
-        XCTAssertFalse(a._isEqual(to: b))
+        XCTAssertFalse(isAnyEqual(a, b))
         b = 2
-        XCTAssertFalse(a._isEqual(to: b))
+        XCTAssertFalse(isAnyEqual(a, b))
         a = 2
-        XCTAssertTrue(a._isEqual(to: b))
+        XCTAssertTrue(isAnyEqual(a, b))
 
-        XCTAssertTrue(a._isEqual(to: c))
-        XCTAssertTrue(c._isEqual(to: b))
+        XCTAssertTrue(isAnyEqual(a, c))
+        XCTAssertTrue(isAnyEqual(c, b))
 
         c = 0
-        XCTAssertFalse(a._isEqual(to: c))
-        XCTAssertFalse(c._isEqual(to: b))
+        XCTAssertFalse(isAnyEqual(a, c))
+        XCTAssertFalse(isAnyEqual(c, b))
 
-        XCTAssertFalse(c._isEqual(to: d))
-        XCTAssertFalse(d._isEqual(to: c))
-        XCTAssertFalse(a._isEqual(to: d))
-        XCTAssertFalse(d._isEqual(to: a))
+        XCTAssertFalse(isAnyEqual(c, d))
+        XCTAssertFalse(isAnyEqual(d, c))
+        XCTAssertFalse(isAnyEqual(a, d))
+        XCTAssertFalse(isAnyEqual(d, a))
 
-        XCTAssertFalse(c._isEqual(to: e))
-        XCTAssertFalse(e._isEqual(to: c))
-        XCTAssertFalse(a._isEqual(to: e))
-        XCTAssertFalse(e._isEqual(to: a))
+        XCTAssertFalse(isAnyEqual(c, e))
+        XCTAssertFalse(isAnyEqual(e, c))
+        XCTAssertFalse(isAnyEqual(a, e))
+        XCTAssertFalse(isAnyEqual(e, a))
     }
 }

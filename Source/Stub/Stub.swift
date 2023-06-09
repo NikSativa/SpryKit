@@ -16,7 +16,7 @@ public protocol Stub {
     /// - Parameter arguments: The specified arguments needed for the stub to succeed. See `Argument` for ways other ways of constraining expected arguments besides Equatable.
     ///
     /// - Returns: A stub object used to add additional `with()` or to add `andReturn()` or `andDo()`.
-    func with(_ arguments: SpryEquatable...) -> Self
+    func with(_ arguments: Any...) -> Self
 
     /// Used to specify the return value for the stubbed function.
     ///
