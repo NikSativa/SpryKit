@@ -114,9 +114,7 @@ final class ArgumentTests: XCTestCase {
 
         specifiedArgs = [""]
         actualArgs = [NotSpryEquatable()]
-        XCTAssertThrowsAssertion {
-            _ = subjectAction()
-        }
+        XCTAssertFalse(subjectAction())
 
         specifiedArgs = [SpryEquatableTestHelper(isEqual: true)]
         actualArgs = [SpryEquatableTestHelper(isEqual: false)]
