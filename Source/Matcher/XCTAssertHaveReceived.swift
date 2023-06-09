@@ -20,7 +20,7 @@ import XCTest
 @inline(__always)
 public func XCTAssertHaveReceived<T: Spyable>(_ spyable: T?,
                                               _ function: T.Function,
-                                              with arguments: SpryEquatable?...,
+                                              with arguments: Any?...,
                                               countSpecifier: CountSpecifier = .atLeast(1),
                                               file: StaticString = #filePath,
                                               line: UInt = #line) {
@@ -54,7 +54,7 @@ public func XCTAssertHaveReceived<T: Spyable>(_ spyable: T?,
                                               countSpecifier: CountSpecifier = .atLeast(1),
                                               file: StaticString = #filePath,
                                               line: UInt = #line) {
-    let arguments: [SpryEquatable?] = []
+    let arguments: [Any?] = []
     guard let spyable else {
         let descriptionOfAttempted = descriptionOfNilAttempt(arguments: arguments, countSpecifier: countSpecifier)
         XCTFail(descriptionOfAttempted, file: file, line: line)
@@ -85,7 +85,7 @@ public func XCTAssertHaveReceived<T: Spyable>(_ spyable: T?,
 @inline(__always)
 public func XCTAssertHaveNotReceived<T: Spyable>(_ spyable: T?,
                                                  _ function: T.Function,
-                                                 with arguments: SpryEquatable?...,
+                                                 with arguments: Any?...,
                                                  countSpecifier: CountSpecifier = .atLeast(1),
                                                  file: StaticString = #filePath,
                                                  line: UInt = #line) {
@@ -119,7 +119,7 @@ public func XCTAssertHaveNotReceived<T: Spyable>(_ spyable: T?,
                                                  countSpecifier: CountSpecifier = .atLeast(1),
                                                  file: StaticString = #filePath,
                                                  line: UInt = #line) {
-    let arguments: [SpryEquatable?] = []
+    let arguments: [Any?] = []
     guard let spyable else {
         let descriptionOfAttempted = descriptionOfNilAttempt(arguments: arguments, countSpecifier: countSpecifier)
         XCTFail(descriptionOfAttempted, file: file, line: line)
@@ -150,7 +150,7 @@ public func XCTAssertHaveNotReceived<T: Spyable>(_ spyable: T?,
 @inline(__always)
 public func XCTAssertHaveReceived<T: Spyable>(_ spyable: T.Type?,
                                               _ function: T.ClassFunction,
-                                              with arguments: SpryEquatable?...,
+                                              with arguments: Any?...,
                                               countSpecifier: CountSpecifier = .atLeast(1),
                                               file: StaticString = #filePath,
                                               line: UInt = #line) {
@@ -185,7 +185,7 @@ public func XCTAssertHaveReceived<T: Spyable>(_ spyable: T.Type?,
                                               countSpecifier: CountSpecifier = .atLeast(1),
                                               file: StaticString = #filePath,
                                               line: UInt = #line) {
-    let arguments: [SpryEquatable?] = []
+    let arguments: [Any?] = []
     guard let spyable else {
         let descriptionOfAttempted = descriptionOfNilAttempt(arguments: arguments, countSpecifier: countSpecifier)
         XCTFail(descriptionOfAttempted, file: file, line: line)
@@ -216,7 +216,7 @@ public func XCTAssertHaveReceived<T: Spyable>(_ spyable: T.Type?,
 @inline(__always)
 public func XCTAssertHaveNotReceived<T: Spyable>(_ spyable: T.Type?,
                                                  _ function: T.ClassFunction,
-                                                 with arguments: SpryEquatable?...,
+                                                 with arguments: Any?...,
                                                  countSpecifier: CountSpecifier = .atLeast(1),
                                                  file: StaticString = #filePath,
                                                  line: UInt = #line) {
@@ -250,7 +250,7 @@ public func XCTAssertHaveNotReceived<T: Spyable>(_ spyable: T.Type?,
                                                  countSpecifier: CountSpecifier = .atLeast(1),
                                                  file: StaticString = #filePath,
                                                  line: UInt = #line) {
-    let arguments: [SpryEquatable?] = []
+    let arguments: [Any?] = []
     guard let spyable else {
         let descriptionOfAttempted = descriptionOfNilAttempt(arguments: arguments, countSpecifier: countSpecifier)
         XCTFail(descriptionOfAttempted, file: file, line: line)
@@ -264,7 +264,7 @@ public func XCTAssertHaveNotReceived<T: Spyable>(_ spyable: T.Type?,
 
 // MARK: - Private
 
-private func descriptionOfExpectation(actualType: Any.Type, functionName: String, arguments: [SpryEquatable?], countSpecifier: CountSpecifier) -> String {
+private func descriptionOfExpectation(actualType: Any.Type, functionName: String, arguments: [Any?], countSpecifier: CountSpecifier) -> String {
     var descriptionOfAttempt = "receive <\(functionName)> on <\(actualType)>"
 
     if !arguments.isEmpty {
@@ -303,7 +303,7 @@ private func descriptionOfExpectation(actualType: Any.Type, functionName: String
     return descriptionOfAttempt
 }
 
-private func descriptionOfNilAttempt(arguments: [SpryEquatable?], countSpecifier: CountSpecifier) -> String {
+private func descriptionOfNilAttempt(arguments: [Any?], countSpecifier: CountSpecifier) -> String {
     var descriptionOfAttempt = "receive function"
 
     if !arguments.isEmpty {

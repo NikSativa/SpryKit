@@ -42,25 +42,11 @@ internal extension Array {
     }
 
     func compare(with actual: Any?) -> Bool {
-        guard let castedActual = actual as? [Element] else {
+        guard let actual = actual as? [Element] else {
             return false
         }
 
-        if count != castedActual.count {
-            return false
-        }
-
-        return zip(self, castedActual).reduce(true) { result, zippedElements in
-            if !result {
-                return false
-            }
-
-            if let selfElement = zippedElements.0 as? SpryEquatable, let actualElement = zippedElements.1 as? SpryEquatable {
-                return selfElement._DO_NOT_OVERRIDE_isEqual(to: actualElement)
-            }
-
-            Constant.FatalError.doesNotConformToSpryEquatable(zippedElements.0)
-        }
+        return isAnyEqual(self, actual)
     }
 }
 
@@ -88,30 +74,10 @@ internal extension Array {
 
 internal extension Dictionary {
     func compare(with actual: Any?) -> Bool {
-        guard let castedActual = actual as? [Key: Value] else {
+        guard let actual = actual as? [Key: Value] else {
             return false
         }
 
-        if count != castedActual.count {
-            return false
-        }
-
-        for (key, value) in self {
-            guard castedActual.has(key: key), let actualValue = castedActual[key] else {
-                return false
-            }
-
-            if let castedValue = value as? SpryEquatable, let castedActualValue = actualValue as? SpryEquatable {
-                return castedValue._DO_NOT_OVERRIDE_isEqual(to: castedActualValue)
-            }
-
-            Constant.FatalError.doesNotConformToSpryEquatable(value)
-        }
-
-        return true
-    }
-
-    private func has(key: Key) -> Bool {
-        return contains { $0.key == key }
+        return isAnyEqual(self, actual)
     }
 }

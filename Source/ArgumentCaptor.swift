@@ -1,7 +1,7 @@
 import Foundation
 
 /// Used to capture an argument for more detailed testing on an argument.
-public class ArgumentCaptor: SpryEquatable {
+public class ArgumentCaptor {
     private var capturedArguments: [Any?] = []
 
     /// Get an argument that was captured.

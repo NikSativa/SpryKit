@@ -14,7 +14,7 @@ final class StubInfo {
         return stubType != nil
     }
 
-    private(set) var arguments: [SpryEquatable] = []
+    private(set) var arguments: [Any] = []
     var chronologicalIndex = -1
 
     private var stubType: StubType? {
@@ -56,9 +56,19 @@ final class StubInfo {
 
 extension StubInfo: Equatable {
     static func ==(lhs: StubInfo, rhs: StubInfo) -> Bool {
-        return lhs.functionName == rhs.functionName
-            && lhs.arguments.count == rhs.arguments.count
-            && lhs.arguments.compare(with: rhs.arguments)
+        guard lhs.functionName == rhs.functionName else {
+            return false
+        }
+
+        guard lhs.arguments.count == rhs.arguments.count else {
+            return false
+        }
+
+        guard lhs.arguments.compare(with: rhs.arguments) else {
+            return false
+        }
+
+        return true
     }
 }
 
@@ -69,7 +79,7 @@ extension StubInfo: SpryItem {}
 // MARK: - Stub
 
 extension StubInfo: Stub {
-    func with(_ arguments: SpryEquatable...) -> Self {
+    func with(_ arguments: Any...) -> Self {
         self.arguments += arguments
         return self
     }

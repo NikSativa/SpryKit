@@ -33,7 +33,7 @@ internal enum Constant {
             fatalError(title: title, entries: entries)
         }
 
-        static func wrongNumberOfArgsBeingCompared<T>(fakeType: T.Type, functionName _: String, specifiedArguments: [SpryEquatable?], actualArguments: [Any?]) -> Never {
+        static func wrongNumberOfArgsBeingCompared<T>(fakeType: T.Type, functionName _: String, specifiedArguments: [Any?], actualArguments: [Any?]) -> Never {
             let title = "Wrong number of arguments to compare"
             let entries = [
                 "Type: \(T.self)",
@@ -47,16 +47,9 @@ internal enum Constant {
             fatalError(title: title, entries: entries)
         }
 
-        static func doesNotConformToEquatable(_ value: SpryEquatable) -> Never {
-            let title = "Improper SpryEquatable"
+        static func doesNotConformToEquatable(_ value: Any) -> Never {
+            let title = "Improper Equatable"
             let entries = ["\(type(of: value)) must either conform to Equatable or be changed to a reference type (i.e. class)"]
-
-            fatalError(title: title, entries: entries)
-        }
-
-        static func doesNotConformToSpryEquatable(_ value: Any) -> Never {
-            let title = "SpryEquatable required"
-            let entries = ["\(type(of: value)) must conform to SpryEquatable"]
 
             fatalError(title: title, entries: entries)
         }

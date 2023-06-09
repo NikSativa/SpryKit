@@ -1,7 +1,16 @@
 import Foundation
 
 @inline(__always)
-public func isAnyEqual(_ lhs: Any, _ rhs: Any) -> Bool {
+public func isAnyEqual(_ lhs: Any?, _ rhs: Any?) -> Bool {
+    guard let lhs, let rhs else {
+        return lhs == nil && rhs == nil
+    }
+
+    return isAnyEqual(lhs, rhs)
+}
+
+@inline(__always)
+private func isAnyEqual(_ lhs: Any, _ rhs: Any) -> Bool {
     let lhsMirror = Mirror(reflecting: lhs)
     let rhsMirror = Mirror(reflecting: rhs)
 
@@ -73,6 +82,19 @@ public func isAnyEqual(_ lhs: Any, _ rhs: Any) -> Bool {
 }
 
 @inline(__always)
+private func areAssociatedValuesEqual(_ lhs: Any, _ rhs: Any) -> Bool {
+    if let lhs = lhs as? AnyHashable, let rhs = rhs as? AnyHashable {
+        return lhs == rhs
+    }
+
+    if let lhs = lhs as? SpryEquatable, let rhs = rhs as? SpryEquatable {
+        return lhs._DO_NOT_OVERRIDE_isEqual(to: rhs)
+    }
+
+    return false
+}
+
+@inline(__always)
 private func unwrapOptionalIfPossible(_ mirror: Mirror) -> Any? {
     if let (_, value) = mirror.children.first {
         return value
@@ -106,17 +128,6 @@ private func areEnumCasesEqual(lhs: Any, rhs: Any, lhsMirror: Mirror, rhsMirror:
         return false
     }
 
-    return manualDictionaryEquality(lhsMirror: lhsMirror, rhsMirror: rhsMirror)
-}
-
-@inline(__always)
-private func areAssociatedValuesEqual(_ lhs: Any, _ rhs: Any) -> Bool {
-    if let lhs = lhs as? SpryEquatable, let rhs = rhs as? SpryEquatable {
-        return lhs._DO_NOT_OVERRIDE_isEqual(to: rhs)
-    }
-
-    let lhsMirror = Mirror(reflecting: lhs)
-    let rhsMirror = Mirror(reflecting: rhs)
     return manualDictionaryEquality(lhsMirror: lhsMirror, rhsMirror: rhsMirror)
 }
 
@@ -186,6 +197,7 @@ private func convertMirrorToDictionary(mirror: Mirror) -> [AnyHashable: Any] {
 private func manualArrayEquality(lhsMirror: Mirror, rhsMirror: Mirror) -> Bool {
     let lhsArray = convertMirrorToArray(mirror: lhsMirror)
     let rhsArray = convertMirrorToArray(mirror: rhsMirror)
+
     guard lhsArray.count == rhsArray.count else {
         return false
     }
@@ -214,6 +226,7 @@ private func convertMirrorToArray(mirror: Mirror) -> [Any] {
 private func manualSetEquality(lhsMirror: Mirror, rhsMirror: Mirror) -> Bool {
     let lhsSet = convertMirrorToSet(mirror: lhsMirror)
     let rhsSet = convertMirrorToSet(mirror: rhsMirror)
+
     guard lhsSet.count == rhsSet.count else {
         return false
     }

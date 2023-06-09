@@ -37,8 +37,6 @@ public enum Argument {
     }
 }
 
-extension Argument: SpryEquatable {}
-
 // MARK: - Equatable
 
 extension Argument: Equatable {
@@ -97,7 +95,7 @@ extension Argument: FriendlyStringConvertible {
 
 // MARK: -
 
-internal func isEqualArgsLists(fakeType: (some Any).Type, functionName: String, specifiedArgs: [SpryEquatable?], actualArgs: [Any?]) -> Bool {
+internal func isEqualArgsLists(fakeType: (some Any).Type, functionName: String, specifiedArgs: [Any?], actualArgs: [Any?]) -> Bool {
     guard specifiedArgs.count == actualArgs.count else {
         Constant.FatalError.wrongNumberOfArgsBeingCompared(fakeType: fakeType, functionName: functionName, specifiedArguments: specifiedArgs, actualArguments: actualArgs)
     }
@@ -114,7 +112,7 @@ internal func isEqualArgsLists(fakeType: (some Any).Type, functionName: String, 
     return true
 }
 
-private func isEqualArgs(specifiedArg: SpryEquatable?, actualArg: Any?) -> Bool {
+private func isEqualArgs(specifiedArg: Any?, actualArg: Any?) -> Bool {
     if let specifiedArgAsArgumentEnum = specifiedArg as? Argument {
         switch specifiedArgAsArgumentEnum {
         case .anything:
@@ -136,9 +134,5 @@ private func isEqualArgs(specifiedArg: SpryEquatable?, actualArg: Any?) -> Bool 
         return isNil(specifiedArg) && isNil(actualArg)
     }
 
-    guard let actualArgRealAsSE = actualArgReal as? SpryEquatable else {
-        Constant.FatalError.doesNotConformToSpryEquatable(actualArgReal)
-    }
-
-    return specifiedArgReal._DO_NOT_OVERRIDE_isEqual(to: actualArgRealAsSE)
+    return isAnyEqual(specifiedArgReal, actualArgReal)
 }

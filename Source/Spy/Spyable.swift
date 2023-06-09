@@ -33,7 +33,7 @@ public extension Spyable {
         internal_recordCall(function: function, arguments: arguments)
     }
 
-    func didCall(_ function: Function, withArguments arguments: [SpryEquatable?] = [], countSpecifier: CountSpecifier = .atLeast(1)) -> DidCallResult {
+    func didCall(_ function: Function, withArguments arguments: [Any?] = [], countSpecifier: CountSpecifier = .atLeast(1)) -> DidCallResult {
         function.rawValue.validateArguments(arguments)
 
         let success: Bool
@@ -84,7 +84,7 @@ public extension Spyable {
         internal_recordCall(function: function, arguments: arguments)
     }
 
-    static func didCall(_ function: ClassFunction, withArguments arguments: [SpryEquatable?] = [], countSpecifier: CountSpecifier = .atLeast(1)) -> DidCallResult {
+    static func didCall(_ function: ClassFunction, withArguments arguments: [Any?] = [], countSpecifier: CountSpecifier = .atLeast(1)) -> DidCallResult {
         function.rawValue.validateArguments(arguments)
 
         let success: Bool
@@ -124,18 +124,18 @@ public extension Spyable {
 
     // MARK: - Private Functions
 
-    private func timesCalled(_ function: Function, arguments: [SpryEquatable?]) -> Int {
+    private func timesCalled(_ function: Function, arguments: [Any?]) -> Int {
         return numberOfMatchingCalls(fakeType: Self.self, functionName: function.rawValue, arguments: arguments, callsDictionary: _callsDictionary)
     }
 
-    private static func timesCalled(_ function: ClassFunction, arguments: [SpryEquatable?]) -> Int {
+    private static func timesCalled(_ function: ClassFunction, arguments: [Any?]) -> Int {
         return numberOfMatchingCalls(fakeType: Self.self, functionName: function.rawValue, arguments: arguments, callsDictionary: _callsDictionary)
     }
 }
 
 // MARK: Private Functions
 
-private func numberOfMatchingCalls(fakeType: (some Any).Type, functionName: String, arguments: [SpryEquatable?], callsDictionary: SpryDictionary<RecordedCall>) -> Int {
+private func numberOfMatchingCalls(fakeType: (some Any).Type, functionName: String, arguments: [Any?], callsDictionary: SpryDictionary<RecordedCall>) -> Int {
     let matchingFunctions = callsDictionary.get(for: functionName)
 
     // if no args passed in then only check if function was called (allows user to not care about args being passed in)
