@@ -1,9 +1,18 @@
 import Foundation
 
 protocol SpryItem: AnyObject, Equatable {
+    var arguments: [Any?] { get }
     var functionName: String { get }
     var chronologicalIndex: Int { get set }
     var isComplete: Bool { get }
+}
+
+extension SpryItem {
+    static func ==(lhs: Self, rhs: Self) -> Bool {
+        return lhs.functionName == rhs.functionName
+            && lhs.arguments.count == rhs.arguments.count
+            && lhs.arguments.compare(with: rhs.arguments)
+    }
 }
 
 final class SpryDictionary<T: SpryItem> {
@@ -32,13 +41,13 @@ final class SpryDictionary<T: SpryItem> {
     func completedDuplicates(of stub: T) -> [T] {
         var duplicates: [T] = []
 
-        valuesMap[stub.functionName]?.forEach {
-            guard $0.chronologicalIndex != stub.chronologicalIndex, stub.isComplete else {
-                return
+        for cached in valuesMap[stub.functionName] ?? [] {
+            guard cached.chronologicalIndex != stub.chronologicalIndex, stub.isComplete else {
+                continue
             }
 
-            if $0 == stub {
-                duplicates.append($0)
+            if cached == stub {
+                duplicates.append(cached)
             }
         }
 
