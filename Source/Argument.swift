@@ -100,10 +100,15 @@ internal func isEqualArgsLists(fakeType: (some Any).Type, functionName: String, 
         Constant.FatalError.wrongNumberOfArgsBeingCompared(fakeType: fakeType, functionName: functionName, specifiedArguments: specifiedArgs, actualArguments: actualArgs)
     }
 
-    for index in 0..<actualArgs.count {
-        let specifiedArg = specifiedArgs[index]
-        let actualArg = actualArgs[index]
+    return isEqualArgsLists(specifiedArgs: specifiedArgs, actualArgs: actualArgs)
+}
 
+internal func isEqualArgsLists(specifiedArgs: [Any?], actualArgs: [Any?]) -> Bool {
+    guard specifiedArgs.count == actualArgs.count else {
+        return false
+    }
+
+    for (specifiedArg, actualArg) in zip(specifiedArgs, actualArgs) {
         if !isEqualArgs(specifiedArg: specifiedArg, actualArg: actualArg) {
             return false
         }

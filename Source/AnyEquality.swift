@@ -25,6 +25,12 @@ private func isAnyEqual(_ lhs: Any, _ rhs: Any) -> Bool {
         guard lhsMirror.subjectType == rhsMirror.subjectType else {
             return false
         }
+
+        if let lhs = lhs as? AnyHashable,
+           let rhs = rhs as? AnyHashable {
+            return lhs == rhs
+        }
+
         return manualDictionaryEquality(lhsMirror: lhsMirror, rhsMirror: rhsMirror)
     case (.dictionary, .dictionary):
         return manualDictionaryEquality(lhsMirror: lhsMirror, rhsMirror: rhsMirror)

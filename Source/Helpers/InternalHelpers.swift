@@ -41,12 +41,26 @@ internal extension Array {
         return arrays
     }
 
-    func compare(with actual: Any?) -> Bool {
-        guard let actual = actual as? [Element] else {
+    func compare(with actual: [Any?]) -> Bool {
+        guard count == actual.count else {
             return false
         }
 
-        return isAnyEqual(self, actual)
+        for (a, b) in zip(self, actual) {
+            if let a = a as? Argument, a == .anything {
+                continue
+            }
+
+            if let b = b as? Argument, b == .anything {
+                continue
+            }
+
+            if !isAnyEqual(a, b) {
+                return false
+            }
+        }
+
+        return true
     }
 }
 

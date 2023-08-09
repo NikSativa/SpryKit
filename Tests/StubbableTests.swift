@@ -169,6 +169,87 @@ final class StubbableTests: XCTestCase {
         XCTAssertEqual(subject.giveMeAString(string: expectedArg), expectedReturn)
     }
 
+    func test_passing_in_arguments_when_the_arguments_match_what_is_stubbed_list() {
+        let expectedArg = ["im expected 1", "im expected 2"]
+        let expectedReturn = ["i should be returned 1", "i should be returned 2"]
+
+        for (arg, ret) in zip(expectedArg, expectedReturn) {
+            subject.stub(.giveMeAString_string).with(arg).andReturn(ret)
+        }
+
+        for (arg, ret) in zip(expectedArg, expectedReturn) {
+            XCTAssertEqual(subject.giveMeAString(string: arg), ret)
+        }
+    }
+
+    func test_passing_in_arguments_when_the_arguments_match_what_is_stubbed_list_mixed() {
+        let expectedArg: [(str: String, url: URL)] = [
+            ("im expected 1", URL(string: "google.com/1")!),
+            ("im expected 2", URL(string: "google.com/2")!)
+        ]
+
+        let expectedReturn = ["i should be returned 1", "i should be returned 2"]
+
+        for (arg, ret) in zip(expectedArg, expectedReturn) {
+            subject.stub(.giveMeAString_string_url).with(Argument.anything, arg.url).andReturn(ret)
+        }
+
+        for (arg, ret) in zip(expectedArg, expectedReturn) {
+            XCTAssertEqual(subject.giveMeAString(string: arg.str, and: arg.url), ret)
+        }
+    }
+
+    func test_passing_in_arguments_when_the_arguments_match_what_is_stubbed_list_2args() {
+        let expectedArg: [(str: String, url: URL)] = [
+            ("im expected 1", URL(string: "google.com/1")!),
+            ("im expected 2", URL(string: "google.com/2")!)
+        ]
+
+        let expectedReturn = ["i should be returned 1", "i should be returned 2"]
+
+        for (arg, ret) in zip(expectedArg, expectedReturn) {
+            subject.stub(.giveMeAString_string_url).with(arg.str, arg.url).andReturn(ret)
+        }
+
+        for (arg, ret) in zip(expectedArg, expectedReturn) {
+            XCTAssertEqual(subject.giveMeAString(string: arg.str, and: arg.url), ret)
+        }
+    }
+
+    func test_passing_in_arguments_when_the_arguments_match_what_is_stubbed_list_2args_enum_equatableonly() {
+        let expectedArg: [(str: String, obj: EqValue)] = [
+            ("im expected 1", .one),
+            ("im expected 2", .two)
+        ]
+
+        let expectedReturn = ["i should be returned 1", "i should be returned 2"]
+
+        for (arg, ret) in zip(expectedArg, expectedReturn) {
+            subject.stub(.giveMeAString_string_url).with(arg.str, arg.obj).andReturn(ret)
+        }
+
+        for (arg, ret) in zip(expectedArg, expectedReturn) {
+            XCTAssertEqual(subject.giveMeAString(string: arg.str, and: arg.obj), ret)
+        }
+    }
+
+    func test_passing_in_arguments_when_the_arguments_match_what_is_stubbed_list_2args_struct_equatableonly() {
+        let expectedArg: [(str: String, obj: EqValue2)] = [
+            ("im expected 1", .one),
+            ("im expected 2", .two)
+        ]
+
+        let expectedReturn = ["i should be returned 1", "i should be returned 2"]
+
+        for (arg, ret) in zip(expectedArg, expectedReturn) {
+            subject.stub(.giveMeAString_string_url).with(arg.str, arg.obj).andReturn(ret)
+        }
+
+        for (arg, ret) in zip(expectedArg, expectedReturn) {
+            XCTAssertEqual(subject.giveMeAString(string: arg.str, and: arg.obj), ret)
+        }
+    }
+
     func test_passing_in_arguments_when_the_arguments_do_NOT_match_what_is_stubbed() {
         subject.stub(.giveMeAString_string).with("not expected").andReturn("return value")
         XCTAssertThrowsAssertion {
@@ -287,5 +368,19 @@ final class StubbableTests: XCTestCase {
         let newReturnValue = "new return value"
         StubbableTestHelper.stubAgain(.classFunction).andReturn(newReturnValue)
         XCTAssertEqual(StubbableTestHelper.classFunction(), newReturnValue)
+    }
+}
+
+private extension StubbableTests {
+    enum EqValue: Equatable {
+        case one
+        case two
+    }
+
+    struct EqValue2: Equatable {
+        let v: String
+
+        static let one: Self = .init(v: "one")
+        static let two: Self = .init(v: "two")
     }
 }

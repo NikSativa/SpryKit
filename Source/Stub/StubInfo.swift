@@ -14,7 +14,7 @@ final class StubInfo {
         return stubType != nil
     }
 
-    private(set) var arguments: [Any] = []
+    private(set) var arguments: [Any?] = []
     var chronologicalIndex = -1
 
     private var stubType: StubType? {
@@ -49,26 +49,6 @@ final class StubInfo {
         case .andThrow(let error):
             throw error
         }
-    }
-}
-
-// MARK: - Equatable
-
-extension StubInfo: Equatable {
-    static func ==(lhs: StubInfo, rhs: StubInfo) -> Bool {
-        guard lhs.functionName == rhs.functionName else {
-            return false
-        }
-
-        guard lhs.arguments.count == rhs.arguments.count else {
-            return false
-        }
-
-        guard lhs.arguments.compare(with: rhs.arguments) else {
-            return false
-        }
-
-        return true
     }
 }
 
@@ -109,7 +89,11 @@ extension StubInfo: Stub {
 
 extension StubInfo: CustomStringConvertible {
     private func makeDescription() -> String {
-        let argumentsDescription = arguments.map { "<\($0)>" }.joined(separator: ", ")
+        let argumentsDescription = arguments.map {
+            return $0.map {
+                "<\($0)>"
+            } ?? "<nil>"
+        }.joined(separator: ", ")
         let returnDescription = isNil(stubType) ? "nil" : "\(stubType!)"
 
         return "Stub(function: <\(functionName)>, args: <\(argumentsDescription)>, returnValue: <\(returnDescription)>)"

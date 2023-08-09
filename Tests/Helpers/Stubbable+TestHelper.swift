@@ -80,6 +80,7 @@ final class StubbableTestHelper: Stubbable {
         case giveMeAStringWithFallbackValue = "giveMeAStringWithFallbackValue()"
         case giveMeAnOptional = "giveMeAnOptional()"
         case giveMeAString_string = "giveMeAString(string:)"
+        case giveMeAString_string_url = "giveMeAString(string:and:)"
         case giveMeAVoid = "giveMeAVoid()"
         case takeAnOptionalString = "takeAnOptionalString(string:)"
         case takeUnnamedArgument = "takeUnnamedArgument(_:)"
@@ -130,6 +131,10 @@ final class StubbableTestHelper: Stubbable {
 
     func giveMeAString(string: String) -> String {
         return stubbedValue(arguments: string)
+    }
+
+    func giveMeAString(string: String, and something: Any) -> String {
+        return stubbedValue(arguments: string, something)
     }
 
     func giveMeAVoid() {

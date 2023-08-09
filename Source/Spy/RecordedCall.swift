@@ -11,16 +11,6 @@ final class RecordedCall {
     }
 }
 
-// MARK: - Equatable
-
-extension RecordedCall: Equatable {
-    static func ==(lhs: RecordedCall, rhs: RecordedCall) -> Bool {
-        return lhs.functionName == rhs.functionName
-            && lhs.arguments.count == rhs.arguments.count
-            && lhs.arguments.compare(with: rhs.arguments)
-    }
-}
-
 // MARK: - CustomStringConvertible
 
 extension RecordedCall: CustomStringConvertible {
