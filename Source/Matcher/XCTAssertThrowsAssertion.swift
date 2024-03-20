@@ -1,3 +1,4 @@
+#if (os(macOS) || os(iOS) || os(visionOS)) && (arch(x86_64) || arch(arm64))
 import CwlPreconditionTesting
 import Foundation
 import XCTest
@@ -23,3 +24,4 @@ public func XCTAssertThrowsAssertion(_ expression: @autoclosure @escaping () thr
                                      line: UInt = #line) {
     XCTAssertThrowsAssertion(message(), file: file, line: line, expression)
 }
+#endif

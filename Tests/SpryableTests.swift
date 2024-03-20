@@ -50,9 +50,12 @@ final class SpryableTests: XCTestCase {
         subject.resetCallsAndStubs()
 
         XCTAssertFalse(subject.didCall(.getAString).success)
+
+        #if (os(macOS) || os(iOS) || os(visionOS)) && (arch(x86_64) || arch(arm64))
         XCTAssertThrowsAssertion {
             _ = self.subject.getAString()
         }
+        #endif
     }
 
     func test_reseting_calls_and_stubs_class() {
@@ -61,8 +64,11 @@ final class SpryableTests: XCTestCase {
         SpryableTestClass.resetCallsAndStubs()
 
         XCTAssertFalse(SpryableTestClass.didCall(.getAStaticString).success)
+
+        #if (os(macOS) || os(iOS) || os(visionOS)) && (arch(x86_64) || arch(arm64))
         XCTAssertThrowsAssertion {
             _ = SpryableTestClass.getAStaticString()
         }
+        #endif
     }
 }

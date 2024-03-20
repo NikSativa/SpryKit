@@ -112,9 +112,9 @@ extension StubInfo: CustomDebugStringConvertible {
     }
 }
 
-// MARK: - FriendlyStringConvertible
+// MARK: - SpryFriendlyStringConvertible
 
-extension StubInfo: FriendlyStringConvertible {
+extension StubInfo: SpryFriendlyStringConvertible {
     var friendlyDescription: String {
         if arguments.isEmpty {
             return functionName

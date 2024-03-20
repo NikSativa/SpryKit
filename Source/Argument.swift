@@ -85,9 +85,9 @@ extension Argument: CustomDebugStringConvertible {
     }
 }
 
-// MARK: - FriendlyStringConvertible
+// MARK: - SpryFriendlyStringConvertible
 
-extension Argument: FriendlyStringConvertible {
+extension Argument: SpryFriendlyStringConvertible {
     public var friendlyDescription: String {
         return makeDescription()
     }

@@ -1,6 +1,6 @@
 import Foundation
 
-#if os(iOS) || os(tvOS) || os(watchOS)
+#if os(iOS) || os(tvOS) || os(watchOS) || os(visionOS)
 import UIKit
 
 public typealias Image = UIImage
@@ -22,7 +22,7 @@ public extension Image {
     func testData() -> Data? {
         #if os(macOS)
         return png
-        #elseif os(iOS) || os(tvOS) || os(watchOS)
+        #elseif os(iOS) || os(tvOS) || os(watchOS) || os(visionOS)
         return pngData()
         #else
         #error("unsupported os")
@@ -37,7 +37,7 @@ public extension Image.spry {
     static let testImage2: Image = .init(systemSymbolName: "diamond", accessibilityDescription: nil)!
     static let testImage3: Image = .init(systemSymbolName: "octagon", accessibilityDescription: nil)!
     static let testImage4: Image = .init(systemSymbolName: "oval", accessibilityDescription: nil)!
-    #elseif os(iOS) || os(tvOS) || os(watchOS)
+    #elseif os(iOS) || os(tvOS) || os(watchOS) || os(visionOS)
     static let testImage: Image = .init(systemName: "circle")!
     static let testImage1: Image = .init(systemName: "square")!
     static let testImage2: Image = .init(systemName: "diamond")!

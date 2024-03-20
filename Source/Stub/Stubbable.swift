@@ -280,7 +280,7 @@ private func handleDuplicates(stubsDictionary: SpryDictionary<StubInfo>, stub: S
 }
 
 private func captureArguments(stub: StubInfo, actualArgs: [Any?]) {
-    zip(stub.arguments, actualArgs).forEach { specifiedArg, actual in
+    for (specifiedArg, actual) in zip(stub.arguments, actualArgs) {
         if let specifiedArg = specifiedArg as? ArgumentCaptor {
             specifiedArg.capture(actual)
         }

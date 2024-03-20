@@ -69,8 +69,8 @@ private func AssertEqual(condition: Bool,
                          file: StaticString,
                          line: UInt) {
     do {
-        let lhs = try XCTUnwrap(try expression1(), message(), file: file, line: line)
-        let rhs = try XCTUnwrap(try expression2(), message(), file: file, line: line)
+        let lhs = try XCTUnwrap(expression1(), message(), file: file, line: line)
+        let rhs = try XCTUnwrap(expression2(), message(), file: file, line: line)
 
         if condition {
             XCTAssertEqual(lhs.size.width, rhs.size.width, accuracy: 0.001, file: file, line: line)

@@ -11,8 +11,8 @@ public extension URLRequest {
 public extension URLRequest.spry {
     static func testMake(url: String,
                          headers: [String: String] = [:]) -> URLRequest {
-        return Self.testMake(url: .spry.testMake(url),
-                             headers: headers)
+        return testMake(url: .spry.testMake(url),
+                        headers: headers)
     }
 
     static func testMake(url: URL = .spry.testMake(),
@@ -25,9 +25,9 @@ public extension URLRequest.spry {
     }
 }
 
-// MARK: - URLRequest + FriendlyStringConvertible
+// MARK: - URLRequest + SpryFriendlyStringConvertible
 
-extension URLRequest: FriendlyStringConvertible {
+extension URLRequest: SpryFriendlyStringConvertible {
     public var friendlyDescription: String {
         return [
             String(describing: type(of: self)),
