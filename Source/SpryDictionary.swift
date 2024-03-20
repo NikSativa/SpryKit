@@ -61,7 +61,7 @@ final class SpryDictionary<T: SpryItem> {
     func remove(stubs removingStubs: [T], forFunctionName functionName: String) {
         var currentStubs = valuesMap[functionName] ?? []
 
-        removingStubs.forEach { removedStub in
+        for removedStub in removingStubs {
             currentStubs.removeFirst { currentStub in
                 return currentStub.chronologicalIndex == removedStub.chronologicalIndex
             }
@@ -91,9 +91,9 @@ extension SpryDictionary: CustomDebugStringConvertible {
     }
 }
 
-// MARK: - FriendlyStringConvertible
+// MARK: - SpryFriendlyStringConvertible
 
-extension SpryDictionary: FriendlyStringConvertible {
+extension SpryDictionary: SpryFriendlyStringConvertible {
     var friendlyDescription: String {
         return makeFriendlyDescription(for: values, separator: "; ", closeEach: false)
     }

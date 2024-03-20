@@ -1,7 +1,7 @@
 import Foundation
 
 /// The resulting information when using the `didCall()` function.
-public final class DidCallResult: CustomStringConvertible, CustomDebugStringConvertible, FriendlyStringConvertible {
+public final class DidCallResult: CustomStringConvertible, CustomDebugStringConvertible, SpryFriendlyStringConvertible {
     /// `true` if the function was called given the criteria specified, otherwise `false`.
     public let success: Bool
 

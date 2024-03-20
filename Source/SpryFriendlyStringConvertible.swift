@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol FriendlyStringConvertible {
+public protocol SpryFriendlyStringConvertible {
     /// A beautified description. Used for logging.
     var friendlyDescription: String { get }
 }
@@ -12,7 +12,7 @@ internal func makeFriendlyDescription(for obj: Any?, close: Bool) -> String {
     }
 
     let str: String
-    if let friendly = obj as? FriendlyStringConvertible {
+    if let friendly = obj as? SpryFriendlyStringConvertible {
         str = friendly.friendlyDescription
     } else {
         str = String(describing: obj)

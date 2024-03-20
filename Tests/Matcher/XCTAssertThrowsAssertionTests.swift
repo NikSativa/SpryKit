@@ -1,3 +1,4 @@
+#if (os(macOS) || os(iOS) || os(visionOS)) && (arch(x86_64) || arch(arm64))
 import Foundation
 import NSpry
 import XCTest
@@ -29,3 +30,4 @@ private func throwFatalError() {
 private func throwPrecondition() {
     preconditionFailure()
 }
+#endif

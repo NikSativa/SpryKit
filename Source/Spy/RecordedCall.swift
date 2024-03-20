@@ -32,9 +32,9 @@ extension RecordedCall: CustomDebugStringConvertible {
     }
 }
 
-// MARK: - FriendlyStringConvertible
+// MARK: - SpryFriendlyStringConvertible
 
-extension RecordedCall: FriendlyStringConvertible {
+extension RecordedCall: SpryFriendlyStringConvertible {
     var friendlyDescription: String {
         if arguments.isEmpty {
             return functionName
