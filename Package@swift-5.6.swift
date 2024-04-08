@@ -3,7 +3,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "NSpry",
+    name: "SpryKit",
     platforms: [
         .iOS(.v13),
         .macOS(.v11),
@@ -12,13 +12,13 @@ let package = Package(
         .watchOS(.v4)
     ],
     products: [
-        .library(name: "NSpry", targets: ["NSpry"]),
+        .library(name: "SpryKit", targets: ["SpryKit"]),
     ],
     dependencies: [
         .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", .upToNextMinor(from: "2.2.1"))
     ],
     targets: [
-        .target(name: "NSpry",
+        .target(name: "SpryKit",
                 dependencies: [
                     "CwlPreconditionTesting"
                 ],
@@ -26,9 +26,9 @@ let package = Package(
                 resources: [
                     .copy("../PrivacyInfo.xcprivacy")
                 ]),
-        .testTarget(name: "NSpryTests",
+        .testTarget(name: "SpryTests",
                     dependencies: [
-                        "NSpry"
+                        "SpryKit"
                     ],
                     path: "Tests")
     ]

@@ -1,7 +1,6 @@
 import Foundation
 import XCTest
-
-@testable import NSpry
+@testable import SpryKit
 
 final class ArgumentTests: XCTestCase {
     func test_CustomStringConvertible() {

@@ -1,5 +1,5 @@
 import Foundation
-import NSpry
+import SpryKit
 
 final class SpryableTestClass: Spryable {
     enum ClassFunction: String, StringRepresentable {

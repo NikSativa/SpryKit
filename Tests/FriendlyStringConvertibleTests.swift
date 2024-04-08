@@ -1,7 +1,6 @@
 import Foundation
 import XCTest
-
-@testable import NSpry
+@testable import SpryKit
 
 final class FriendlyStringConvertibleTests: XCTestCase {
     func test_friendle_description() {
