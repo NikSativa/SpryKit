@@ -1,7 +1,6 @@
 import Foundation
+import SpryKit
 import XCTest
-
-@testable import NSpry
 
 final class SpryEquatableTests: XCTestCase {
     func test_NOT_Equatable_and_AnyObject() {

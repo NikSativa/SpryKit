@@ -1,6 +1,6 @@
 #if (os(macOS) || os(iOS) || os(visionOS)) && (arch(x86_64) || arch(arm64))
 import Foundation
-import NSpry
+import SpryKit
 import XCTest
 
 final class XCTAssertThrowsAssertionTests: XCTestCase {

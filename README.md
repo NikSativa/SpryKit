@@ -1,6 +1,6 @@
-# NSpry
+# Spry
 
-NSpry is a framework that allows spying and stubbing in Apple's Swift language. Also included is a [Nimble](https://github.com/Quick/Nimble "Nimble") matcher for the spied objects.
+Spry is a framework that allows spying and stubbing in Apple's Swift language. Also included is a [Nimble](https://github.com/Quick/Nimble "Nimble") matcher for the spied objects.
 
 __Table of Contents__
 
@@ -26,9 +26,9 @@ __Table of Contents__
 
 When writing tests for a class, it is advised to only test that class's behavior and not the other objects it uses. With Swift this can be difficult.
 
-How do you check if you are calling the correct methods at the appropriate times and passing in the appropriate arguments? NSpry allows you to easily make a spy object that records every called function and the passed-in arguments.
+How do you check if you are calling the correct methods at the appropriate times and passing in the appropriate arguments? Spry allows you to easily make a spy object that records every called function and the passed-in arguments.
 
-How do you ensure that an injected object is going to return the necessary values for a given test? NSpry allows you to easily make a stub object that can return a specific value.
+How do you ensure that an injected object is going to return the necessary values for a given test? Spry allows you to easily make a stub object that can return a specific value.
 
 This way you can write tests from the point of view of the class you are testing (the subject under test) and nothing more.
 
@@ -295,7 +295,7 @@ Fake.resetCalls()
 
 ## SpryEquatable
 
-NSpry uses `SpryEquatable` protocol to equate arguments
+Spry uses `SpryEquatable` protocol to equate arguments
 
 * Make types conform to `SpryEquatable` using only a single line to declare conformance and one of the following
     * Be AnyObject
@@ -329,12 +329,6 @@ extension Person: Equatable, SpryEquatable {
 
 // existing type that is already Equatable
 extension String: SpryEquatable {}
-```
-
-[AutoEquatable](https://github.com/Rivukis/AutoEquatable) is a library to automatically conform to Equatable which turns the above into.
-
-```swift
-extension Person: AutoEquatable, SpryEquatable { }
 ```
 
 ## ArgumentEnum
@@ -377,5 +371,4 @@ let secondArgFromSecondCall = captor.getValue(at: 1, as: String.self)
 
 ## Contributing
 
-If you have an idea that can make NSpry better, please don't hesitate to submit a pull request!
-Based on [Spry](https://github.com/Rivukis/Spry "Spry")
+If you have an idea that can make Spry better, please don't hesitate to submit a pull request!

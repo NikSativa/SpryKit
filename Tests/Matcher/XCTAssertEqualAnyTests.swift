@@ -1,5 +1,5 @@
 import Foundation
-import NSpry
+import SpryKit
 import XCTest
 
 final class XCTAssertEqualAnyTests: XCTestCase {
