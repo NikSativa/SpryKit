@@ -1,35 +1,29 @@
-# Spry
+# SpryKit
 
-Spry is a framework that allows spying and stubbing in Apple's Swift language. Also included is a [Nimble](https://github.com/Quick/Nimble "Nimble") matcher for the spied objects.
+SpryKit is a framework that allows spying and stubbing in Apple's Swift language.
 
 __Table of Contents__
 
 * [Motivation](#motivation)
 * [Spryable](#spryable)
-    * [Example](#spryable-example)
 * [Stubbable](#stubbable)
-    * [Stubbable Example](#stubbable-example)
-    * [Stubbing Example](#stubbing-example)
 * [Spyable](#spyable)
-    * [Spyable Example](#spyable-example)
-    * [Did Call Example](#did-call-example)
-* [Have Received Matcher](#have-received-matcher)
-    * [Have Received Example](#have-received-example)
+* [XCTAsserts](#xctasserts)
+    * [XCTAssertHaveReceived / XCTAssertHaveNotReceived](#xctasserthavereceived--xctasserthavenotreceived)
+    * [XCTAssertEqualAny / XCTAssertNotEqualAny](#xctassertequalany--xctassertnotequalany)
+    * [XCTAssertThrowsAssertion](#xctassertthrowsassertion)
+    * [XCTAssertThrowsError / XCTAssertNoThrowError](#xctassertthrowserror--xctassertnothrowerror)
+    * [XCTAssertEqualError / XCTAssertNotEqualError](#xctassertequalerror--xctassertnotequalerror)
+    * [XCTAssertEqualImage / XCTAssertNotEqualImage](#xctassertequalimage--xctassertnotequalimage)
 * [SpryEquatable](#spryequatable)
-    * [SpryEquatable Conformance Example](#spryequatable-conformance-example)
-* [ArgumentEnum](#argumentenum)
+* [Argument](#Argument)
 * [ArgumentCaptor](#argumentcaptor)
-    * [ArgumentCaptor Example](#argumentcaptor-example)
-* [Installation](#installation)
 
 ## Motivation
 
 When writing tests for a class, it is advised to only test that class's behavior and not the other objects it uses. With Swift this can be difficult.
-
-How do you check if you are calling the correct methods at the appropriate times and passing in the appropriate arguments? Spry allows you to easily make a spy object that records every called function and the passed-in arguments.
-
-How do you ensure that an injected object is going to return the necessary values for a given test? Spry allows you to easily make a stub object that can return a specific value.
-
+How do you check if you are calling the correct methods at the appropriate times and passing in the appropriate arguments? SpryKit allows you to easily make a spy object that records every called function and the passed-in arguments.
+How do you ensure that an injected object is going to return the necessary values for a given test? SpryKit allows you to easily make a stub object that can return a specific value.
 This way you can write tests from the point of view of the class you are testing (the subject under test) and nothing more.
 
 ## Spryable
@@ -45,8 +39,6 @@ __Abilities__
     * In every function (the ones that should be stubbed and spied) return the result of `spryify()` passing in all arguments (if any)
         * also works for special functions like `subscript`
     * In every property (the ones that should be stubbed and spied) return the result of `stubbedValue()` in the `get {}` and use `recordCall()` in the `set {}`
-
-### Spryable Example
 
 ```swift
 // The Real Thing can be a protocol
@@ -134,8 +126,6 @@ __Abilities__
 * Rich `fatalError()` messages that include a detailed list of all stubbed functions when no stub is found (or the arguments received didn't pass validation)
 * Reset stubs with `resetStubs()`
 
-### Stubbing Example
-
 ```swift
 // will always return `"stubbed value"`
 fakeStringService.stub(.hereAreTwoStrings).andReturn("stubbed value")
@@ -192,8 +182,6 @@ __Abilities__
 * Rich Failure messages that include a detailed list of called functions and arguments
 * Reset calls with `resetCalls()`
 
-### Spyable Example
-
 __The Result__
 
 ```swift
@@ -245,93 +233,133 @@ fake.didCall(.propertyName, with: "value").success
 Fake.didCall(.functionName).success
 ```
 
-## Have Received Matcher
+## XCTAsserts
 
-Have Received Matcher is made to be used with [Nimble](https://github.com/Quick/Nimble "Nimble"). 
-All Call Matchers can be used with `to()`, `toNot()`, `toEventually()`, and `toEventuallyNot()`
+SpryKit provides a set of `XCTAssert` functions to make testing with SpryKit easier.
 
-### Have Received Example
+### XCTAssertHaveReceived / XCTAssertHaveNotReceived
+
+Have Received Matcher is made to be used with XCTest.
+
 ```swift
 // passes if the function was called
-expect(fake).to(haveReceived(.functionName)
+XCTAssertHaveReceived(fake, .functionName)
 
 // passes if the function was called a number of times
-expect(fake).to(haveReceived(.functionName, countSpecifier: .exactly(1)))
+XCTAssertHaveReceived(fake, .functionName, countSpecifier: .exactly(1))
 
 // passes if the function was called at least a number of times
-expect(fake).to(haveReceived(.functionName, countSpecifier: .atLeast(2)))
+XCTAssertHaveReceived(fake, .functionName, countSpecifier: .atLeast(2))
 
 // passes if the function was called at most a number of times
-expect(fake).to(haveReceived(.functionName, countSpecifier: .atMost(1)))
+XCTAssertHaveReceived(fake, .functionName, countSpecifier: .atMost(1))
 
 // passes if the function was called with equivalent arguments
-expect(fake).to(haveReceived(.functionName, with: "firstArg", "secondArg"))
+XCTAssertHaveReceived(fake, .functionName, with: "firstArg", "secondArg")
 
 // passes if the function was called with arguments that pass the specified options
-expect(fake).to(haveReceived(.functionName, with: Argument.nonNil, Argument.anything, "thirdArg"))
+XCTAssertHaveReceived(fake, .functionName, with: Argument.nonNil, Argument.anything, "thirdArg")
 
 // passes if the function was called with an argument that passes the custom validation
-let customArgumentValidation = Argument.pass({ argument -> Bool in
+let customArgumentValidation = Argument.validator({ argument -> Bool in
     let passesCustomValidation = // ...
     return passesCustomValidation
 })
-expect(fake).to(haveReceived(.functionName, with: customArgumentValidation))
+XCTAssertHaveReceived(fake, .functionName, with: customArgumentValidation)
 
 // passes if the function was called with equivalent arguments a number of times
-expect(fake).to(haveReceived(.functionName, with: "firstArg", "secondArg", countSpecifier: .exactly(1)))
+XCTAssertHaveReceived(fake, .functionName, with: "firstArg", "secondArg", countSpecifier: .exactly(1))
 
 // passes if the property was set to the specified value
-expect(fake).to(haveReceived(.propertyName, with "value"))
+XCTAssertHaveReceived(fake, .propertyName, with: "value")
 
 // passes if the class function was called
-expect(Fake).to(haveReceived(.functionName))
+XCTAssertHaveReceived(Fake.self, .functionName)
 
 // passes if the class property was set
-expect(Fake).to(haveReceived(.propertyName))
+XCTAssertHaveReceived(Fake.self, .propertyName)
 
 // do not forget to reset calls on class objects (since Class objects are essentially singletons)
-Fake.resetCalls()
+Fake.resetCallsAndStubs()
+```
+
+### XCTAssertEqualAny / XCTAssertNotEqualAny
+
+Function that compares two values of any type. This is useful when you need to compare two instances of a class/struct `#FF0000` **`even if they are not conform to `Equatable` protocol`** `#000000`.
+
+```swift
+struct User {
+    let name: String
+    let age: Int
+}
+XCTAssertEqualAny(User(name: "John", age: 30), User(name: "John", age: 30))
+XCTAssertNotEqualAny(User(name: "Bob", age: 20), User(name: "John", age: 30))
+```
+
+### XCTAssertThrowsAssertion
+
+Function that checks if the block throws an assertion.
+
+```swift
+XCTAssertThrowsAssertion {
+    assertionFailure("should catch this assertion failure")
+}
+```
+
+### XCTAssertThrowsError / XCTAssertNoThrowError
+
+Function that checks if the block throws an error.
+
+```swift
+private func throwError() throws {
+    throw XCTAssertThrowsErrorTests.Error.one
+}
+
+XCTAssertThrowsError(Error.one) {
+    try throwError()
+}
+
+private func notThrowError() throws {
+    // nothig
+}
+XCTAssertNoThrowError(try notThrowError())
+```
+
+### XCTAssertEqualError / XCTAssertNotEqualError
+
+Function that compares two errors.
+```swift
+XCTAssertEqualError(Error.one, Error.one)
+XCTAssertNotEqualError(Error.one, Error.two)
+```
+
+### XCTAssertEqualImage / XCTAssertNotEqualImage
+
+Function that compares two images by their data representation even if they are not the same type.
+> [!TIP]
+> Use mocked images by `UIImage.spry.testImage`
+
+```swift
+XCTAssertEqualImage(Image.spry.testImage, Image.spry.testImage)
+XCTAssertNotEqualImage(Image.spry.testImage, Image.spry.testImage2)
 ```
 
 ## SpryEquatable
 
-Spry uses `SpryEquatable` protocol to equate arguments
+SpryKit uses the SpryEquatable protocol to override comparisons in your test classes on your own risk. This is useful when you need to compare two instances of a class/struct that is not conform to `Equatable` and/or you need to skip some properties in the comparison (ex. closures). 
+Make types conform to `SpryEquatable` only when you neeed something very specific, otherwise use `Equatable` protocol or `XCTAssertEqualAny`. 
 
-* Make types conform to `SpryEquatable` using only a single line to declare conformance and one of the following
-    * Be AnyObject
-        * all `class`s are `AnyObject`
-        * `enum`s and `struct`s are NOT `AnyObject`
-    * Conform to swift's `Equatable` Protocol
-        * To make custom types conform to `Equatable`, see Apple's Documentation: [Equatable](https://developer.apple.com/reference/swift/equatable "Swift's Equatable")
-        * NOTE: If you forget to conform to `Equatable`, the compiler will only tell you that you are not conforming to `SpryEquatable` (You should never implement methods declared in `SpryEquatable`)
-* NOTE: Object's, that are both `AnyObject` and conform to `Equatable`, will use `Equatable`'s' `==(lhs:rhs:)` function and not pointer comparision.
-
-__Defaulted Conformance List__
-
-* Optional (will `fatalError()` at runtime if the wrapped type does not conform to SpryEquatable)
-* String
-* Int
-* Double
-* Bool
-* Array
-* Dictionary
-* NSObject
-
-### SpryEquatable Conformance Example
 ```swift
 // custom type
-extension Person: Equatable, SpryEquatable {
+extension Person: SpryEquatable {
     public state func == (lhs: Person, rhs: Person) -> Bool {
         return lhs.name == rhs.name
             && lhs.age == rhs.age
     }
 }
-
-// existing type that is already Equatable
-extension String: SpryEquatable {}
 ```
 
-## ArgumentEnum
+## Argument
 
 Use when the exact comparison of an argument using the `Equatable` protocol is not desired, needed, or possible.
 
@@ -341,22 +369,22 @@ Use when the exact comparison of an argument using the `Equatable` protocol is n
     * Used to indicate that anything non-nil passed in will be sufficient.
 * `case nil`
     * Used to indicate that only nil passed in will be sufficient.
-* `case pass((Any?) -> Bool)`
+* `case validator`
     * Used to provide custom validation for a specific argument.
     * The associated value is a closure which takes in the argument and returns a bool to indicate whether or not it passed validation.
-* `func captor() -> ArgumentCaptor`
+* `func captor`
     * Used to create a new [ArgumentCaptor](#argumentcaptor)
     * An argument captor is used to capture arguments as the function is called so that they can be accessed at a later point.
+* `func isType<T>`
+    * Type is exactly the type passed in match this qualification (subtypes do NOT qualify).
+* `func instanceOf<T>`
+    * Only objects whose type is exactly the type passed in match this qualification (subtypes do NOT qualify).
 
 ## ArgumentCaptor
 
 ArgumentCaptor is used to capture a specific argument when the stubbed function is called. Afterward the captor can serve up the captured argument for custom argument checking. An ArgumentCaptor will capture the specified argument every time the stubbed function is called.
-
 Captured arguments are stored in chronological order for each function call. When getting an argument you can specify which argument to get (defaults to the first time the function was called)
-
 When getting a captured argument the type must be specified. If the argument can not be cast as the type given then a `fatalError()` will occur.
-
-### ArgumentCaptor Example:
 
 ```swift
 let captor = Argument.captor()
@@ -367,8 +395,11 @@ _ = fakeStringService.hereAreTwoStrings(string1: "first arg second call", string
 
 let secondArgFromFirstCall = captor.getValue(as: String.self) // `at:` defaults to `0` or first call
 let secondArgFromSecondCall = captor.getValue(at: 1, as: String.self)
+// or
+let secondArgFromFirstCall: String = captor[0]
+let secondArgFromSecondCall: String = captor[1]
 ```
 
 ## Contributing
 
-If you have an idea that can make Spry better, please don't hesitate to submit a pull request!
+If you have an idea that can make SpryKit better, please don't hesitate to submit a pull request!
