@@ -16,10 +16,15 @@ extension SpryItem {
 }
 
 final class SpryDictionary<T: SpryItem> {
+    private let mutex = PThread(kind: .recursive)
+
     /// Array of all stubs in chronological order.
     var values: [T] {
-        return valuesMap
-            .values
+        let valuesMap = mutex.sync {
+            return self.valuesMap
+        }
+
+        return valuesMap.values
             .flatMap { $0 }
             .sorted { $0.chronologicalIndex < $1.chronologicalIndex }
     }
@@ -29,6 +34,11 @@ final class SpryDictionary<T: SpryItem> {
     private var valuesMap: [String: [T]] = [:]
 
     func append(_ stub: T) {
+        mutex.lock()
+        defer {
+            mutex.unlock()
+        }
+
         var stubs = valuesMap[stub.functionName] ?? []
 
         chronologicalIndex &+= 1
@@ -39,6 +49,11 @@ final class SpryDictionary<T: SpryItem> {
     }
 
     func completedDuplicates(of stub: T) -> [T] {
+        mutex.lock()
+        defer {
+            mutex.unlock()
+        }
+
         var duplicates: [T] = []
 
         for cached in valuesMap[stub.functionName] ?? [] {
@@ -55,10 +70,17 @@ final class SpryDictionary<T: SpryItem> {
     }
 
     func get(for functionName: String) -> [T] {
-        return valuesMap[functionName] ?? []
+        return mutex.sync {
+            return valuesMap[functionName] ?? []
+        }
     }
 
     func remove(stubs removingStubs: [T], forFunctionName functionName: String) {
+        mutex.lock()
+        defer {
+            mutex.unlock()
+        }
+
         var currentStubs = valuesMap[functionName] ?? []
 
         for removedStub in removingStubs {
@@ -71,7 +93,9 @@ final class SpryDictionary<T: SpryItem> {
     }
 
     func clearAll() {
-        valuesMap = [:]
+        mutex.sync {
+            valuesMap = [:]
+        }
     }
 }
 
@@ -79,7 +103,9 @@ final class SpryDictionary<T: SpryItem> {
 
 extension SpryDictionary: CustomStringConvertible {
     var description: String {
-        return String(describing: valuesMap)
+        return mutex.sync {
+            return String(describing: valuesMap)
+        }
     }
 }
 
@@ -87,7 +113,9 @@ extension SpryDictionary: CustomStringConvertible {
 
 extension SpryDictionary: CustomDebugStringConvertible {
     var debugDescription: String {
-        return String(describing: valuesMap)
+        return mutex.sync {
+            return String(describing: valuesMap)
+        }
     }
 }
 
@@ -95,6 +123,8 @@ extension SpryDictionary: CustomDebugStringConvertible {
 
 extension SpryDictionary: SpryFriendlyStringConvertible {
     var friendlyDescription: String {
-        return makeFriendlyDescription(for: values, separator: "; ", closeEach: false)
+        return mutex.sync {
+            return makeFriendlyDescription(for: values, separator: "; ", closeEach: false)
+        }
     }
 }

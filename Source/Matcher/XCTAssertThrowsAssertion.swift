@@ -8,6 +8,7 @@ public func XCTAssertThrowsAssertion(_ message: @autoclosure () -> String = "",
                                      file: StaticString = #file,
                                      line: UInt = #line,
                                      _ expression: @escaping () throws -> some Any) {
+    print(" --- ⚠️ ignore this assertion in console! this is a result of XCTAssertThrowsAssertion ⚠️ --- ")
     XCTAssertNotNil(catchBadInstruction(in: {
         do {
             _ = try expression()

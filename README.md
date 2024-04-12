@@ -1,6 +1,8 @@
 # SpryKit
 
 SpryKit is a framework that allows spying and stubbing in Apple's Swift language.
+> [!IMPORTANT]
+> SpryKit is thread-safe and can be used in a multi-threaded environment.
 
 __Table of Contents__
 
