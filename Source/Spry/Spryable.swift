@@ -1,113 +1,112 @@
 import Foundation
 
-public extension Spryable {
-    // MARK: - Instance
+/// Convenience protocol to conform to and use Spyable and Stubbable protocols with less effort.
+///
+/// See Spyable and Stubbable or more information.
+public protocol Spryable: Spyable, Stubbable {
+    // MARK: Instance
 
-    func spryify<T>(_ functionName: String = #function, arguments: Any?..., asType _: T.Type = T.self, file: String = #file, line: Int = #line) -> T {
-        functionName.validateArguments(arguments)
+    /// Convenience function to record a call and return a stubbed value.
+    ///
+    /// See `Spyable`'s `recordCall()` and `Stubbable`'s `stubbedValue()` for more information.
+    ///
+    /// - Important: Do NOT implement function. Use default implementation provided by Spry.
+    ///
+    /// - Parameter function: The function signature. Defaults to #function.
+    /// - Parameter arguments: The function arguments being passed in.
+    /// - Parameter asType: The type to be returned. Defaults to using type inference. Only specify if needed or for performance.
+    func spryify<T>(_ functionName: String, arguments: Any?..., asType _: T.Type, file: String, line: Int) -> T
 
-        let function = Function(functionName: functionName, type: Self.self, file: file, line: line)
-        do {
-            defer {
-                internal_recordCall(function: function, arguments: arguments)
-            }
-            return try internal_stubbedValue(function, arguments: arguments, fallback: .noFallback)
-        } catch {
-            Constant.FatalError.andThrowOnNonThrowingInstanceFunction(stubbable: self, function: function)
-        }
-    }
+    /// Convenience function to record a call and return a stubbed value.
+    ///
+    /// See `Spyable`'s `recordCall()` and `Stubbable`'s `stubbedValue()` for more information.
+    ///
+    /// - Important: Do NOT implement function. Use default implementation provided by Spry.
+    ///
+    /// - Parameter function: The function signature. Defaults to #function.
+    /// - Parameter arguments: The function arguments being passed in.
+    /// - Parameter fallbackValue: The fallback value to be used if no stub is found for the given function signature and arguments. Can give false positives when testing. Use with caution.
+    func spryify<T>(_ functionName: String, arguments: Any?..., fallbackValue: T, file: String, line: Int) -> T
 
-    func spryifyThrows<T>(_ functionName: String = #function, arguments: Any?..., asType _: T.Type = T.self, file: String = #file, line: Int = #line) throws -> T {
-        functionName.validateArguments(arguments)
+    /// Convenience function to record a call and return a stubbed value from a throwable function.
+    ///
+    /// See `Spyable`'s `recordCall()` and `Stubbable`'s `stubbedValueThrows()` for more information.
+    ///
+    /// - Important: Do NOT implement function. Use default implementation provided by Spry.
+    ///
+    /// - Parameter function: The function signature. Defaults to #function.
+    /// - Parameter arguments: The function arguments being passed in.
+    /// - Parameter asType: The type to be returned. Defaults to using type inference. Only specify if needed or for performance.
+    func spryifyThrows<T>(_ functionName: String, arguments: Any?..., asType _: T.Type, file: String, line: Int) throws -> T
 
-        let function = Function(functionName: functionName, type: Self.self, file: file, line: line)
-        defer {
-            internal_recordCall(function: function, arguments: arguments)
-        }
-        return try internal_stubbedValue(function, arguments: arguments, fallback: .noFallback)
-    }
+    /// Convenience function to record a call and return a stubbed value from a throwable function.
+    ///
+    /// See `Spyable`'s `recordCall()` and `Stubbable`'s `stubbedValue()` for more information.
+    ///
+    /// - Important: Do NOT implement function. Use default implementation provided by Spry.
+    ///
+    /// - Parameter function: The function signature. Defaults to #function.
+    /// - Parameter arguments: The function arguments being passed in.
+    /// - Parameter fallbackValue: The fallback value to be used if no stub is found for the given function signature and arguments. Can give false positives when testing. Use with caution.
+    func spryifyThrows<T>(_ functionName: String, arguments: Any?..., fallbackValue: T, file: String, line: Int) throws -> T
 
-    func spryify<T>(_ functionName: String = #function, arguments: Any?..., fallbackValue: T, file: String = #file, line: Int = #line) -> T {
-        functionName.validateArguments(arguments)
-
-        let function = Function(functionName: functionName, type: Self.self, file: file, line: line)
-        do {
-            defer {
-                internal_recordCall(function: function, arguments: arguments)
-            }
-            return try internal_stubbedValue(function, arguments: arguments, fallback: .fallback(fallbackValue))
-        } catch {
-            Constant.FatalError.andThrowOnNonThrowingInstanceFunction(stubbable: self, function: function)
-        }
-    }
-
-    func spryifyThrows<T>(_ functionName: String = #function, arguments: Any?..., fallbackValue: T, file: String = #file, line: Int = #line) throws -> T {
-        functionName.validateArguments(arguments)
-
-        let function = Function(functionName: functionName, type: Self.self, file: file, line: line)
-        defer {
-            internal_recordCall(function: function, arguments: arguments)
-        }
-        return try internal_stubbedValue(function, arguments: arguments, fallback: .fallback(fallbackValue))
-    }
-
-    func resetCallsAndStubs() {
-        resetCalls()
-        resetStubs()
-    }
+    /// Removes all recorded calls and stubs.
+    ///
+    /// - Important: Do NOT implement function. Use default implementation provided by Spry.
+    ///
+    /// - Important: The spryified object will have NO way of knowing about calls or stubs made before this function is called. Use with caution.
+    func resetCallsAndStubs()
 
     // MARK: - Static
 
-    static func spryify<T>(_ functionName: String = #function, arguments: Any?..., asType _: T.Type = T.self, file: String = #file, line: Int = #line) -> T {
-        functionName.validateArguments(arguments)
+    /// Convenience function to record a call and return a stubbed value.
+    ///
+    /// See `Spyable`'s `recordCall()` and `Stubbable`'s `stubbedValue()` for more information.
+    ///
+    /// - Important: Do NOT implement function. Use default implementation provided by Spry.
+    ///
+    /// - Parameter function: The function signature. Defaults to #function.
+    /// - Parameter arguments: The function arguments being passed in.
+    /// - Parameter asType: The type to be returned. Defaults to using type inference. Only specify if needed or for performance.
+    static func spryify<T>(_ functionName: String, arguments: Any?..., asType _: T.Type, file: String, line: Int) -> T
 
-        let function = ClassFunction(functionName: functionName, type: self, file: file, line: line)
-        do {
-            defer {
-                internal_recordCall(function: function, arguments: arguments)
-            }
-            return try internal_stubbedValue(function, arguments: arguments, fallback: .noFallback)
-        } catch {
-            Constant.FatalError.andThrowOnNonThrowingClassFunction(stubbable: self, function: function)
-        }
-    }
+    /// Convenience function to record a call and return a stubbed value.
+    ///
+    /// See `Spyable`'s `recordCall()` and `Stubbable`'s `stubbedValue()` for more information.
+    ///
+    /// - Important: Do NOT implement function. Use default implementation provided by Spry.
+    ///
+    /// - Parameter function: The function signature. Defaults to #function.
+    /// - Parameter arguments: The function arguments being passed in.
+    /// - Parameter fallbackValue: The fallback value to be used if no stub is found for the given function signature and arguments. Can give false positives when testing. Use with caution.
+    static func spryify<T>(_ functionName: String, arguments: Any?..., fallbackValue: T, file: String, line: Int) -> T
 
-    static func spryify<T>(_ functionName: String = #function, arguments: Any?..., fallbackValue: T, file: String = #file, line: Int = #line) -> T {
-        functionName.validateArguments(arguments)
+    /// Convenience function to record a call and return a stubbed value from a throwable function.
+    ///
+    /// See `Spyable`'s `recordCall()` and `Stubbable`'s `stubbedValue()` for more information.
+    ///
+    /// - Important: Do NOT implement function. Use default implementation provided by Spry.
+    ///
+    /// - Parameter function: The function signature. Defaults to #function.
+    /// - Parameter arguments: The function arguments being passed in.
+    /// - Parameter asType: The type to be returned. Defaults to using type inference. Only specify if needed or for performance.
+    static func spryifyThrows<T>(_ functionName: String, arguments: Any?..., asType _: T.Type, file: String, line: Int) throws -> T
 
-        let function = ClassFunction(functionName: functionName, type: self, file: file, line: line)
-        do {
-            defer {
-                internal_recordCall(function: function, arguments: arguments)
-            }
-            return try internal_stubbedValue(function, arguments: arguments, fallback: .fallback(fallbackValue))
-        } catch {
-            Constant.FatalError.andThrowOnNonThrowingClassFunction(stubbable: self, function: function)
-        }
-    }
+    /// Convenience function to record a call and return a stubbed value from a throwable function.
+    ///
+    /// See `Spyable`'s `recordCall()` and `Stubbable`'s `stubbedValue()` for more information.
+    ///
+    /// - Important: Do NOT implement function. Use default implementation provided by Spry.
+    ///
+    /// - Parameter function: The function signature. Defaults to #function.
+    /// - Parameter arguments: The function arguments being passed in.
+    /// - Parameter fallbackValue: The fallback value to be used if no stub is found for the given function signature and arguments. Can give false positives when testing. Use with caution.
+    static func spryifyThrows<T>(_ functionName: String, arguments: Any?..., fallbackValue: T, file: String, line: Int) throws -> T
 
-    static func spryifyThrows<T>(_ functionName: String = #function, arguments: Any?..., asType _: T.Type = T.self, file: String = #file, line: Int = #line) throws -> T {
-        functionName.validateArguments(arguments)
-
-        let function = ClassFunction(functionName: functionName, type: self, file: file, line: line)
-        defer {
-            internal_recordCall(function: function, arguments: arguments)
-        }
-        return try internal_stubbedValue(function, arguments: arguments, fallback: .noFallback)
-    }
-
-    static func spryifyThrows<T>(_ functionName: String = #function, arguments: Any?..., fallbackValue: T, file: String = #file, line: Int = #line) throws -> T {
-        functionName.validateArguments(arguments)
-
-        let function = ClassFunction(functionName: functionName, type: self, file: file, line: line)
-        defer {
-            internal_recordCall(function: function, arguments: arguments)
-        }
-        return try internal_stubbedValue(function, arguments: arguments, fallback: .fallback(fallbackValue))
-    }
-
-    static func resetCallsAndStubs() {
-        resetCalls()
-        resetStubs()
-    }
+    /// Removes all recorded calls and stubs.
+    ///
+    /// - Important: Do NOT implement function. Use default implementation provided by Spry.
+    ///
+    /// - Important: The spryified object will have NO way of knowing about calls or stubs made before this function is called. Use with caution.
+    static func resetCallsAndStubs()
 }
