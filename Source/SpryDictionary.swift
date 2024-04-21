@@ -15,7 +15,8 @@ extension SpryItem {
     }
 }
 
-final class SpryDictionary<T: SpryItem> {
+@preconcurrency
+final class SpryDictionary<T: SpryItem>: @unchecked Sendable {
     private let mutex = PThread(kind: .recursive)
 
     /// Array of all stubs in chronological order.

@@ -1,5 +1,7 @@
 import Foundation
 
+/// PropertyReflector is a utility to read properties of a class or struct which are not accessible directly.
+/// It is useful to read properties of a class or struct for testing purposes.
 public struct PropertyReflector {
     private let properties: [String: Any]
 

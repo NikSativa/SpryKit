@@ -9,13 +9,13 @@ let package = Package(
         .macOS(.v11),
         .macCatalyst(.v13),
         .tvOS(.v13),
-        .watchOS(.v4)
+        .watchOS(.v5)
     ],
     products: [
         .library(name: "SpryKit", targets: ["SpryKit"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", .upToNextMinor(from: "2.2.1"))
+        .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", .upToNextMinor(from: "2.2.2"))
     ],
     targets: [
         .target(name: "SpryKit",

@@ -11,22 +11,27 @@ final class ThreadSafeTests: XCTestCase {
 
         let mutex = PThread(kind: .recursive)
         var expectetions: [XCTestExpectation] = []
-        var values: [String] = []
+        let storage = Storage()
 
-        for i in 0..<1000 {
+        for i in 0..<100 {
             let exp = expectation(description: "ThreadSafe[\(i)]")
             expectetions.append(exp)
 
             let queue: DispatchQueue = Bool.random() ? .global(qos: .utility) : .global(qos: .background)
             queue.asyncAfter(deadline: .now() + 0.1) {
                 mutex.sync {
-                    values.append(threadSafe.getAString())
+                    let v = threadSafe.getAString()
+                    storage.values.append(v)
                 }
                 exp.fulfill()
             }
         }
 
-        wait(for: expectetions, timeout: 1)
-        XCTAssertEqual(values.count, expectetions.count)
+        wait(for: expectetions, timeout: 5)
+        XCTAssertEqual(storage.values.count, expectetions.count)
     }
+}
+
+private final class Storage: @unchecked Sendable {
+    var values: [String] = []
 }

@@ -4,7 +4,7 @@ import XCTest
 @inline(__always)
 public func XCTAssertThrowsError(_ error: @autoclosure () -> Error,
                                  _ message: @autoclosure () -> String = "",
-                                 file: StaticString = #file,
+                                 file: StaticString = #filePath,
                                  line: UInt = #line,
                                  _ expression: () throws -> some Any) {
     XCTAssertThrowsError(try expression(), message(), file: file, line: line) { thrown in
@@ -16,7 +16,7 @@ public func XCTAssertThrowsError(_ error: @autoclosure () -> Error,
 public func XCTAssertThrowsError(_ expression: @autoclosure () throws -> some Any,
                                  _ error: @autoclosure () -> Error,
                                  _ message: @autoclosure () -> String = "",
-                                 file: StaticString = #file,
+                                 file: StaticString = #filePath,
                                  line: UInt = #line) {
     XCTAssertThrowsError(error(), message(), file: file, line: line, expression)
 }
@@ -26,7 +26,7 @@ public func XCTAssertThrowsError(_ expression: @autoclosure () throws -> some An
 @inline(__always)
 @discardableResult
 public func XCTAssertNoThrowError<T>(_ message: @autoclosure () -> String = "",
-                                     file: StaticString = #file,
+                                     file: StaticString = #filePath,
                                      line: UInt = #line,
                                      _ expression: () throws -> T?) -> T? {
     do {
@@ -41,7 +41,7 @@ public func XCTAssertNoThrowError<T>(_ message: @autoclosure () -> String = "",
 @discardableResult
 public func XCTAssertNoThrowError<T>(_ expression: @autoclosure () throws -> T?,
                                      _ message: @autoclosure () -> String = "",
-                                     file: StaticString = #file,
+                                     file: StaticString = #filePath,
                                      line: UInt = #line) -> T? {
     return XCTAssertNoThrowError(message(), file: file, line: line, expression)
 }
