@@ -5,7 +5,7 @@ import XCTest
 
 @inline(__always)
 public func XCTAssertThrowsAssertion(_ message: @autoclosure () -> String = "",
-                                     file: StaticString = #file,
+                                     file: StaticString = #filePath,
                                      line: UInt = #line,
                                      _ expression: @escaping () throws -> some Any) {
     print(" --- ⚠️ ignore this assertion in console! this is a result of XCTAssertThrowsAssertion ⚠️ --- ")
@@ -21,7 +21,7 @@ public func XCTAssertThrowsAssertion(_ message: @autoclosure () -> String = "",
 @inline(__always)
 public func XCTAssertThrowsAssertion(_ expression: @autoclosure @escaping () throws -> some Any,
                                      _ message: @autoclosure () -> String = "",
-                                     file: StaticString = #file,
+                                     file: StaticString = #filePath,
                                      line: UInt = #line) {
     XCTAssertThrowsAssertion(message(), file: file, line: line, expression)
 }

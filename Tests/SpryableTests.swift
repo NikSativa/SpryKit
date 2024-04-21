@@ -12,9 +12,9 @@ final class SpryableTests: XCTestCase {
     }
 
     func test_recording_calls_instance_with_arguments() {
-        subject.stub(.getAStringWithArguments).andReturn("out")
+        subject.stub(.getAStringWithString).andReturn("out")
         let actual = subject.getAString(string: "in")
-        XCTAssertTrue(subject.didCall(.getAStringWithArguments).success)
+        XCTAssertTrue(subject.didCall(.getAStringWithString).success)
         XCTAssertEqual(actual, "out")
     }
 

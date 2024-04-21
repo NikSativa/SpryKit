@@ -1,4 +1,4 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.9
 // swiftformat:disable all
 import PackageDescription
 
@@ -9,7 +9,8 @@ let package = Package(
         .macOS(.v11),
         .macCatalyst(.v13),
         .tvOS(.v13),
-        .watchOS(.v5)
+        .watchOS(.v5),
+        .visionOS(.v1)
     ],
     products: [
         .library(name: "SpryKit", targets: ["SpryKit"]),

@@ -73,12 +73,8 @@ private func AssertEqual(condition: Bool,
         let rhs = try XCTUnwrap(expression2(), message(), file: file, line: line)
 
         if condition {
-            XCTAssertEqual(lhs.size.width, rhs.size.width, accuracy: 0.001, file: file, line: line)
-            XCTAssertEqual(lhs.size.height, rhs.size.height, accuracy: 0.001, file: file, line: line)
             XCTAssertEqual(lhs.testData(), rhs.testData(), message(), file: file, line: line)
         } else {
-            XCTAssertNotEqual(lhs.size.width, rhs.size.width, accuracy: 0.001, file: file, line: line)
-            XCTAssertNotEqual(lhs.size.height, rhs.size.height, accuracy: 0.001, file: file, line: line)
             XCTAssertNotEqual(lhs.testData(), rhs.testData(), message(), file: file, line: line)
         }
     } catch {

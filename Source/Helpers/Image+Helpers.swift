@@ -32,17 +32,35 @@ public extension Image {
 
 public extension Image.spry {
     #if os(macOS)
-    static let testImage: Image = .init(systemSymbolName: "circle", accessibilityDescription: nil)!
-    static let testImage1: Image = .init(systemSymbolName: "square", accessibilityDescription: nil)!
-    static let testImage2: Image = .init(systemSymbolName: "diamond", accessibilityDescription: nil)!
-    static let testImage3: Image = .init(systemSymbolName: "octagon", accessibilityDescription: nil)!
-    static let testImage4: Image = .init(systemSymbolName: "oval", accessibilityDescription: nil)!
+    nonisolated(unsafe) static let testImage: Image = .init(systemSymbolName: "circle", accessibilityDescription: nil)!
+    nonisolated(unsafe) static let testImage1: Image = .init(systemSymbolName: "square", accessibilityDescription: nil)!
+    nonisolated(unsafe) static let testImage2: Image = .init(systemSymbolName: "diamond", accessibilityDescription: nil)!
+    nonisolated(unsafe) static let testImage3: Image = .init(systemSymbolName: "octagon", accessibilityDescription: nil)!
+    nonisolated(unsafe) static let testImage4: Image = .init(systemSymbolName: "oval", accessibilityDescription: nil)!
     #elseif os(iOS) || os(tvOS) || os(watchOS) || os(visionOS)
-    static let testImage: Image = .init(systemName: "circle")!
-    static let testImage1: Image = .init(systemName: "square")!
-    static let testImage2: Image = .init(systemName: "diamond")!
-    static let testImage3: Image = .init(systemName: "octagon")!
-    static let testImage4: Image = .init(systemName: "oval")!
+    static let testImage: Image = Self.image(withColor: .blue)
+    static let testImage1: Image = Self.image(withColor: .green)
+    static let testImage2: Image = Self.image(withColor: .red)
+    static let testImage3: Image = Self.image(withColor: .black)
+    static let testImage4: Image = Self.image(withColor: .white)
+
+    private static func image(withColor color: UIColor) -> Image {
+        let rect = CGRect(origin: .zero, size: CGSize(width: 4, height: 4))
+
+        UIGraphicsBeginImageContextWithOptions(rect.size, true, 1)
+        defer {
+            UIGraphicsEndImageContext()
+        }
+
+        let context = UIGraphicsGetCurrentContext()!
+        context.setFillColor(color.cgColor)
+        context.fill(rect)
+        guard let image = UIGraphicsGetImageFromCurrentImageContext() else {
+            assertionFailure("Could not create image")
+            return UIImage()
+        }
+        return image
+    }
     #else
     #error("unsupported os")
     #endif

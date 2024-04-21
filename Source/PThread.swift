@@ -1,6 +1,7 @@
 import Foundation
 
-internal final class PThread {
+@preconcurrency
+internal final class PThread: @unchecked Sendable {
     enum Kind {
         case normal
         case recursive
@@ -46,7 +47,7 @@ internal final class PThread {
     }
 
     @discardableResult
-    func sync<R>(execute work: () throws -> R) rethrows -> R {
+    nonisolated func sync<R>(execute work: @Sendable () throws -> R) rethrows -> R {
         lock()
         defer {
             unlock()
@@ -55,7 +56,7 @@ internal final class PThread {
     }
 
     @discardableResult
-    func trySync<R>(execute work: () throws -> R) rethrows -> R {
+    nonisolated func trySync<R>(execute work: () throws -> R) rethrows -> R {
         let locked = tryLock()
         defer {
             if locked {
