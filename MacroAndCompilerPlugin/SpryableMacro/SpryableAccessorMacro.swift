@@ -19,7 +19,7 @@ public enum SpryableAccessorMacro: AccessorMacro {
             throw SpryableDiagnostic.invalidVariableRequirement
         }
 
-        let options = node.options
+        let options = node.varOptions
         var effectSpecifiers: AccessorEffectSpecifiersSyntax?
         if options ~= .async || options ~= .throws {
             effectSpecifiers = .init(asyncSpecifier: options ~= .async ? .keyword(.async) : nil,

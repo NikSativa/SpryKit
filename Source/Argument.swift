@@ -10,6 +10,12 @@ public enum Argument {
     /// Every value matches this qualification.
     case anything
 
+    /// Every value matches this qualification, but not 'Argument.anything'.
+    case skipped
+
+    /// Any closure
+    case closure
+
     /// Custom validator
     case validator((Any?) -> Bool)
 
@@ -42,15 +48,19 @@ public enum Argument {
 extension Argument: Equatable {
     public static func ==(lhs: Self, rhs: Self) -> Bool {
         switch (lhs, rhs) {
-        case (.nil, .nil),
+        case (.closure, .closure),
+             (.nil, .nil),
              (.nonNil, .nonNil),
+             (.skipped, .skipped),
              (.validator, .validator):
             return true
 
         case (.anything, _),
+             (.closure, _),
              (.nil, _),
              (.nonNil, _),
-             (.validator(_), _):
+             (.skipped, _),
+             (.validator, _):
             return false
         }
     }
@@ -69,6 +79,10 @@ extension Argument: CustomStringConvertible {
             return "Argument.nil"
         case .validator:
             return "Argument.validator"
+        case .closure:
+            return "Argument.closure"
+        case .skipped:
+            return "Argument.skipped"
         }
     }
 
@@ -121,6 +135,14 @@ private func isEqualArgs(specifiedArg: Any?, actualArg: Any?) -> Bool {
     if let specifiedArgAsArgumentEnum = specifiedArg as? Argument {
         switch specifiedArgAsArgumentEnum {
         case .anything:
+            if let actualArg = actualArg as? Argument {
+                return actualArg != Argument.skipped
+            }
+            return true
+        case .skipped:
+            if let actualArg = actualArg as? Argument {
+                return actualArg != Argument.anything
+            }
             return true
         case .nonNil:
             return !isNil(actualArg)
@@ -128,6 +150,8 @@ private func isEqualArgs(specifiedArg: Any?, actualArg: Any?) -> Bool {
             return isNil(actualArg)
         case .validator(let validator):
             return validator(actualArg)
+        case .closure:
+            return isClosure(actualArg)
         }
     }
 

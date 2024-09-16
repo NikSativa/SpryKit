@@ -36,7 +36,15 @@ internal extension VariableDeclSyntax {
 }
 
 internal extension MemberAccessExprSyntax {
-    var keyword: AccessorKeyword? {
+    var varKeyword: VarKeyword? {
+        guard let name = declName.baseName.identifier?.name else {
+            return nil
+        }
+
+        return .init(rawValue: name)
+    }
+
+    var funcKeyword: FuncKeyword? {
         guard let name = declName.baseName.identifier?.name else {
             return nil
         }
@@ -46,11 +54,11 @@ internal extension MemberAccessExprSyntax {
 }
 
 internal extension VariableDeclSyntax {
-    var options: [AccessorKeyword] {
-        var options: [AccessorKeyword] = attributes.flatMap { attr in
+    var options: [VarKeyword] {
+        var options: [VarKeyword] = attributes.flatMap { attr in
             attr.as(AttributeSyntax.self)?.arguments?.as(LabeledExprListSyntax.self).map { args in
                 args.compactMap { arg in
-                    arg.expression.as(MemberAccessExprSyntax.self)?.keyword
+                    arg.expression.as(MemberAccessExprSyntax.self)?.varKeyword
                 }
             } ?? []
         }
@@ -64,9 +72,9 @@ internal extension VariableDeclSyntax {
 }
 
 internal extension AttributeSyntax {
-    var options: [AccessorKeyword] {
+    var varOptions: [VarKeyword] {
         var options = arguments?.as(LabeledExprListSyntax.self)?.compactMap { expr in
-            expr.expression.as(MemberAccessExprSyntax.self)?.keyword
+            expr.expression.as(MemberAccessExprSyntax.self)?.varKeyword
         } ?? []
 
         if !(options ~= .get) {
@@ -74,6 +82,34 @@ internal extension AttributeSyntax {
         }
 
         return options
+    }
+
+    var funcOptions: [FuncKeyword] {
+        var options = arguments?.as(LabeledExprListSyntax.self)?.compactMap { expr in
+            expr.expression.as(MemberAccessExprSyntax.self)?.funcKeyword
+        } ?? []
+
+        if options.isEmpty {
+            options.append(.asRealClosure)
+        }
+
+        return options
+    }
+}
+
+internal extension FunctionParameterSyntax {
+    var isClosure: Bool {
+        return isNonEscapingClosure || isEscapingClosure
+    }
+
+    var isEscapingClosure: Bool {
+        return type.as(AttributedTypeSyntax.self)?.attributes.contains(where: { elem in
+            return elem.as(AttributeSyntax.self)?.attributeName.as(IdentifierTypeSyntax.self)?.name.tokenKind == .identifier("escaping")
+        }) == true
+    }
+
+    var isNonEscapingClosure: Bool {
+        return type.as(FunctionTypeSyntax.self) != nil
     }
 }
 

@@ -11,18 +11,30 @@ public enum SpryableBodyMacro: BodyMacro {
             throw SpryableDiagnostic.notAFunction
         }
 
-        let parameters = syntax.signature.parameterClause.parameters.enumerated().map { idx, param in
+        let parameters = try syntax.signature.parameterClause.parameters.enumerated().map { _, param in
+            if param.isNonEscapingClosure {
+                throw SpryableDiagnostic.nonEscapingClosureNotSupported
+            }
+
             let name = param.secondName ?? param.firstName
             if name.text != TokenSyntax.wildcardToken().text {
                 return param
             } else {
-                return param.with(\.secondName, .identifier("arg\(idx)"))
+                return param.with(\.secondName, .identifier("Argument.skipped"))
             }
         }
 
+        let options = node.funcOptions
         let arguments = LabeledExprListSyntax {
             for (idx, parameter) in parameters.enumerated() {
-                let name = parameter.secondName ?? parameter.firstName
+                let name: TokenSyntax = {
+                    if parameter.isEscapingClosure, !(options ~= .asRealClosure) {
+                        return idx == parameters.count - 1 ? "Argument.closure" : "Argument.closure,"
+                    } else {
+                        return parameter.secondName ?? parameter.firstName
+                    }
+                }()
+
                 if idx == 0 {
                     LabeledExprSyntax(label: "arguments", expression: DeclReferenceExprSyntax(baseName: name))
                 } else {
