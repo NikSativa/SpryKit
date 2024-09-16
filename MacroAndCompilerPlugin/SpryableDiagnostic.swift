@@ -6,6 +6,7 @@ enum SpryableDiagnostic: String, DiagnosticMessage, Error {
     case notAVariable
     case onlyApplicableToVar
     case notAFunction
+    case nonEscapingClosureNotSupported
     case subscriptsNotSupported
     case operatorsNotSupported
     case invalidVariableRequirement
@@ -27,6 +28,8 @@ enum SpryableDiagnostic: String, DiagnosticMessage, Error {
             return "Operator requirements are not supported by @Spryable."
         case .invalidVariableRequirement:
             return "Invalid variable requirement. Missing type annotation."
+        case .nonEscapingClosureNotSupported:
+            return "'Non-escaping' closures are not supported by `@Spryable`. You should write the body of the function of your 'Fake' manually."
         }
     }
 
@@ -34,6 +37,7 @@ enum SpryableDiagnostic: String, DiagnosticMessage, Error {
     var severity: DiagnosticSeverity {
         switch self {
         case .invalidVariableRequirement,
+             .nonEscapingClosureNotSupported,
              .notAFunction,
              .notAVariable,
              .onlyApplicableToClass,

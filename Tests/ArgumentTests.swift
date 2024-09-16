@@ -8,6 +8,7 @@ final class ArgumentTests: XCTestCase {
         XCTAssertEqual(Argument.nonNil.description, "Argument.nonNil")
         XCTAssertEqual(Argument.nil.description, "Argument.nil")
         XCTAssertEqual(Argument.validator { _ in true }.description, "Argument.validator")
+        XCTAssertEqual(Argument.closure.description, "Argument.closure")
     }
 
     func test_is_equal_args_list() {
@@ -37,6 +38,31 @@ final class ArgumentTests: XCTestCase {
             "asdf",
             3 as Int?,
             NSObject()
+        ]
+        XCTAssertTrue(subjectAction())
+
+        // .skipped
+        specifiedArgs = [
+            Argument.anything,
+            Argument.anything,
+            Argument.skipped
+        ]
+        actualArgs = [
+            "asdf",
+            3 as Int?,
+            Argument.anything
+        ]
+        XCTAssertTrue(subjectAction())
+
+        specifiedArgs = [
+            Argument.anything,
+            Argument.anything,
+            Argument.skipped
+        ]
+        actualArgs = [
+            "asdf",
+            3 as Int?,
+            Argument.skipped
         ]
         XCTAssertTrue(subjectAction())
 
@@ -124,5 +150,22 @@ final class ArgumentTests: XCTestCase {
         specifiedArgs = [SpryEquatableTestHelper(isEqual: true)]
         actualArgs = [SpryEquatableTestHelper(isEqual: true)]
         XCTAssertTrue(subjectAction())
+
+        specifiedArgs = [Argument.closure]
+        actualArgs = [{}]
+        XCTAssertTrue(subjectAction())
+
+        // .skipped != .anything
+        specifiedArgs = [
+            Argument.anything,
+            Argument.anything,
+            Argument.anything
+        ]
+        actualArgs = [
+            "asdf",
+            3 as Int?,
+            Argument.skipped
+        ]
+        XCTAssertFalse(subjectAction())
     }
 }

@@ -15,6 +15,16 @@ internal func isNil(_ value: Any?) -> Bool {
     }
 }
 
+/// This is a helper function to find out if a value is closure.
+internal func isClosure(_ value: Any?) -> Bool {
+    if let unwrappedValue = value {
+        let mirror = Mirror(reflecting: unwrappedValue)
+        return String(describing: mirror.subjectType).contains(" -> ")
+    } else {
+        return true
+    }
+}
+
 // MARK: - String Extensions
 
 extension String {

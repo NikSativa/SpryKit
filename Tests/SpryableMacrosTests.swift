@@ -1,10 +1,11 @@
 #if os(macOS) && canImport(SwiftSyntax600)
-import MacroAndCompilerPlugin
 import SpryKit
 import SwiftSyntax
 import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
 import XCTest
+
+@testable import MacroAndCompilerPlugin
 
 final class SpryableMacrosTests: XCTestCase {
     private let sut: [String: Macro.Type] = [
@@ -35,6 +36,40 @@ final class SpryableMacrosTests: XCTestCase {
 
                 public enum Function: String, StringRepresentable {
                     case _unknown_ = "'enum' must have at least one 'case'"
+                }
+            }
+            """
+
+        assertMacroExpansion(declaration,
+                             expandedSource: expected,
+                             macros: sut)
+    }
+
+    func testNonamedArgs() {
+        let declaration =
+            """
+            @SpryablePeerMacro
+            final class FakeFoo {
+                @SpryableBodyMacro
+                func bazArg3(some: Int, _: Int, _ some2: Int)
+            }
+            """
+
+        let expected =
+            """
+
+            final class FakeFoo {
+                func bazArg3(some: Int, _: Int, _ some2: Int) {
+                    return spryify(arguments: some, Argument.skipped, some2)
+                }
+            }
+
+            extension FakeFoo: Spryable {
+                enum ClassFunction: String, StringRepresentable {
+                    case _unknown_ = "'enum' must have at least one 'case'"
+                }
+                enum Function: String, StringRepresentable {
+                    case bazArg3WithSome_Arg1_Some2 = "bazArg3(some:_:_:)"
                 }
             }
             """
@@ -109,7 +144,7 @@ final class SpryableMacrosTests: XCTestCase {
                     return spryify(arguments: some, some2)
                 }
                 static func bazArg6(_: Int, _: String) async throws -> Int {
-                    return spryify(arguments: arg0, arg1)
+                    return spryify(arguments: Argument.skipped, Argument.skipped)
                 }
             }
 
@@ -220,13 +255,13 @@ final class SpryableMacrosTests: XCTestCase {
                     return spryify(arguments: some, some2)
                 }
                 public func bazArg4(_: Int) {
-                    return spryify(arguments: arg0)
+                    return spryify(arguments: Argument.skipped)
                 }
                 func bazArg5(_: Int, _: String) async -> Int {
-                    return spryify(arguments: arg0, arg1)
+                    return spryify(arguments: Argument.skipped, Argument.skipped)
                 }
                 static func bazArg6(_: Int, _: String) async throws -> Int {
-                    return spryify(arguments: arg0, arg1)
+                    return spryify(arguments: Argument.skipped, Argument.skipped)
                 }
             }
 
@@ -340,13 +375,13 @@ final class SpryableMacrosTests: XCTestCase {
                     return spryify(arguments: some, some2)
                 }
                 public func bazArg4(_: Int) {
-                    return spryify(arguments: arg0)
+                    return spryify(arguments: Argument.skipped)
                 }
                 func bazArg5(_: Int, _: String) async -> Int {
-                    return spryify(arguments: arg0, arg1)
+                    return spryify(arguments: Argument.skipped, Argument.skipped)
                 }
                 static func bazArg6(_: Int, _: String) async throws -> Int {
-                    return spryify(arguments: arg0, arg1)
+                    return spryify(arguments: Argument.skipped, Argument.skipped)
                 }
             }
 
@@ -374,6 +409,49 @@ final class SpryableMacrosTests: XCTestCase {
 
         assertMacroExpansion(declaration,
                              expandedSource: expected,
+                             macros: sut)
+    }
+
+    func testClosures() {
+        let declaration =
+            """
+            @SpryablePeerMacro
+            final class FakeClosures {
+                @SpryableBodyMacro
+                func sync<R>(execute work: () throws -> R) rethrows -> R
+
+                @SpryableBodyMacro
+                func escaping<R>(execute work: @escaping () throws -> R) rethrows -> R
+            }
+            """
+
+        let expected =
+            """
+            final class FakeClosures {
+                func sync<R>(execute work: () throws -> R) rethrows -> R
+                func escaping<R>(execute work: @escaping () throws -> R) rethrows -> R {
+                    return spryify(arguments: work)
+                }
+            }
+
+            extension FakeClosures: Spryable {
+                enum ClassFunction: String, StringRepresentable {
+                    case _unknown_ = "'enum' must have at least one 'case'"
+                }
+                enum Function: String, StringRepresentable {
+                    case syncWithExecute = "sync(execute:)"
+                    case escapingWithExecute = "escaping(execute:)"
+                }
+            }
+            """
+
+        assertMacroExpansion(declaration,
+                             expandedSource: expected,
+                             diagnostics: [
+                                 .init(message: SpryableDiagnostic.nonEscapingClosureNotSupported.message,
+                                       line: 3,
+                                       column: 5)
+                             ],
                              macros: sut)
     }
 }
