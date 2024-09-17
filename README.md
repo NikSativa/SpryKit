@@ -24,6 +24,7 @@ __Table of Contents__
 * [SpryEquatable](#spryequatable)
 * [Argument](#Argument)
 * [ArgumentCaptor](#argumentcaptor)
+* [MacroAvailable](#MacroAvailable)
 
 ## Motivation
 
@@ -436,6 +437,20 @@ let secondArgFromSecondCall = captor.getValue(at: 1, as: String.self)
 // or
 let secondArgFromFirstCall: String = captor[0]
 let secondArgFromSecondCall: String = captor[1]
+```
+
+## MacroAvailable
+
+All the ideas described in the following apply to all packages that depend on SpryKit, not only macros.
+
+In order to handle breaking API changes, clients can wrap uses of such APIs in conditional compilation clauses that check MacroAvailable.
+
+```swift
+#if canImport(SpryMacroAvailable)
+// code to support @Spryable
+#else
+// code for SpryKit without Macro
+#endif
 ```
 
 ## Contributing

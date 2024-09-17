@@ -21,6 +21,8 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-syntax.git", exact: "600.0.0")
     ],
     targets: [
+        .target(name: "SpryMacroAvailable",
+                path: "VersionMarkerModule"),
         // internal
         .target(name: "SharedTypes",
                 dependencies: [
@@ -40,6 +42,7 @@ let package = Package(
         // public
         .target(name: "SpryKit",
                 dependencies: [
+                    "SpryMacroAvailable",
                     "SharedTypes",
                     "MacroAndCompilerPlugin",
                     "CwlPreconditionTesting",
