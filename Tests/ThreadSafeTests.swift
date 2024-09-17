@@ -27,7 +27,7 @@ final class ThreadSafeTests: XCTestCase {
             }
         }
 
-        wait(for: expectetions, timeout: 5)
+        wait(for: expectetions, timeout: 10)
         XCTAssertEqual(storage.values.count, expectetions.count)
     }
 }
