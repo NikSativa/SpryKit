@@ -85,7 +85,12 @@ class RealStringService: StringService {
 
 ### Spryable + Macro
 
-$${\color{red}**Available only for Swift 6.0 and higher.**}$$
+> [!WARNING]
+> **Available only for Swift 6.0 and higher.**
+
+> [!TIP]
+> [MacroAvailable](#MacroAvailable) - how to handle breaking API changes.
+
 - *Spryable* macro generates Spryable conformance for a class.
 - *SpryableFunc* macro generates body for function with correct name and arguments.
 - *SpryableVar* macro generates body for property with correct name and accessors.
@@ -154,7 +159,7 @@ final class FakeStringService: StringService, Spryable {
 
 ## Stubbable
 
-_Spryable conforms to Stubbable.
+_Spryable conforms to Stubbable._
 
 __Abilities__
 
@@ -212,7 +217,7 @@ FakeStringService.resetStubs()
 
 ## Spyable
 
-_Spryable conforms to Spyable.
+_Spryable conforms to Spyable._
 
 __Abilities__
 
