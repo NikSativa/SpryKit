@@ -31,12 +31,18 @@ public extension Image {
 }
 
 public extension Image.spry {
-    #if os(macOS)
+    #if os(macOS) && swift(>=5.9)
     nonisolated(unsafe) static let testImage: Image = .init(systemSymbolName: "circle", accessibilityDescription: nil)!
     nonisolated(unsafe) static let testImage1: Image = .init(systemSymbolName: "square", accessibilityDescription: nil)!
     nonisolated(unsafe) static let testImage2: Image = .init(systemSymbolName: "diamond", accessibilityDescription: nil)!
     nonisolated(unsafe) static let testImage3: Image = .init(systemSymbolName: "octagon", accessibilityDescription: nil)!
     nonisolated(unsafe) static let testImage4: Image = .init(systemSymbolName: "oval", accessibilityDescription: nil)!
+    #elseif os(macOS)
+    static let testImage: Image = .init(systemSymbolName: "circle", accessibilityDescription: nil)!
+    static let testImage1: Image = .init(systemSymbolName: "square", accessibilityDescription: nil)!
+    static let testImage2: Image = .init(systemSymbolName: "diamond", accessibilityDescription: nil)!
+    static let testImage3: Image = .init(systemSymbolName: "octagon", accessibilityDescription: nil)!
+    static let testImage4: Image = .init(systemSymbolName: "oval", accessibilityDescription: nil)!
     #elseif os(iOS) || os(tvOS) || os(watchOS) || os(visionOS)
     static let testImage: Image = Self.image(withColor: .blue)
     static let testImage1: Image = Self.image(withColor: .green)

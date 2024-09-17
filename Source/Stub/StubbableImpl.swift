@@ -3,7 +3,11 @@ import Foundation
 /// A global NSMapTable to hold onto stubs for types conforming to Stubbable. This map table has "weak to strong objects" options.
 ///
 /// - Important: Do NOT use this object.
+#if swift(>=5.9)
 private nonisolated(unsafe) var stubsMapTable: NSMapTable<AnyObject, SpryDictionary<StubInfo>> = NSMapTable.weakToStrongObjects()
+#else
+private var stubsMapTable: NSMapTable<AnyObject, SpryDictionary<StubInfo>> = NSMapTable.weakToStrongObjects()
+#endif
 
 /// Used to determine if a fallback was given in the event of that no stub is found.
 internal enum Fallback<T> {

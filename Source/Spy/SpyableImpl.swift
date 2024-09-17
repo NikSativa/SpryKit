@@ -3,7 +3,11 @@ import Foundation
 /// A global NSMapTable to hold onto calls for types conforming to Spyable. This map table has "weak to strong objects" options.
 ///
 /// - Important: Do NOT use this object.
+#if swift(>=5.9)
 private nonisolated(unsafe) var callsMapTable: NSMapTable<AnyObject, SpryDictionary<RecordedCall>> = NSMapTable.weakToStrongObjects()
+#else
+private var callsMapTable: NSMapTable<AnyObject, SpryDictionary<RecordedCall>> = NSMapTable.weakToStrongObjects()
+#endif
 
 public extension Spyable {
     // MARK: Instance
