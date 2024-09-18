@@ -31,7 +31,7 @@ public extension Image {
 }
 
 public extension Image.spry {
-    #if os(macOS) && swift(>=5.9)
+    #if os(macOS) && swift(>=6.0)
     nonisolated(unsafe) static let testImage: Image = .init(systemSymbolName: "circle", accessibilityDescription: nil)!
     nonisolated(unsafe) static let testImage1: Image = .init(systemSymbolName: "square", accessibilityDescription: nil)!
     nonisolated(unsafe) static let testImage2: Image = .init(systemSymbolName: "diamond", accessibilityDescription: nil)!
