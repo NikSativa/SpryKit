@@ -15,7 +15,7 @@ public typealias Image = NSImage
 // MARK: - Image.spry
 
 public extension Image {
-    enum spry {
+    enum spry: @unchecked Sendable {
         // namespace
     }
 
@@ -43,7 +43,13 @@ public extension Image.spry {
     static let testImage2: Image = .init(systemSymbolName: "diamond", accessibilityDescription: nil)!
     static let testImage3: Image = .init(systemSymbolName: "octagon", accessibilityDescription: nil)!
     static let testImage4: Image = .init(systemSymbolName: "oval", accessibilityDescription: nil)!
-    #elseif os(iOS) || os(tvOS) || os(watchOS) || os(visionOS)
+    #elseif os(watchOS)
+    static let testImage: Image = .init(systemName: "circle")!
+    static let testImage1: Image = .init(systemName: "square")!
+    static let testImage2: Image = .init(systemName: "diamond")!
+    static let testImage3: Image = .init(systemName: "octagon")!
+    static let testImage4: Image = .init(systemName: "oval")!
+    #elseif os(iOS) || os(tvOS) || os(visionOS)
     static let testImage: Image = Self.image(withColor: .blue)
     static let testImage1: Image = Self.image(withColor: .green)
     static let testImage2: Image = Self.image(withColor: .red)
@@ -52,20 +58,18 @@ public extension Image.spry {
 
     private static func image(withColor color: UIColor) -> Image {
         let rect = CGRect(origin: .zero, size: CGSize(width: 4, height: 4))
-
-        UIGraphicsBeginImageContextWithOptions(rect.size, true, 1)
-        defer {
-            UIGraphicsEndImageContext()
+        #if os(iOS) || os(tvOS)
+        return UIGraphicsImageRenderer(bounds: rect).image { context in
+            color.setFill()
+            context.fill(rect)
         }
-
-        let context = UIGraphicsGetCurrentContext()!
-        context.setFillColor(color.cgColor)
-        context.fill(rect)
-        guard let image = UIGraphicsGetImageFromCurrentImageContext() else {
-            assertionFailure("Could not create image")
-            return UIImage()
+        #elseif os(visionOS)
+        let data = UIGraphicsImageRenderer(bounds: rect).pngData { context in
+            color.setFill()
+            context.fill(rect)
         }
-        return image
+        return Image(data: data)!
+        #endif
     }
     #else
     #error("unsupported os")

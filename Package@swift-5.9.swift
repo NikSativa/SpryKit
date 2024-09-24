@@ -9,7 +9,7 @@ let package = Package(
         .macOS(.v11),
         .macCatalyst(.v13),
         .tvOS(.v13),
-        .watchOS(.v5),
+        .watchOS(.v6),
         .visionOS(.v1)
     ],
     products: [
@@ -32,5 +32,6 @@ let package = Package(
                         "SpryKit"
                     ],
                     path: "Tests")
-    ]
+    ],
+    swiftLanguageVersions: [.v5]
 )
