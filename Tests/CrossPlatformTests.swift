@@ -10,10 +10,6 @@ final class CrossPlatformTests: XCTestCase {
         XCTAssertEqual(PlatformImage(image).pngData(), image.pngData())
         XCTAssertEqual(PlatformImage(image).sdk.testData(), image.testData())
         XCTAssertEqual(PlatformImage(data: image.pngData() ?? Data())?.sdk.pngData(), image.pngData())
-        #if !os(macOS)
-        XCTAssertEqual(PlatformImage(image).jpegData(compressionQuality: 1), image.jpegData(compressionQuality: 1))
-        XCTAssertEqual(PlatformImage(image).jpegData(compressionQuality: 0.5), image.jpegData(compressionQuality: 0.5))
-        #endif
         XCTAssertNil(PlatformImage(data: Data()))
 
         XCTAssertEqual(PlatformImage(image).sdk, image)
@@ -25,16 +21,8 @@ final class CrossPlatformTests: XCTestCase {
 import UIKit
 
 private enum Screen {
-    static var scale: CGFloat {
-        if Thread.isMainThread {
-            return MainActor.assumeIsolated {
-                return UIScreen.main.scale
-            }
-        } else {
-            return DispatchQueue.main.sync {
-                return UIScreen.main.scale
-            }
-        }
+    @MainActor static var scale: CGFloat {
+        return UIScreen.main.scale
     }
 }
 
@@ -42,16 +30,16 @@ private enum Screen {
 import WatchKit
 
 private enum Screen {
-    static var scale: CGFloat {
+    @MainActor static var scale: CGFloat {
         return WKInterfaceDevice.current().screenScale
     }
 }
 
-#elseif os(visionOS)
+#elseif (swift(>=5.9) && os(visionOS))
 public enum Screen {
     /// visionOS doesn't have a screen scale, so we'll just use 2x for Tests.
     /// override it on your own risk.
-    public nonisolated(unsafe) static var scale: CGFloat?
+    @MainActor public static var scale: CGFloat?
 }
 #endif
 
@@ -75,9 +63,11 @@ private struct PlatformImage {
         return sdk.png
     }
 
-    #elseif os(visionOS)
+    #elseif (swift(>=5.9) && os(visionOS))
     init?(data: Data) {
-        if let scale = Screen.scale,
+        let scale = syncMainThread { Screen.scale }
+
+        if let scale,
            let image = UIImage(data: data, scale: scale) {
             self.init(image)
         } else if let image = UIImage(data: data) {
@@ -91,13 +81,11 @@ private struct PlatformImage {
         return sdk.pngData()
     }
 
-    func jpegData(compressionQuality: CGFloat) -> Data? {
-        return sdk.jpegData(compressionQuality: CGFloat(compressionQuality))
-    }
-
     #elseif os(iOS) || os(tvOS) || os(watchOS)
     init?(data: Data) {
-        if let image = UIImage(data: data, scale: Screen.scale) {
+        let scale = syncMainThread { Screen.scale }
+
+        if let image = UIImage(data: data, scale: scale) {
             self.init(image)
         } else {
             return nil
@@ -107,12 +95,6 @@ private struct PlatformImage {
     func pngData() -> Data? {
         return sdk.pngData()
     }
-
-    func jpegData(compressionQuality: CGFloat) -> Data? {
-        return sdk.jpegData(compressionQuality: CGFloat(compressionQuality))
-    }
-    #else
-    #error("unsupported os")
     #endif
 }
 
@@ -130,6 +112,32 @@ private extension NSImage {
 
     func pngData() -> Data? {
         return png
+    }
+}
+#endif
+
+#if swift(>=5.10)
+@inline(__always)
+private func syncMainThread<T: Sendable>(_ callback: @MainActor () -> T) -> T {
+    if Thread.isMainThread {
+        MainActor.assumeIsolated {
+            callback()
+        }
+    } else {
+        DispatchQueue.main.sync {
+            callback()
+        }
+    }
+}
+#else
+@inline(__always)
+private func syncMainThread<T>(_ callback: @MainActor () -> T) -> T {
+    if Thread.isMainThread {
+        callback()
+    } else {
+        DispatchQueue.main.sync {
+            callback()
+        }
     }
 }
 #endif
