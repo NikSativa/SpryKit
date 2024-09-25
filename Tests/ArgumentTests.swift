@@ -22,7 +22,7 @@ final class ArgumentTests: XCTestCase {
         // when the args lists have different counts
         specifiedArgs = []
         actualArgs = [1]
-        #if (os(macOS) || os(iOS) || os(visionOS)) && (arch(x86_64) || arch(arm64))
+        #if (os(macOS) || os(iOS) || (swift(>=5.9) && os(visionOS))) && (arch(x86_64) || arch(arm64))
         XCTAssertThrowsAssertion {
             _ = subjectAction()
         }

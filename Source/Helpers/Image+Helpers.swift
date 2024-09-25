@@ -1,6 +1,6 @@
 import Foundation
 
-#if os(iOS) || os(tvOS) || os(watchOS) || os(visionOS)
+#if os(iOS) || os(tvOS) || os(watchOS) || (swift(>=5.9) && os(visionOS))
 import UIKit
 
 public typealias Image = UIImage
@@ -8,8 +8,6 @@ public typealias Image = UIImage
 import Cocoa
 
 public typealias Image = NSImage
-#else
-#error("unsupported os")
 #endif
 
 // MARK: - Image.spry
@@ -22,10 +20,8 @@ public extension Image {
     func testData() -> Data? {
         #if os(macOS)
         return png
-        #elseif os(iOS) || os(tvOS) || os(watchOS) || os(visionOS)
+        #elseif os(iOS) || os(tvOS) || os(watchOS) || (swift(>=5.9) && os(visionOS))
         return pngData()
-        #else
-        #error("unsupported os")
         #endif
     }
 }
@@ -49,7 +45,7 @@ public extension Image.spry {
     static let testImage2: Image = .init(systemName: "diamond")!
     static let testImage3: Image = .init(systemName: "octagon")!
     static let testImage4: Image = .init(systemName: "oval")!
-    #elseif os(iOS) || os(tvOS) || os(visionOS)
+    #elseif os(iOS) || os(tvOS) || (swift(>=5.9) && os(visionOS))
     static let testImage: Image = Self.image(withColor: .blue)
     static let testImage1: Image = Self.image(withColor: .green)
     static let testImage2: Image = Self.image(withColor: .red)
@@ -63,7 +59,7 @@ public extension Image.spry {
             color.setFill()
             context.fill(rect)
         }
-        #elseif os(visionOS)
+        #elseif (swift(>=5.9) && os(visionOS))
         let data = UIGraphicsImageRenderer(bounds: rect).pngData { context in
             color.setFill()
             context.fill(rect)
@@ -71,8 +67,6 @@ public extension Image.spry {
         return Image(data: data)!
         #endif
     }
-    #else
-    #error("unsupported os")
     #endif
 }
 

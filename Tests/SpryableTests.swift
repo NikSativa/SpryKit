@@ -51,7 +51,7 @@ final class SpryableTests: XCTestCase {
 
         XCTAssertFalse(subject.didCall(.getAString).success)
 
-        #if (os(macOS) || os(iOS) || os(visionOS)) && (arch(x86_64) || arch(arm64))
+        #if (os(macOS) || os(iOS) || (swift(>=5.9) && os(visionOS))) && (arch(x86_64) || arch(arm64))
         XCTAssertThrowsAssertion {
             _ = self.subject.getAString()
         }
@@ -65,7 +65,7 @@ final class SpryableTests: XCTestCase {
 
         XCTAssertFalse(SpryableTestClass.didCall(.getAStaticString).success)
 
-        #if (os(macOS) || os(iOS) || os(visionOS)) && (arch(x86_64) || arch(arm64))
+        #if (os(macOS) || os(iOS) || (swift(>=5.9) && os(visionOS))) && (arch(x86_64) || arch(arm64))
         XCTAssertThrowsAssertion {
             _ = SpryableTestClass.getAStaticString()
         }
