@@ -142,7 +142,6 @@ final class StubbableTests: XCTestCase {
         XCTAssertThrowsError(try subject.throwingFunction(), stubbedError)
     }
 
-    #if (os(macOS) || os(iOS) || (swift(>=5.9) && os(visionOS))) && (arch(x86_64) || arch(arm64))
     func test_cant_throw() {
         let stubbedError = StubbableError(id: "my error")
         subject.stub(.giveMeAString).andThrow(stubbedError)
@@ -150,7 +149,6 @@ final class StubbableTests: XCTestCase {
             self.subject.giveMeAString()
         }
     }
-    #endif
 
     func test_stubbing_property() {
         let expectedString = "expected"
@@ -252,14 +250,12 @@ final class StubbableTests: XCTestCase {
         }
     }
 
-    #if (os(macOS) || os(iOS) || (swift(>=5.9) && os(visionOS))) && (arch(x86_64) || arch(arm64))
     func test_passing_in_arguments_when_the_arguments_do_NOT_match_what_is_stubbed() {
         subject.stub(.giveMeAString_string).with("not expected").andReturn("return value")
         XCTAssertThrowsAssertion {
             self.subject.giveMeAString(string: "blah")
         }
     }
-    #endif
 
     func test_passing_in_arguments_when_there_are_no_arguments_passed_in() {
         let expectedReturn = "i should be returned"
@@ -308,7 +304,6 @@ final class StubbableTests: XCTestCase {
         XCTAssertNil(subject.giveMeAStringWithFallbackValue())
     }
 
-    #if (os(macOS) || os(iOS) || (swift(>=5.9) && os(visionOS))) && (arch(x86_64) || arch(arm64))
     func test_improper_stubbing_without_a_fallback_value() {
         XCTAssertThrowsAssertion {
             self.subject.giveMeAString()
@@ -321,16 +316,14 @@ final class StubbableTests: XCTestCase {
             self.subject.giveMeAString()
         }
     }
-    #endif
 
     func test_resetting_stubs() {
         subject.stub(.giveMeAString).andReturn("fallbackValue")
         subject.resetStubs()
-        #if (os(macOS) || os(iOS) || (swift(>=5.9) && os(visionOS))) && (arch(x86_64) || arch(arm64))
+
         XCTAssertThrowsAssertion {
             self.subject.giveMeAString()
         }
-        #endif
 
         subject.stub(.giveMeAString).andReturn("fallbackValue")
         XCTAssertEqual(subject.giveMeAString(), "fallbackValue")
@@ -339,9 +332,8 @@ final class StubbableTests: XCTestCase {
     func test_on_a_class() {
         StubbableTestHelper.stub(.classFunction).andReturn("fallbackValue")
         StubbableTestHelper.resetStubs()
-        #if (os(macOS) || os(iOS) || (swift(>=5.9) && os(visionOS))) && (arch(x86_64) || arch(arm64))
+
         XCTAssertThrowsAssertion(StubbableTestHelper.classFunction())
-        #endif
 
         StubbableTestHelper.stub(.classFunction).andReturn("fallbackValue")
         XCTAssertEqual(StubbableTestHelper.classFunction(), "fallbackValue")
@@ -351,11 +343,10 @@ final class StubbableTests: XCTestCase {
         let originalString = "original string"
         subject.stub(.giveMeAString_string).with(originalString).andReturn("original return value")
         subject.stub(.giveMeAString_string).with("different string").andReturn("other return value")
-        #if (os(macOS) || os(iOS) || (swift(>=5.9) && os(visionOS))) && (arch(x86_64) || arch(arm64))
+
         XCTAssertThrowsAssertion {
             self.subject.stub(.giveMeAString_string).with(originalString).andReturn("other return value")
         }
-        #endif
 
         let newReturnValue = "new return value"
         subject.stubAgain(.giveMeAString_string).with(originalString).andReturn(newReturnValue)
@@ -364,11 +355,10 @@ final class StubbableTests: XCTestCase {
 
     func test_stubbing_again_without_with() {
         subject.stub(.giveMeAString_string).andReturn("original return value")
-        #if (os(macOS) || os(iOS) || (swift(>=5.9) && os(visionOS))) && (arch(x86_64) || arch(arm64))
+
         XCTAssertThrowsAssertion {
             self.subject.stub(.giveMeAString_string).andReturn("other return value")
         }
-        #endif
 
         let newReturnValue = "new return value"
         subject.stubAgain(.giveMeAString_string).andReturn(newReturnValue)
@@ -377,9 +367,8 @@ final class StubbableTests: XCTestCase {
 
     func test_class_version_spot_check() {
         StubbableTestHelper.stub(.classFunction).andReturn("original return value")
-        #if (os(macOS) || os(iOS) || (swift(>=5.9) && os(visionOS))) && (arch(x86_64) || arch(arm64))
+
         XCTAssertThrowsAssertion(StubbableTestHelper.stub(.classFunction).andReturn("original return value"))
-        #endif
 
         let newReturnValue = "new return value"
         StubbableTestHelper.stubAgain(.classFunction).andReturn(newReturnValue)

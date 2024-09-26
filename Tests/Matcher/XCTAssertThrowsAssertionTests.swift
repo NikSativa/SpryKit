@@ -1,4 +1,3 @@
-#if (os(macOS) || os(iOS) || (swift(>=5.9) && os(visionOS))) && (arch(x86_64) || arch(arm64))
 import Foundation
 import SpryKit
 import XCTest
@@ -30,4 +29,3 @@ private func throwFatalError() {
 private func throwPrecondition() {
     preconditionFailure()
 }
-#endif

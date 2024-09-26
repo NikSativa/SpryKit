@@ -4,11 +4,12 @@ import XCTest
 
 final class ArgumentTests: XCTestCase {
     func test_CustomStringConvertible() {
-        XCTAssertEqual(Argument.anything.description, "Argument.anything")
-        XCTAssertEqual(Argument.nonNil.description, "Argument.nonNil")
-        XCTAssertEqual(Argument.nil.description, "Argument.nil")
-        XCTAssertEqual(Argument.validator { _ in true }.description, "Argument.validator")
-        XCTAssertEqual(Argument.closure.description, "Argument.closure")
+        XCTAssertEqual(Argument.anything.description, "Argument.anything", "Argument.anything")
+        XCTAssertEqual(Argument.nonNil.description, "Argument.nonNil", "Argument.nonNil")
+        XCTAssertEqual(Argument.nil.description, "Argument.nil", "Argument.nil")
+        XCTAssertEqual(Argument.validator { _ in true }.description, "Argument.validator", "Argument.validator")
+        XCTAssertEqual(Argument.closure.description, "Argument.closure", "Argument.closure")
+        XCTAssertEqual(Argument.skipped.description, "Argument.skipped", "Argument.skipped")
     }
 
     func test_is_equal_args_list() {
@@ -22,11 +23,9 @@ final class ArgumentTests: XCTestCase {
         // when the args lists have different counts
         specifiedArgs = []
         actualArgs = [1]
-        #if (os(macOS) || os(iOS) || (swift(>=5.9) && os(visionOS))) && (arch(x86_64) || arch(arm64))
         XCTAssertThrowsAssertion {
             _ = subjectAction()
         }
-        #endif
 
         // .anything
         specifiedArgs = [

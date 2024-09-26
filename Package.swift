@@ -50,7 +50,10 @@ let package = Package(
                 ],
                 path: "Source",
                 resources: [
-                    .copy("../PrivacyInfo.xcprivacy")
+                    .process("PrivacyInfo.xcprivacy")
+                ],
+                swiftSettings: [
+                    .define("supportsVisionOS", .when(platforms: [.visionOS])),
                 ]),
         // test
         .testTarget(name: "SpryKitTests",
@@ -60,7 +63,9 @@ let package = Package(
                         .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
                         .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax")
                     ],
-                    path: "Tests")
-    ],
-    swiftLanguageModes: [.v6]
+                    path: "Tests",
+                    swiftSettings: [
+                        .define("supportsVisionOS", .when(platforms: [.visionOS])),
+                    ])
+    ]
 )
