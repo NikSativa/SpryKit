@@ -2,8 +2,24 @@ import Foundation
 import SpryKit
 import XCTest
 
+#if os(iOS) || os(tvOS)
+import UIKit
+#elseif os(watchOS)
+import WatchKit
+#endif
+
 final class CrossPlatformTests: XCTestCase {
-    @MainActor
+    override func setUp() async throws {
+        try await super.setUp()
+        await MainActor.run {
+            #if os(iOS) || os(tvOS)
+            PlatformImage.scale = UIScreen.main.scale
+            #elseif os(watchOS)
+            PlatformImage.scale = WKInterfaceDevice.current().screenScale
+            #endif
+        }
+    }
+
     func test_scale() {
         let image = Image.spry.testImage
 
@@ -17,33 +33,13 @@ final class CrossPlatformTests: XCTestCase {
     }
 }
 
-#if os(iOS) || os(tvOS)
-import UIKit
-
-private enum Screen {
-    @MainActor static var scale: CGFloat {
-        return UIScreen.main.scale
-    }
-}
-
-#elseif os(watchOS)
-import WatchKit
-
-private enum Screen {
-    @MainActor static var scale: CGFloat {
-        return WKInterfaceDevice.current().screenScale
-    }
-}
-
-#elseif (swift(>=5.9) && os(visionOS))
-public enum Screen {
-    /// visionOS doesn't have a screen scale, so we'll just use 2x for Tests.
-    /// override it on your own risk.
-    @MainActor public static var scale: CGFloat?
-}
-#endif
-
 private struct PlatformImage {
+    #if swift(>=6.0)
+    nonisolated(unsafe) static var scale: CGFloat = 1
+    #else
+    static var scale: CGFloat = 1
+    #endif
+
     let sdk: Image
 
     init(_ image: Image) {
@@ -63,14 +59,9 @@ private struct PlatformImage {
         return sdk.png
     }
 
-    #elseif (swift(>=5.9) && os(visionOS))
+    #elseif os(iOS) || os(tvOS) || os(watchOS)
     init?(data: Data) {
-        let scale = syncMainThread { Screen.scale }
-
-        if let scale,
-           let image = UIImage(data: data, scale: scale) {
-            self.init(image)
-        } else if let image = UIImage(data: data) {
+        if let image = UIImage(data: data, scale: Self.scale) {
             self.init(image)
         } else {
             return nil
@@ -81,11 +72,11 @@ private struct PlatformImage {
         return sdk.pngData()
     }
 
-    #elseif os(iOS) || os(tvOS) || os(watchOS)
+    #elseif supportsVisionOS
     init?(data: Data) {
-        let scale = syncMainThread { Screen.scale }
-
-        if let image = UIImage(data: data, scale: scale) {
+        if let image = UIImage(data: data, scale: Self.scale) {
+            self.init(image)
+        } else if let image = UIImage(data: data) {
             self.init(image)
         } else {
             return nil
@@ -112,32 +103,6 @@ private extension NSImage {
 
     func pngData() -> Data? {
         return png
-    }
-}
-#endif
-
-#if swift(>=5.10)
-@inline(__always)
-private func syncMainThread<T: Sendable>(_ callback: @MainActor () -> T) -> T {
-    if Thread.isMainThread {
-        MainActor.assumeIsolated {
-            callback()
-        }
-    } else {
-        DispatchQueue.main.sync {
-            callback()
-        }
-    }
-}
-#else
-@inline(__always)
-private func syncMainThread<T>(_ callback: @MainActor () -> T) -> T {
-    if Thread.isMainThread {
-        callback()
-    } else {
-        DispatchQueue.main.sync {
-            callback()
-        }
     }
 }
 #endif

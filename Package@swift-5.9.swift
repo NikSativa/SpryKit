@@ -25,13 +25,18 @@ let package = Package(
                 ],
                 path: "Source",
                 resources: [
-                    .copy("../PrivacyInfo.xcprivacy")
+                    .process("PrivacyInfo.xcprivacy")
+                ],
+                swiftSettings: [
+                    .define("supportsVisionOS", .when(platforms: [.visionOS])),
                 ]),
         .testTarget(name: "SpryTests",
                     dependencies: [
                         "SpryKit"
                     ],
-                    path: "Tests")
-    ],
-    swiftLanguageVersions: [.v5]
+                    path: "Tests",
+                    swiftSettings: [
+                        .define("supportsVisionOS", .when(platforms: [.visionOS])),
+                    ])
+    ]
 )
