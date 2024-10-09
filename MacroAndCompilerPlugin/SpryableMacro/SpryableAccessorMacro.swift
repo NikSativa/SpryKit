@@ -36,7 +36,7 @@ public enum SpryableAccessorMacro: AccessorMacro {
             )
 
             result.append(
-                .init(accessorSpecifier: .keyword(.set), body: .init(statements: "return spryify(\"\(raw: name)_set\")"))
+                .init(accessorSpecifier: .keyword(.set), body: .init(statements: "return spryify(\"\(raw: name)_set\", arguments: newValue)"))
             )
         } else if let effectSpecifiers {
             result.append(
