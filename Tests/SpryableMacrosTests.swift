@@ -123,7 +123,7 @@ final class SpryableMacrosTests: XCTestCase {
                         return spryify("barSet_get")
                     }
                     set {
-                        return spryify("barSet_set")
+                        return spryify("barSet_set", arguments: newValue)
                     }
                 }
                 static static var barAsyncThrows: Int {
@@ -226,7 +226,7 @@ final class SpryableMacrosTests: XCTestCase {
                         return spryify("barSet_get")
                     }
                     set {
-                        return spryify("barSet_set")
+                        return spryify("barSet_set", arguments: newValue)
                     }
                 }
                 public static var barThrows: Int {
@@ -234,7 +234,7 @@ final class SpryableMacrosTests: XCTestCase {
                         return spryify("barThrows_get")
                     }
                     set {
-                        return spryify("barThrows_set")
+                        return spryify("barThrows_set", arguments: newValue)
                     }
                 }
                 var barAsyncThrows: Int {
@@ -346,7 +346,7 @@ final class SpryableMacrosTests: XCTestCase {
                         return spryify("barSet_get")
                     }
                     set {
-                        return spryify("barSet_set")
+                        return spryify("barSet_set", arguments: newValue)
                     }
                 }
                 public static var barThrows: Int {
@@ -354,7 +354,7 @@ final class SpryableMacrosTests: XCTestCase {
                         return spryify("barThrows_get")
                     }
                     set {
-                        return spryify("barThrows_set")
+                        return spryify("barThrows_set", arguments: newValue)
                     }
                 }
                 var barAsyncThrows: Int {

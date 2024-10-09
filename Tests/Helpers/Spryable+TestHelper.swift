@@ -7,8 +7,15 @@ final class SpryableTestClass: @unchecked Sendable {
     @SpryableFunc
     static func getAStaticString() -> String
 
-    @SpryableVar(.set, .get)
-    var firstName: String
+    ///    @SpryableVar(.set, .get)
+    var firstName: String {
+        get {
+            return spryify("firstName_get")
+        }
+        set {
+            return spryify("firstName_set", arguments: newValue)
+        }
+    }
 
     @SpryableFunc
     func getAString(string: String) -> String
