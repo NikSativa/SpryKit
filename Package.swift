@@ -18,7 +18,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", .upToNextMinor(from: "2.2.2")),
-        .package(url: "https://github.com/apple/swift-syntax.git", exact: "600.0.0")
+        .package(url: "https://github.com/apple/swift-syntax.git", .upToNextMinor(from: "600.0.1"))
     ],
     targets: [
         .target(name: "SpryMacroAvailable",
