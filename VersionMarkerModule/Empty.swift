@@ -1,3 +1,3 @@
-// The SpryMacroAvailable module is intentionally empty.
-// It serves as an indicator of whether @Spryable-macro is available.
-// See the 'README -> #MacroAvailable' document for more information.
+// The SpryMacroAvailable module is intentionally left empty.
+// It functions solely as a marker for the availability of the @Spryable macro.
+// For more details, refer to the README, section: #MacroAvailable.

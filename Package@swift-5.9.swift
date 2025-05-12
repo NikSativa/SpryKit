@@ -16,7 +16,7 @@ let package = Package(
         .library(name: "SpryKit", targets: ["SpryKit"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", .upToNextMinor(from: "2.2.2"))
+        .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.2.2")
     ],
     targets: [
         .target(name: "SpryKit",
