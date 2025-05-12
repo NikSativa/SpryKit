@@ -1,10 +1,235 @@
 # SpryKit
+
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FNikSativa%2FSpryKit%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/NikSativa/SpryKit)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FNikSativa%2FSpryKit%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/NikSativa/SpryKit)
 
-SpryKit is a framework that allows spying and stubbing in Apple's Swift language.
+SpryKit is a powerful Swift testing framework that provides spying and stubbing capabilities, making it easier to write clean and maintainable unit tests. It's designed to help you test classes in isolation by verifying method calls and controlling return values.
+
 > [!IMPORTANT]
 > SpryKit is thread-safe and can be used in a multi-threaded environment.
+
+## Features
+
+- 🎯 **Spying**: Record and verify method calls and their arguments
+- 🎭 **Stubbing**: Control method return values for testing different scenarios
+- 🚀 **Macro Support**: Reduce boilerplate with Swift 6.0+ macros
+- 🔒 **Thread Safety**: Built-in support for multi-threaded environments
+- 📱 **Cross-Platform**: Support for iOS, macOS, tvOS, watchOS, and visionOS
+- 🧪 **Rich Assertions**: Comprehensive set of XCTest assertions
+- 🔍 **Argument Capturing**: Capture and inspect method arguments
+- 🎨 **Image Testing**: Built-in support for image comparison testing
+
+## Requirements
+
+- iOS 13.0+
+- macOS 11.0+
+- macCatalyst 13.0+
+- tvOS 13.0+
+- watchOS 6.0+
+- visionOS 1.0+
+- Swift 5.8+
+
+## Installation
+
+### Swift Package Manager
+
+Add the following to your `Package.swift`:
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/NikSativa/SpryKit.git", from: "1.0.0")
+]
+```
+
+## Quick Start
+
+### 1. Create a Protocol or Class to Test
+
+```swift
+protocol UserService {
+    func fetchUser(id: String) -> User
+    var currentUser: User? { get set }
+}
+```
+
+### 2. Create a Fake Implementation
+
+#### Using Swift 6.0+ Macros (Recommended)
+
+```swift
+@Spryable
+final class FakeUserService: UserService {
+    @SpryableVar
+    var currentUser: User?
+    
+    @SpryableFunc
+    func fetchUser(id: String) -> User
+}
+```
+
+#### Manual Implementation
+
+```swift
+final class FakeUserService: UserService, Spryable {
+    enum Function: String, StringRepresentable {
+        case currentUser
+        case fetchUser = "fetchUser(id:)"
+    }
+    
+    var currentUser: User? {
+        get { return stubbedValue() }
+        set { recordCall(arguments: newValue) }
+    }
+    
+    func fetchUser(id: String) -> User {
+        return spryify(arguments: id)
+    }
+}
+```
+
+### 3. Write Tests
+
+```swift
+class UserViewModelTests: XCTestCase {
+    var sut: UserViewModel!
+    var fakeUserService: FakeUserService!
+    
+    override func setUp() {
+        super.setUp()
+        fakeUserService = FakeUserService()
+        sut = UserViewModel(userService: fakeUserService)
+    }
+    
+    override func tearDown() {
+        fakeUserService.resetCallsAndStubs()
+        super.tearDown()
+    }
+    
+    func test_fetchUser_success() {
+        // Given
+        let expectedUser = User(id: "1", name: "John")
+        fakeUserService.stub(.fetchUser).with("1").andReturn(expectedUser)
+        
+        // When
+        sut.fetchUser(id: "1")
+        
+        // Then
+        XCTAssertHaveReceived(fakeUserService, .fetchUser)
+        XCTAssertEqual(sut.currentUser, expectedUser)
+    }
+}
+```
+
+## Core Concepts
+
+### Spying
+
+Spying allows you to verify that methods were called with the correct arguments:
+
+```swift
+// Verify a method was called
+XCTAssertHaveReceived(fakeService, .doSomething)
+
+// Verify with specific arguments
+XCTAssertHaveReceived(fakeService, .doSomething, with: "expected argument")
+
+// Verify call count
+XCTAssertHaveReceived(fakeService, .doSomething, times: .exactly(2))
+```
+
+### Stubbing
+
+Stubbing lets you control what methods return:
+
+```swift
+// Simple return value
+fakeService.stub(.doSomething).andReturn("test value")
+
+// Conditional return based on arguments
+fakeService.stub(.doSomething)
+    .with("specific arg")
+    .andReturn("special value")
+
+// Custom implementation
+fakeService.stub(.doSomething).andDo { arguments in
+    let arg = arguments[0] as! String
+    return arg.uppercased()
+}
+```
+
+### Argument Capturing
+
+Capture and inspect arguments passed to methods:
+
+```swift
+let captor = Argument.captor()
+fakeService.stub(.doSomething).with(Argument.anything, captor).andReturn("value")
+
+// Later in the test
+let capturedArg = captor.getValue(as: String.self)
+XCTAssertEqual(capturedArg, "expected value")
+```
+
+## Advanced Features
+
+### Custom Argument Validation
+
+```swift
+let customValidation = Argument.pass { actualArgument -> Bool in
+    guard let string = actualArgument as? String else { return false }
+    return string.hasPrefix("test")
+}
+
+fakeService.stub(.doSomething)
+    .with(customValidation)
+    .andReturn("validated")
+```
+
+### Testing Errors
+
+```swift
+// Test throwing functions
+XCTAssertThrowsError(try sut.riskyOperation())
+
+// Test specific errors
+XCTAssertEqualError(try sut.riskyOperation(), expectedError)
+```
+
+### Image Testing
+
+```swift
+XCTAssertEqualImage(actualImage, expectedImage)
+```
+
+## Best Practices
+
+1. **Use Macros When Possible**
+   - Swift 6.0+ macros reduce boilerplate and potential errors
+   - They automatically handle function and property implementations
+
+2. **Reset Between Tests**
+   - Always call `resetCallsAndStubs()` in `tearDown()`
+   - This ensures each test starts with a clean state
+
+3. **Use Argument Captors for Complex Validation**
+   - When you need to verify complex arguments
+   - When you need to use the captured values later in the test
+
+4. **Leverage Rich Assertion Messages**
+   - SpryKit provides detailed failure messages
+   - Use them to write more maintainable tests
+
+5. **Test Edge Cases**
+   - Use stubbing to test error conditions
+   - Test both success and failure paths
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+SpryKit is available under the MIT license. See the LICENSE file for more info.
 
 __Table of Contents__
 
