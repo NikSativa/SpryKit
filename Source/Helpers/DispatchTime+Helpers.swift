@@ -20,12 +20,12 @@ public extension DispatchTime.spry {
             }
 
             let fromNow = DispatchTime.spry.testMake(secondsFromNow: interval)
-            let diff: dispatch_time_t
-            if value > fromNow {
-                diff = value.rawValue - fromNow.rawValue
-            } else {
-                diff = fromNow.rawValue - value.rawValue
-            }
+            let diff: dispatch_time_t =
+                if value > fromNow {
+                    value.rawValue - fromNow.rawValue
+                } else {
+                    fromNow.rawValue - value.rawValue
+                }
             return diff < 1000000
         }
     }

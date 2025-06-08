@@ -11,12 +11,12 @@ internal func makeFriendlyDescription(for obj: Any?, close: Bool) -> String {
         return close ? "<nil>" : "nil"
     }
 
-    let str: String
-    if let friendly = obj as? SpryFriendlyStringConvertible {
-        str = friendly.friendlyDescription
-    } else {
-        str = String(describing: obj)
-    }
+    let str: String =
+        if let friendly = obj as? SpryFriendlyStringConvertible {
+            friendly.friendlyDescription
+        } else {
+            String(describing: obj)
+        }
     return close ? "<\(str)>" : str
 }
 
@@ -28,6 +28,7 @@ internal func makeFriendlyDescription(for arguments: [Any?], separator: String, 
 
     let str = arguments.map {
         return makeFriendlyDescription(for: $0, close: closeEach)
-    }.joined(separator: separator)
+    }
+    .joined(separator: separator)
     return str
 }

@@ -274,7 +274,8 @@ private func descriptionOfExpectation(actualType: Any.Type, functionName: String
             } else {
                 return "<nil>"
             }
-        }.joined(separator: ", ")
+        }
+        .joined(separator: ", ")
         descriptionOfAttempt += " with \(argumentsDescription)"
     }
 
@@ -284,12 +285,15 @@ private func descriptionOfExpectation(actualType: Any.Type, functionName: String
     case .exactly(let _count):
         countDescription = "exactly"
         count = _count
+
     case .atLeast(let _count) where _count != 1:
         countDescription = "at least"
         count = _count
+
     case .atMost(let _count):
         countDescription = "at most"
         count = _count
+
     default:
         countDescription = ""
         count = -1

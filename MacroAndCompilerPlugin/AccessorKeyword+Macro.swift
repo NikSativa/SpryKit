@@ -2,13 +2,13 @@
 import Foundation
 import SharedTypes
 
-internal extension Array where Element == VarKeyword {
+internal extension [VarKeyword] {
     static func ~=(lhs: [Element], rhs: Element) -> Bool {
         return lhs.contains(rhs)
     }
 }
 
-internal extension Array where Element == FuncKeyword {
+internal extension [FuncKeyword] {
     static func ~=(lhs: [Element], rhs: Element) -> Bool {
         return lhs.contains(rhs)
     }

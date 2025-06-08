@@ -72,7 +72,6 @@ private func AssertEqual(condition: Bool,
         XCTFail("expected error is nil, use `XCTAssertNil` instead. " + message(), file: file, line: line)
         return
     }
-
     guard let lhs = lhs() else {
         XCTFail("actual error is nil, use `XCTAssertNil` instead. " + message(), file: file, line: line)
         return

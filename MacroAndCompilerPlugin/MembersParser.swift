@@ -21,6 +21,7 @@ struct MembersParser {
                 guard case .identifier = decl.name.tokenKind else {
                     throw SpryableDiagnostic.operatorsNotSupported
                 }
+
                 functions.append(decl)
             }
         }

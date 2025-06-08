@@ -32,20 +32,27 @@ private func isAnyEqual(_ lhs: Any, _ rhs: Any) -> Bool {
         }
 
         return manualDictionaryEquality(lhsMirror: lhsMirror, rhsMirror: rhsMirror)
+
     case (.dictionary, .dictionary):
         return manualDictionaryEquality(lhsMirror: lhsMirror, rhsMirror: rhsMirror)
+
     case (.enum, .enum):
         guard lhsMirror.subjectType == rhsMirror.subjectType else {
             return false
         }
+
         return areEnumCasesEqual(lhs: lhs, rhs: rhs, lhsMirror: lhsMirror, rhsMirror: rhsMirror)
+
     case (.tuple, .tuple):
         // ignore labels as dev's sugar
         return manualArrayEquality(lhsMirror: lhsMirror, rhsMirror: rhsMirror)
+
     case (.collection, .collection):
         return manualArrayEquality(lhsMirror: lhsMirror, rhsMirror: rhsMirror)
+
     case (.set, .set):
         return manualSetEquality(lhsMirror: lhsMirror, rhsMirror: rhsMirror)
+
     case (.optional, .optional):
         let lhsUnwrapped = unwrapOptionalIfPossible(lhsMirror)
         let rhsUnwrapped = unwrapOptionalIfPossible(rhsMirror)
@@ -58,14 +65,17 @@ private func isAnyEqual(_ lhs: Any, _ rhs: Any) -> Bool {
            let rhsUnwrapped {
             return isAnyEqual(lhsUnwrapped, rhsUnwrapped)
         }
+
     case (.optional, _):
         if let lhsUnwrapped = unwrapOptionalIfPossible(lhsMirror) {
             return isAnyEqual(lhsUnwrapped, rhs)
         }
+
     case (_, .optional):
         if let rhsUnwrapped = unwrapOptionalIfPossible(rhsMirror) {
             return isAnyEqual(lhs, rhsUnwrapped)
         }
+
     case (_, .class),
          (_, .collection),
          (_, .dictionary),
@@ -81,6 +91,7 @@ private func isAnyEqual(_ lhs: Any, _ rhs: Any) -> Bool {
          (.struct, _),
          (.tuple, _):
         break
+
     @unknown default:
         break
     }
@@ -138,24 +149,6 @@ private func areEnumCasesEqual(lhs: Any, rhs: Any, lhsMirror: Mirror, rhsMirror:
     return manualDictionaryEquality(lhsMirror: lhsMirror, rhsMirror: rhsMirror)
 }
 
-// MARK: - Private Helpers
-
-@inline(__always)
-private func isAFunction(value: Any) -> Bool {
-    return String(describing: value) == "(Function)"
-}
-
-@inline(__always)
-private func typeNameWithOutGenerics<T>(_: T.Type) -> String {
-    let type = String(describing: T.self)
-
-    if let typeWithoutGeneric = type.split(separator: "<").first {
-        return String(typeWithoutGeneric)
-    }
-
-    return type
-}
-
 @inline(__always)
 private func manualDictionaryEquality(lhsMirror: Mirror, rhsMirror: Mirror) -> Bool {
     let lhsDictionary = convertMirrorToDictionary(mirror: lhsMirror)
@@ -173,7 +166,6 @@ private func manualDictionaryEquality(lhsMirror: Mirror, rhsMirror: Mirror) -> B
             // key doesn't not exist in both dictionaries
             return false
         }
-
         guard isAnyEqual(lhsValue, rhsValue) else {
             // values for the same key are not equal
             return false

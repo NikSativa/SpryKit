@@ -1,11 +1,14 @@
 # SpryKit
+
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FNikSativa%2FSpryKit%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/NikSativa/SpryKit)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FNikSativa%2FSpryKit%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/NikSativa/SpryKit)
+[![NikSativa CI](https://github.com/NikSativa/SpryKit/actions/workflows/swift_macos.yml/badge.svg)](https://github.com/NikSativa/SpryKit/actions/workflows/swift_macos.yml)
+[![License](https://img.shields.io/github/license/Iterable/swift-sdk)](https://opensource.org/licenses/MIT)
 
 SpryKit is a powerful Swift testing framework that provides spying and stubbing capabilities, making it easier to write clean and maintainable unit tests. It's designed to help you test classes in isolation by verifying method calls and controlling return values.
 
 > [!IMPORTANT]
-> SpryKit is thread-safe and can be used in a multi-threaded environment.
+> Thread-safe: perfect for multi-threaded test environments.
 
 ## Best Practices
 

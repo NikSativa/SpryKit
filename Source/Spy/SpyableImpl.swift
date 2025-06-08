@@ -40,15 +40,15 @@ public extension Spyable {
     func didCall(_ function: Function, withArguments arguments: [Any?] = [], countSpecifier: CountSpecifier = .atLeast(1)) -> DidCallResult {
         function.rawValue.validateArguments(arguments)
 
-        let success: Bool
-        switch countSpecifier {
-        case .exactly(let count):
-            success = timesCalled(function, arguments: arguments) == count
-        case .atLeast(let count):
-            success = timesCalled(function, arguments: arguments) >= count
-        case .atMost(let count):
-            success = timesCalled(function, arguments: arguments) <= count
-        }
+        let success: Bool =
+            switch countSpecifier {
+            case .exactly(let count):
+                timesCalled(function, arguments: arguments) == count
+            case .atLeast(let count):
+                timesCalled(function, arguments: arguments) >= count
+            case .atMost(let count):
+                timesCalled(function, arguments: arguments) <= count
+            }
 
         let _callsDictionary = _callsDictionary
         return DidCallResult(success: success,
@@ -91,15 +91,15 @@ public extension Spyable {
     static func didCall(_ function: ClassFunction, withArguments arguments: [Any?] = [], countSpecifier: CountSpecifier = .atLeast(1)) -> DidCallResult {
         function.rawValue.validateArguments(arguments)
 
-        let success: Bool
-        switch countSpecifier {
-        case .exactly(let count):
-            success = timesCalled(function, arguments: arguments) == count
-        case .atLeast(let count):
-            success = timesCalled(function, arguments: arguments) >= count
-        case .atMost(let count):
-            success = timesCalled(function, arguments: arguments) <= count
-        }
+        let success: Bool =
+            switch countSpecifier {
+            case .exactly(let count):
+                timesCalled(function, arguments: arguments) == count
+            case .atLeast(let count):
+                timesCalled(function, arguments: arguments) >= count
+            case .atMost(let count):
+                timesCalled(function, arguments: arguments) <= count
+            }
 
         let _callsDictionary = _callsDictionary
         return DidCallResult(success: success,
