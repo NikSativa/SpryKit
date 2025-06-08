@@ -38,18 +38,18 @@ private func AssertEqual(condition: Bool,
                          message: () -> String,
                          file: StaticString,
                          line: UInt) {
-    let result: Bool
-    switch (lhs(), rhs()) {
-    case (.none, .none):
-        result = true
-    case (.some(let lhs), .some(let rhs)):
-        result = isAnyEqual(lhs, rhs)
-    case (_, .none),
-         (_, .some),
-         (.none, _),
-         (.some, _):
-        result = false
-    }
+    let result: Bool =
+        switch (lhs(), rhs()) {
+        case (.none, .none):
+            true
+        case (.some(let lhs), .some(let rhs)):
+            isAnyEqual(lhs, rhs)
+        case (_, .none),
+             (_, .some),
+             (.none, _),
+             (.some, _):
+            false
+        }
 
     if condition {
         XCTAssertTrue(result, message(), file: file, line: line)

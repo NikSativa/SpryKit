@@ -139,17 +139,22 @@ private func isEqualArgs(specifiedArg: Any?, actualArg: Any?) -> Bool {
                 return actualArg != Argument.skipped
             }
             return true
+
         case .skipped:
             if let actualArg = actualArg as? Argument {
                 return actualArg != Argument.anything
             }
             return true
+
         case .nonNil:
             return !isNil(actualArg)
+
         case .nil:
             return isNil(actualArg)
+
         case .validator(let validator):
             return validator(actualArg)
+
         case .closure:
             return isClosure(actualArg)
         }

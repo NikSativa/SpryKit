@@ -30,6 +30,7 @@ internal extension VariableDeclSyntax {
             guard let binding = bindings.first else {
                 throw SpryableDiagnostic.invalidVariableRequirement
             }
+
             return binding
         }
     }
@@ -122,21 +123,21 @@ internal extension Macro {
 
     static func enumBlockBuilder(_ requirements: MembersParser, isStatic: Bool) throws -> EnumDeclSyntax {
         let declarations = try enumCaseDeclarations(requirements, isStatic: isStatic)
-        let members: MemberBlockItemListSyntax
-        if declarations.isEmpty {
-            members = MemberBlockItemListSyntax {
-                let caseName: String = "_unknown_"
-                let caseEl = EnumCaseElementSyntax(name: .identifier(caseName), rawValue: .init(value: StringLiteralExprSyntax(content: "'enum' must have at least one 'case'")))
-                let elements: EnumCaseElementListSyntax = .init(arrayLiteral: caseEl)
-                EnumCaseDeclSyntax(elements: elements)
-            }
-        } else {
-            members = MemberBlockItemListSyntax {
-                for enumCase in declarations {
-                    enumCase
+        let members: MemberBlockItemListSyntax =
+            if declarations.isEmpty {
+                MemberBlockItemListSyntax {
+                    let caseName: String = "_unknown_"
+                    let caseEl = EnumCaseElementSyntax(name: .identifier(caseName), rawValue: .init(value: StringLiteralExprSyntax(content: "'enum' must have at least one 'case'")))
+                    let elements: EnumCaseElementListSyntax = .init(arrayLiteral: caseEl)
+                    EnumCaseDeclSyntax(elements: elements)
+                }
+            } else {
+                MemberBlockItemListSyntax {
+                    for enumCase in declarations {
+                        enumCase
+                    }
                 }
             }
-        }
 
         let inheritanceEnumClause = InheritanceClauseSyntax {
             InheritedTypeSyntax(type: IdentifierTypeSyntax(name: "String"))
@@ -160,13 +161,13 @@ internal extension Macro {
             let caseName: String = try variable.binding.pattern.trimmedDescription
 
             let addCase: (_ sub: String?) -> Void = { sub in
-                let caseEl: EnumCaseElementSyntax
-                if let sub {
-                    caseEl = EnumCaseElementSyntax(name: .identifier(caseName + sub),
-                                                   rawValue: .init(value: StringLiteralExprSyntax(content: caseName + sub)))
-                } else {
-                    caseEl = EnumCaseElementSyntax(name: .identifier(caseName))
-                }
+                let caseEl: EnumCaseElementSyntax =
+                    if let sub {
+                        .init(name: .identifier(caseName + sub),
+                              rawValue: .init(value: StringLiteralExprSyntax(content: caseName + sub)))
+                    } else {
+                        .init(name: .identifier(caseName))
+                    }
 
                 let elements: EnumCaseElementListSyntax = .init(arrayLiteral: caseEl)
                 let enumCase = EnumCaseDeclSyntax(elements: elements)
@@ -203,9 +204,13 @@ internal extension Macro {
                 return name.joined(separator: "_")
             }
             let name = nameParameters.isEmpty ? caseName : caseName.description + "With" + nameParameters.joined(separator: "_")
-            let rawParameters = function.signature.parameterClause.parameters.map { param in
-                param.firstName.trimmedDescription + ":"
-            }.joined()
+            let rawParameters = function.signature
+                .parameterClause
+                .parameters
+                .map { param in
+                    param.firstName.trimmedDescription + ":"
+                }
+                .joined()
 
             let rawValue = caseName + "(" + rawParameters + ")"
 
@@ -223,6 +228,7 @@ internal extension Macro {
                 // vars are without 'rawValue'
                 return true
             }
+
             return uniqRawValues.insert(text).inserted
         }
         return uniq

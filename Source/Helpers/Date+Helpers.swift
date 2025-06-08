@@ -30,6 +30,7 @@ public extension Date.spry {
         guard let date = calendar.date(from: components) else {
             fatalError("Date.testMake() has invalid parameters")
         }
+
         return date
     }
 }

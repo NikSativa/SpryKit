@@ -10,11 +10,9 @@ public enum SpryableAccessorMacro: AccessorMacro {
         guard let declaration = declaration.as(VariableDeclSyntax.self) else {
             throw SpryableDiagnostic.notAVariable
         }
-
         guard declaration.bindingSpecifier.tokenKind == .keyword(.var) else {
             throw SpryableDiagnostic.onlyApplicableToVar
         }
-
         guard let name = declaration.bindings.first?.pattern.as(IdentifierPatternSyntax.self)?.identifier else {
             throw SpryableDiagnostic.invalidVariableRequirement
         }

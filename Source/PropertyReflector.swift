@@ -16,6 +16,7 @@ public struct PropertyReflector {
               let (_, value) = mirror.children.first else {
             return any
         }
+
         return value
     }
 

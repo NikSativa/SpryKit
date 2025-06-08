@@ -33,6 +33,8 @@ extension URLRequest: SpryFriendlyStringConvertible {
             String(describing: type(of: self)),
             description,
             String(describing: allHTTPHeaderFields)
-        ].compactMap { $0 }.joined(separator: ", ")
+        ]
+            .compactMap { $0 }
+            .joined(separator: ", ")
     }
 }

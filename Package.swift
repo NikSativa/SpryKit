@@ -14,7 +14,9 @@ let package = Package(
         .visionOS(.v1)
     ],
     products: [
-        .library(name: "SpryKit", targets: ["SpryKit"])
+        .library(name: "SpryKit", targets: ["SpryKit"]),
+        .library(name: "SpryKitStatic", type: .static, targets: ["SpryKit"]),
+        .library(name: "SpryKitDynamic", type: .dynamic, targets: ["SpryKit"])
     ],
     dependencies: [
         .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.2.2"),

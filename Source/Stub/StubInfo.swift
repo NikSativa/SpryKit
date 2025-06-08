@@ -93,7 +93,8 @@ extension StubInfo: CustomStringConvertible {
             return $0.map {
                 "<\($0)>"
             } ?? "<nil>"
-        }.joined(separator: ", ")
+        }
+        .joined(separator: ", ")
         let returnDescription = isNil(stubType) ? "nil" : "\(stubType!)"
 
         return "Stub(function: <\(functionName)>, args: <\(argumentsDescription)>, returnValue: <\(returnDescription)>)"
