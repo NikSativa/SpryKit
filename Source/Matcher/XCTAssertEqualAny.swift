@@ -4,7 +4,7 @@ import XCTest
 @inline(__always)
 public func XCTAssertEqualAny(_ lhs: @autoclosure () -> Any?,
                               _ rhs: @autoclosure () -> Any?,
-                              _ message: @autoclosure () -> String = "",
+                              _ message: @autoclosure () -> String? = nil,
                               file: StaticString = #filePath,
                               line: UInt = #line) {
     AssertEqual(condition: true,
@@ -18,7 +18,7 @@ public func XCTAssertEqualAny(_ lhs: @autoclosure () -> Any?,
 @inline(__always)
 public func XCTAssertNotEqualAny(_ lhs: @autoclosure () -> Any?,
                                  _ rhs: @autoclosure () -> Any?,
-                                 _ message: @autoclosure () -> String = "",
+                                 _ message: @autoclosure () -> String? = nil,
                                  file: StaticString = #filePath,
                                  line: UInt = #line) {
     AssertEqual(condition: false,
@@ -35,11 +35,13 @@ public func XCTAssertNotEqualAny(_ lhs: @autoclosure () -> Any?,
 private func AssertEqual(condition: Bool,
                          lhs: () -> Any?,
                          rhs: () -> Any?,
-                         message: () -> String,
+                         message: () -> String?,
                          file: StaticString,
                          line: UInt) {
+    let lhs = lhs()
+    let rhs = rhs()
     let result: Bool =
-        switch (lhs(), rhs()) {
+        switch (lhs, rhs) {
         case (.none, .none):
             true
         case (.some(let lhs), .some(let rhs)):
@@ -52,8 +54,8 @@ private func AssertEqual(condition: Bool,
         }
 
     if condition {
-        XCTAssertTrue(result, message(), file: file, line: line)
+        XCTAssertTrue(result, message() ?? "\(describe(lhs)) is not equal to \(describe(rhs))\ndiff:\n\(Spry.diff(lhs, rhs))", file: file, line: line)
     } else {
-        XCTAssertFalse(result, message(), file: file, line: line)
+        XCTAssertFalse(result, message() ?? "\(describe(lhs)) is equal to \(describe(rhs))\ndiff:\n\(Spry.diff(lhs, rhs))", file: file, line: line)
     }
 }

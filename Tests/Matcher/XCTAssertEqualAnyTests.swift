@@ -10,6 +10,9 @@ final class XCTAssertEqualAnyTests: XCTestCase {
 
     func test_errors() {
         XCTAssertEqualAny(1, 1)
+        XCTAssertEqualAny([1], [1])
+
         XCTAssertNotEqualAny(2, 1)
+        XCTAssertNotEqualAny([2: 1], [1: 1])
     }
 }
