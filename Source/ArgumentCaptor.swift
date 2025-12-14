@@ -1,7 +1,10 @@
 import Foundation
+import Threading
 
 /// Used to capture an argument for more detailed testing on an argument.
-public class ArgumentCaptor {
+@preconcurrency
+public final class ArgumentCaptor: @unchecked Sendable {
+    @AtomicValue
     private var capturedArguments: [Any?] = []
 
     public init() {}
@@ -13,16 +16,18 @@ public class ArgumentCaptor {
     ///
     /// - Returns: The captured argument or fatal error if there was an issue.
     public func getValue<T>(at index: Int = 0, as _: T.Type = T.self) -> T {
-        guard index >= 0, capturedArguments.count > index else {
-            Constant.FatalError.capturedArgumentsOutOfBounds(index: index, capturedArguments: capturedArguments)
-        }
+        return $capturedArguments.syncUnchecked { capturedArguments in
+            guard index >= 0, capturedArguments.count > index else {
+                Constant.FatalError.capturedArgumentsOutOfBounds(index: index, capturedArguments: capturedArguments)
+            }
 
-        let capturedAsUnknownType = capturedArguments[index]
-        guard let captured = capturedAsUnknownType as? T else {
-            Constant.FatalError.argumentCaptorCouldNotReturnSpecifiedType(value: capturedAsUnknownType, type: T.self)
-        }
+            let capturedAsUnknownType = capturedArguments[index]
+            guard let captured = capturedAsUnknownType as? T else {
+                Constant.FatalError.argumentCaptorCouldNotReturnSpecifiedType(value: capturedAsUnknownType, type: T.self)
+            }
 
-        return captured
+            return captured
+        }
     }
 
     public subscript<T>(_ index: Int) -> T {
@@ -30,11 +35,18 @@ public class ArgumentCaptor {
     }
 
     public func isType<T>(_: T.Type, at index: Int = 0) -> Bool {
-        let value: T.Type? = getValue(at: index)
-        return value != nil
+        return $capturedArguments.syncUnchecked { capturedArguments in
+            guard index >= 0, capturedArguments.count > index else {
+                return false
+            }
+
+            return capturedArguments[index] is T
+        }
     }
 
     internal func capture(_ argument: Any?) {
-        capturedArguments.append(argument)
+        $capturedArguments.syncUnchecked { capturedArguments in
+            capturedArguments.append(argument)
+        }
     }
 }

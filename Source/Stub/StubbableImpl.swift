@@ -1,4 +1,5 @@
 import Foundation
+import Threading
 
 // A global NSMapTable to hold onto stubs for types conforming to Stubbable. This map table has "weak to strong objects" options.
 //
@@ -8,6 +9,9 @@ private nonisolated(unsafe) var stubsMapTable: NSMapTable<AnyObject, SpryDiction
 #else
 private var stubsMapTable: NSMapTable<AnyObject, SpryDictionary<StubInfo>> = NSMapTable.weakToStrongObjects()
 #endif
+
+/// Mutex for synchronizing access to stubsMapTable to prevent race conditions
+private let stubsMapTableMutex = PThread(kind: .recursive)
 
 /// Used to determine if a fallback was given in the event of that no stub is found.
 internal enum Fallback<T> {
@@ -19,6 +23,11 @@ public extension Stubbable {
     // MARK: - Instance
 
     internal var _stubsDictionary: SpryDictionary<StubInfo> {
+        stubsMapTableMutex.lock()
+        defer {
+            stubsMapTableMutex.unlock()
+        }
+
         guard let stubsDict = stubsMapTable.object(forKey: self) else {
             let stubDict = SpryDictionary<StubInfo>()
             stubsMapTable.setObject(stubDict, forKey: self)
@@ -89,6 +98,11 @@ public extension Stubbable {
     // MARK: - Static
 
     internal static var _stubsDictionary: SpryDictionary<StubInfo> {
+        stubsMapTableMutex.lock()
+        defer {
+            stubsMapTableMutex.unlock()
+        }
+
         guard let stubDict = stubsMapTable.object(forKey: self) else {
             let stubDict = SpryDictionary<StubInfo>()
             stubsMapTable.setObject(stubDict, forKey: self)

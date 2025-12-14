@@ -52,9 +52,10 @@ Traditional mocking and stubbing in Swift can be verbose and error-prone, especi
 - 🚀 **Macro Support**: Reduce boilerplate with Swift 6.0+ macros
 - 🔒 **Thread Safety**: Built-in support for multi-threaded environments
 - 📱 **Cross-Platform**: Support for iOS, macOS, tvOS, watchOS, and visionOS
-- 🧪 **Rich Assertions**: Comprehensive set of XCTest assertions
+- 🧪 **Rich Assertions**: Comprehensive set of XCTest and Swift Testing assertions
 - 🔍 **Argument Capturing**: Capture and inspect method arguments
 - 🎨 **Image Testing**: Built-in support for image comparison testing
+- 📊 **Diff API**: Powerful diff functionality for comparing strings, objects, and structures
 
 __Table of Contents__
 
@@ -88,6 +89,17 @@ __Table of Contents__
 * [XCTAssertThrowsError / XCTAssertNoThrowError](#xctassertthrowserror--xctassertnothrowerror)
 * [XCTAssertEqualError / XCTAssertNotEqualError](#xctassertequalerror--xctassertnotequalerror)
 * [XCTAssertEqualImage / XCTAssertNotEqualImage](#xctassertequalimage--xctassertnotequalimage)
+* [Diff API](#diff-api)
+
+### 🆕 Swift Testing Support
+* [Swift Testing Overview](#swift-testing-overview)
+* [expectHaveReceived / expectHaveNotReceived](#expecthavereceived--expecthavenotreceived)
+* [expectEqualAny / expectNotEqualAny](#expectequalany--expectnotequalany)
+* [expectThrowsAssertion](#expectthrowsassertion)
+* [expectThrows / expectNoThrow](#expectthrows--expectnothrow)
+* [expectEqualError / expectNotEqualError](#expectequalerror--expectnotequalerror)
+* [expectEqualImage / expectNotEqualImage](#expectequalimage--expectnotequalimage)
+* [Diff API (Swift Testing)](#diff-api-swift-testing)
 
 ### 🎨 Visuals
 * [Visual Overview](#visual-overview)
@@ -145,6 +157,10 @@ If you're unable to use macros (e.g., due to Swift version constraints), you can
 
 ```swift
 final class FakeUserService: UserService, Spryable {
+    enum ClassFunction: String, StringRepresentable {
+        case none
+    }
+    
     enum Function: String, StringRepresentable {
         case currentUser
         case fetchUser = "fetchUser(id:)"
@@ -162,6 +178,8 @@ final class FakeUserService: UserService, Spryable {
 ```
 
 ### 3. Write Tests
+
+#### Using XCTest
 
 ```swift
 class UserViewModelTests: XCTestCase {
@@ -194,11 +212,42 @@ class UserViewModelTests: XCTestCase {
 }
 ```
 
+#### Using Swift Testing (Swift 5.9+)
+
+> [!NOTE]
+> SpryKit fully supports Apple's Swift Testing framework. Use `expectHaveReceived`, `expectEqualAny`, and other Swift Testing assertions instead of XCTest assertions.
+
+```swift
+import Testing
+
+@Suite("UserViewModel Tests", .serialized)
+final class UserViewModelTests {
+    @Test("Fetch user success")
+    func test_fetchUser_success() {
+        let fakeUserService = FakeUserService()
+        let sut = UserViewModel(userService: fakeUserService)
+        
+        // Given
+        let expectedUser = User(id: "1", name: "John")
+        fakeUserService.stub(.fetchUser).with("1").andReturn(expectedUser)
+        
+        // When
+        sut.fetchUser(id: "1")
+        
+        // Then
+        expectHaveReceived(fakeUserService, .fetchUser)
+        #expect(sut.currentUser == expectedUser)
+    }
+}
+```
+
 ## Core Concepts
 
 ### Spying
 
 Spying allows you to verify that methods were called with the correct arguments:
+
+#### Using XCTest
 
 ```swift
 // Verify a method was called
@@ -208,7 +257,25 @@ XCTAssertHaveReceived(fakeService, .doSomething)
 XCTAssertHaveReceived(fakeService, .doSomething, with: "expected argument")
 
 // Verify call count
-XCTAssertHaveReceived(fakeService, .doSomething, times: .exactly(2))
+XCTAssertHaveReceived(fakeService, .doSomething, countSpecifier: .exactly(2))
+```
+
+#### Using Swift Testing
+
+```swift
+// Verify a method was called
+fakeService.method()
+expectHaveReceived(fakeService, .method)
+
+// Verify with specific arguments
+fakeService.stub(.doSomethingWith).andReturn("value")
+_ = fakeService.doSomething(with: "expected argument")
+expectHaveReceived(fakeService, .doSomethingWith, with: "expected argument")
+
+// Verify call count
+fakeService.method()
+fakeService.method()
+expectHaveReceived(fakeService, .method, countSpecifier: .exactly(2))
 ```
 
 ### Stubbing
@@ -218,17 +285,23 @@ Stubbing lets you control what methods return:
 ```swift
 // Simple return value
 fakeService.stub(.doSomething).andReturn("test value")
+let result = fakeService.doSomething()
+#expect(result == "test value")
 
 // Conditional return based on arguments
-fakeService.stub(.doSomething)
+fakeService.stub(.doSomethingWith)
     .with("specific arg")
     .andReturn("special value")
+let result2 = fakeService.doSomething(with: "specific arg")
+#expect(result2 == "special value")
 
 // Custom implementation
-fakeService.stub(.doSomething).andDo { arguments in
+fakeService.stub(.doSomethingWith).andDo { arguments in
     let arg = arguments[0] as! String
     return arg.uppercased()
 }
+let result3 = fakeService.doSomething(with: "test")
+#expect(result3 == "TEST")
 ```
 
 ### Argument Capturing
@@ -237,11 +310,13 @@ Capture and inspect arguments passed to methods:
 
 ```swift
 let captor = Argument.captor()
-fakeService.stub(.doSomething).with(Argument.anything, captor).andReturn("value")
+fakeService.stub(.doSomethingWith).with(captor).andReturn("value")
+
+_ = fakeService.doSomething(with: "expected value")
 
 // Later in the test
 let capturedArg = captor.getValue(as: String.self)
-XCTAssertEqual(capturedArg, "expected value")
+#expect(capturedArg == "expected value")
 ```
 
 ## Advanced Features
@@ -249,14 +324,17 @@ XCTAssertEqual(capturedArg, "expected value")
 ### Custom Argument Validation
 
 ```swift
-let customValidation = Argument.pass { actualArgument -> Bool in
+let customValidation = Argument.validator { actualArgument -> Bool in
     guard let string = actualArgument as? String else { return false }
     return string.hasPrefix("test")
 }
 
-fakeService.stub(.doSomething)
+fakeService.stub(.doSomethingWith)
     .with(customValidation)
     .andReturn("validated")
+
+let result = fakeService.doSomething(with: "test123")
+#expect(result == "validated")
 ```
 
 ### Testing Errors
@@ -427,7 +505,7 @@ fakeStringService.stub(.hereAreTwoStrings).with("first string", "second string")
 fakeStringService.stub(.hereAreTwoStrings).with(Argument.anything, "only this string matters").andReturn(true)
 
 // using custom validation
-let customArgumentValidation = Argument.pass({ actualArgument -> Bool in
+let customArgumentValidation = Argument.validator({ actualArgument -> Bool in
     let passesCustomValidation = // ...
     return passesCustomValidation
 })
@@ -504,7 +582,7 @@ fake.didCall(.functionName, withArguments: ["firstArg", "secondArg"]).success
 fake.didCall(.functionName, withArguments: [Argument.nonNil, Argument.anything, "thirdArg"]).success
 
 // passes if the function was called with an argument that passes the custom validation
-let customArgumentValidation = Argument.pass({ argument -> Bool in
+let customArgumentValidation = Argument.validator({ argument -> Bool in
     let passesCustomValidation = // ...
     return passesCustomValidation
 })
@@ -632,6 +710,68 @@ XCTAssertEqualImage(Image.spry.testImage, Image.spry.testImage)
 XCTAssertNotEqualImage(Image.spry.testImage, Image.spry.testImage2)
 ```
 
+### Diff API
+
+SpryKit provides powerful diff functionality to compare values and generate readable difference reports. The Diff API includes multiple methods for different use cases:
+
+#### diffLines
+
+Builds a line-by-line diff between two strings using the Myers algorithm. Perfect for comparing text content, code, or any string-based data.
+
+```swift
+let diff = Spry.diffLines("line1\nline2", "line1\nline3")
+// Returns: "  line1\n− line2\n+ line3"
+// Empty string if strings are equal
+```
+
+
+#### diffEncodable
+
+Builds a line-by-line diff between two `Encodable` values. Values are encoded to JSON strings using the provided encoder and then compared line-by-line.
+
+```swift
+struct User: Encodable {
+    let id: Int
+    let name: String
+}
+
+let user1 = User(id: 1, name: "Alice")
+let user2 = User(id: 2, name: "Bob")
+let diff = Spry.diffEncodable(user1, user2)
+// Returns formatted JSON diff with line markers
+```
+
+#### diffMirror (Structure Reflection)
+
+Builds a hierarchical diff between two objects using Mirror reflection. Perfect for comparing complex objects, dictionaries, sets, and collections with detailed structure information.
+
+```swift
+struct User {
+    let id: Int
+    let name: String
+    let address: Address
+}
+
+let user1 = User(id: 1, name: "Alice", address: Address(street: "Main St"))
+let user2 = User(id: 2, name: "Bob", address: Address(street: "Oak Ave"))
+let diff = Spry.diffMirror(user1, user2)
+// Returns: ["name:\n|\tReceived: Bob\n|\tExpected: Alice", "id:\n|\tReceived: 2\n|\tExpected: 1", ...]
+```
+
+You can customize the diff output:
+
+```swift
+// Use tab indentation instead of pipe
+let diff = Spry.diffMirror(user1, user2, indentationType: .tab)
+
+// Skip printing when collection count differs
+let diff = Spry.diffMirror(array1, array2, skipPrintingOnDiffCount: true)
+
+// Custom labels
+let labels = SpryDiffNameLabels.comparing
+let diff = Spry.diffMirror(user1, user2, nameLabels: labels)
+```
+
 ## SpryEquatable
 
 SpryKit uses the `SpryEquatable` protocol to override comparisons in your test classes at your own risk. This is useful when you need to compare two instances of a class or struct even if they do not conform to the `Equatable` protocol, or when you need to skip some properties in the comparison (e.g., closures). Make types conform to `SpryEquatable` only when you need something very specific; otherwise, use the `Equatable` protocol or `XCTAssertEqualAny`.
@@ -742,6 +882,215 @@ sequenceDiagram
 ```
 
 This sequence highlights how SpryKit helps you define a contract via a protocol, provide a fake that conforms to it, and test the SUT's interaction with that dependency in a controlled way.
+
+## Swift Testing Support
+
+SpryKit fully supports Apple's Swift Testing framework (available in Swift 5.9+). All XCTest assertions have Swift Testing equivalents that follow Swift Testing conventions.
+
+### Overview
+
+Swift Testing provides a modern, type-safe testing API that integrates seamlessly with SpryKit. All Swift Testing assertions are located in `Source/SwiftTesting/` and are conditionally compiled with `#if canImport(Testing)`.
+
+### Available Assertions
+
+#### expectHaveReceived / expectHaveNotReceived
+
+Verify that methods were called with the correct arguments:
+
+```swift
+import Testing
+import SpryKit
+
+@Test func testMethodCall() {
+    let fakeService = FakeService()
+    fakeService.doSomething()
+    
+    expectHaveReceived(fakeService, .doSomething)
+    expectHaveReceived(fakeService, .doSomething, with: "expected arg")
+    expectHaveReceived(fakeService, .doSomething, countSpecifier: .exactly(2))
+    expectHaveNotReceived(fakeService, .otherMethod)
+}
+```
+
+#### expectEqualAny / expectNotEqualAny
+
+Compare values of any type, even if they don't conform to `Equatable`:
+
+```swift
+@Test func testEquality() {
+    struct TestUser {
+        let name: String
+        let age: Int
+    }
+    
+    expectEqualAny(TestUser(name: "John", age: 30), TestUser(name: "John", age: 30))
+    expectNotEqualAny(TestUser(name: "Bob", age: 20), TestUser(name: "John", age: 30))
+}
+```
+
+#### expectThrows / expectNoThrow
+
+Test error handling:
+
+```swift
+@Test func testErrorHandling() {
+    enum TestError: Error, Equatable {
+        case one
+        case two
+    }
+    
+    func throwError() throws {
+        throw TestError.one
+    }
+    
+    func notThrowError() throws {
+        // nothing
+    }
+    
+    expectThrows(TestError.one) {
+        try throwError()
+    }
+    
+    expectNoThrow {
+        try notThrowError()
+    }
+}
+```
+
+#### expectEqualError / expectNotEqualError
+
+Compare specific errors:
+
+```swift
+@Test func testSpecificError() {
+    enum TestError: Error, Equatable {
+        case one
+        case two
+    }
+    
+    // Direct comparison
+    expectEqualError(TestError.one, TestError.one)
+    expectNotEqualError(TestError.one, TestError.two)
+    
+    // With closure that returns error
+    func returnError() throws -> TestError? {
+        return TestError.one
+    }
+    
+    func returnDifferentError() throws -> TestError? {
+        return TestError.two
+    }
+    
+    expectEqualError(TestError.one) {
+        try returnError()
+    }
+    
+    expectNotEqualError(TestError.one) {
+        try returnDifferentError()
+    }
+}
+```
+
+#### expectEqualImage / expectNotEqualImage
+
+Compare images:
+
+```swift
+@Test func testImageEquality() {
+    let actualImage = generateImage()
+    let expectedImage = loadExpectedImage()
+    
+    expectEqualImage(actualImage, expectedImage)
+}
+```
+
+#### expectThrowsAssertion
+
+Verify that assertions (preconditions) are thrown:
+
+```swift
+@Test func testAssertion() {
+    expectThrowsAssertion {
+        precondition(false, "Should fail")
+    }
+}
+```
+
+### Diff API (Swift Testing)
+
+The Diff API is available in both XCTest and Swift Testing contexts. All diff methods work the same way:
+
+```swift
+import Testing
+import SpryKit
+
+@Test func testDiff() {
+    // String line-by-line diff
+    let diff = Spry.diffLines("line1\nline2", "line1\nline3")
+    #expect(diff == """
+      line1
+    − line2
+    + line3
+    """)
+    
+    // Encodable diff
+    struct TestUser: Encodable {
+        let id: Int
+        let name: String
+    }
+    
+    let user1 = TestUser(id: 1, name: "Alice")
+    let user2 = TestUser(id: 2, name: "Bob")
+    let diffEncodable = Spry.diffEncodable(user1, user2)
+    #expect(!diffEncodable.isEmpty)
+    
+    // Structure diff with reflection
+    struct TestUser {
+        let id: Int
+        let name: String
+    }
+    
+    let user1 = TestUser(id: 1, name: "Alice")
+    let user2 = TestUser(id: 2, name: "Bob")
+    let structureDiff = Spry.diffMirror(user1, user2)
+    #expect(!structureDiff.isEmpty)
+}
+```
+
+### Migration from XCTest
+
+When migrating from XCTest to Swift Testing:
+
+1. Replace `XCTestCase` with `@Suite` and `@Test` attributes
+2. Replace `XCTAssert*` with `expect*` functions
+3. Use `#expect` for simple boolean checks
+
+**Before (XCTest):**
+```swift
+final class MyTests: XCTestCase {
+
+    func testSomething() {
+        let fakeService = FakeService()
+        
+        // do something that call service method
+        XCTAssertHaveReceived(fakeService, .method)
+    }
+}
+```
+
+**After (Swift Testing):**
+```swift
+@Suite("My Tests", .serialized)
+final class MyTests {
+    @Test func testSomething() {
+        let fakeService = FakeService()
+        
+        // do something that call service method
+        fakeService.method()
+        expectHaveReceived(fakeService, .method)
+    }
+}
+```
 
 ## Requirements
 
