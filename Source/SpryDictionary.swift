@@ -1,4 +1,5 @@
 import Foundation
+import Threading
 
 protocol SpryItem: AnyObject, Equatable {
     var arguments: [Any?] { get }
@@ -17,12 +18,10 @@ extension SpryItem {
 
 @preconcurrency
 final class SpryDictionary<T: SpryItem>: @unchecked Sendable {
-    private let mutex = PThread(kind: .recursive)
-
     /// Array of all stubs in chronological order.
     var values: [T] {
-        let valuesMap = mutex.sync {
-            return self.valuesMap
+        let valuesMap = $valuesMap.syncUnchecked {
+            return $0
         }
 
         return valuesMap.values
@@ -32,69 +31,61 @@ final class SpryDictionary<T: SpryItem>: @unchecked Sendable {
 
     private var chronologicalIndex: Int = 0
 
+    @AtomicValue
     private var valuesMap: [String: [T]] = [:]
 
     func append(_ stub: T) {
-        mutex.lock()
-        defer {
-            mutex.unlock()
+        $valuesMap.syncUnchecked { valuesMap in
+            var stubs = valuesMap[stub.functionName] ?? []
+
+            chronologicalIndex &+= 1
+            stub.chronologicalIndex = chronologicalIndex
+
+            stubs.insert(stub, at: 0)
+            valuesMap[stub.functionName] = stubs
         }
-
-        var stubs = valuesMap[stub.functionName] ?? []
-
-        chronologicalIndex &+= 1
-        stub.chronologicalIndex = chronologicalIndex
-
-        stubs.insert(stub, at: 0)
-        valuesMap[stub.functionName] = stubs
     }
 
     func completedDuplicates(of stub: T) -> [T] {
-        mutex.lock()
-        defer {
-            mutex.unlock()
-        }
+        $valuesMap.syncUnchecked { valuesMap in
+            var duplicates: [T] = []
 
-        var duplicates: [T] = []
+            for cached in valuesMap[stub.functionName] ?? [] {
+                guard cached.chronologicalIndex != stub.chronologicalIndex, stub.isComplete else {
+                    continue
+                }
 
-        for cached in valuesMap[stub.functionName] ?? [] {
-            guard cached.chronologicalIndex != stub.chronologicalIndex, stub.isComplete else {
-                continue
+                if cached == stub {
+                    duplicates.append(cached)
+                }
             }
 
-            if cached == stub {
-                duplicates.append(cached)
-            }
+            return duplicates
         }
-
-        return duplicates
     }
 
     func get(for functionName: String) -> [T] {
-        return mutex.sync {
+        return $valuesMap.syncUnchecked { valuesMap in
             return valuesMap[functionName] ?? []
         }
     }
 
     func remove(stubs removingStubs: [T], forFunctionName functionName: String) {
-        mutex.lock()
-        defer {
-            mutex.unlock()
-        }
+        $valuesMap.syncUnchecked { valuesMap in
+            var currentStubs = valuesMap[functionName] ?? []
 
-        var currentStubs = valuesMap[functionName] ?? []
-
-        for removedStub in removingStubs {
-            currentStubs.removeFirst { currentStub in
-                return currentStub.chronologicalIndex == removedStub.chronologicalIndex
+            for removedStub in removingStubs {
+                currentStubs.removeFirst { currentStub in
+                    return currentStub.chronologicalIndex == removedStub.chronologicalIndex
+                }
             }
-        }
 
-        valuesMap[functionName] = currentStubs
+            valuesMap[functionName] = currentStubs
+        }
     }
 
     func clearAll() {
-        mutex.sync {
+        $valuesMap.syncUnchecked { valuesMap in
             valuesMap = [:]
         }
     }
@@ -104,7 +95,7 @@ final class SpryDictionary<T: SpryItem>: @unchecked Sendable {
 
 extension SpryDictionary: CustomStringConvertible {
     var description: String {
-        return mutex.sync {
+        $valuesMap.syncUnchecked { valuesMap in
             return String(describing: valuesMap)
         }
     }
@@ -114,7 +105,7 @@ extension SpryDictionary: CustomStringConvertible {
 
 extension SpryDictionary: CustomDebugStringConvertible {
     var debugDescription: String {
-        return mutex.sync {
+        $valuesMap.syncUnchecked { valuesMap in
             return String(describing: valuesMap)
         }
     }
@@ -124,8 +115,6 @@ extension SpryDictionary: CustomDebugStringConvertible {
 
 extension SpryDictionary: SpryFriendlyStringConvertible {
     var friendlyDescription: String {
-        return mutex.sync {
-            return makeFriendlyDescription(for: values, separator: "; ", closeEach: false)
-        }
+        return makeFriendlyDescription(for: values, separator: "; ", closeEach: false)
     }
 }

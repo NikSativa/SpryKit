@@ -20,18 +20,17 @@ private func isAnyEqual(_ lhs: Any, _ rhs: Any) -> Bool {
     }
 
     switch (lhsStyle, rhsStyle) {
+    #if compiler(>=6.2)
+    case (.foreignReference, .foreignReference):
+        return manualDictionaryEquality(lhs: lhs, lhsMirror: lhsMirror, rhs: rhs, rhsMirror: rhsMirror)
+    case (_, .foreignReference),
+         (.foreignReference, _):
+        break
+    #endif
+
     case (.class, .class),
          (.struct, .struct):
-        guard lhsMirror.subjectType == rhsMirror.subjectType else {
-            return false
-        }
-
-        if let lhs = lhs as? AnyHashable,
-           let rhs = rhs as? AnyHashable {
-            return lhs == rhs
-        }
-
-        return manualDictionaryEquality(lhsMirror: lhsMirror, rhsMirror: rhsMirror)
+        return manualDictionaryEquality(lhs: lhs, lhsMirror: lhsMirror, rhs: rhs, rhsMirror: rhsMirror)
 
     case (.dictionary, .dictionary):
         return manualDictionaryEquality(lhsMirror: lhsMirror, rhsMirror: rhsMirror)
@@ -144,6 +143,23 @@ private func areEnumCasesEqual(lhs: Any, rhs: Any, lhsMirror: Mirror, rhsMirror:
     // Make sure that both enums names are equal
     guard lhsCaseName == rhsCaseName else {
         return false
+    }
+
+    return manualDictionaryEquality(lhsMirror: lhsMirror, rhsMirror: rhsMirror)
+}
+
+@inline(__always)
+private func manualDictionaryEquality(lhs: Any,
+                                      lhsMirror: Mirror,
+                                      rhs: Any,
+                                      rhsMirror: Mirror) -> Bool {
+    guard lhsMirror.subjectType == rhsMirror.subjectType else {
+        return false
+    }
+
+    if let lhs = lhs as? AnyHashable,
+       let rhs = rhs as? AnyHashable {
+        return lhs == rhs
     }
 
     return manualDictionaryEquality(lhsMirror: lhsMirror, rhsMirror: rhsMirror)

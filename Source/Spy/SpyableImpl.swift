@@ -1,4 +1,5 @@
 import Foundation
+import Threading
 
 // A global NSMapTable to hold onto calls for types conforming to Spyable. This map table has "weak to strong objects" options.
 //
@@ -9,10 +10,18 @@ private nonisolated(unsafe) var callsMapTable: NSMapTable<AnyObject, SpryDiction
 private var callsMapTable: NSMapTable<AnyObject, SpryDictionary<RecordedCall>> = NSMapTable.weakToStrongObjects()
 #endif
 
+/// Mutex for synchronizing access to callsMapTable to prevent race conditions
+private let callsMapTableMutex = PThread(kind: .recursive)
+
 public extension Spyable {
     // MARK: Instance
 
     private var _callsDictionary: SpryDictionary<RecordedCall> {
+        callsMapTableMutex.lock()
+        defer {
+            callsMapTableMutex.unlock()
+        }
+
         guard let callsDict = callsMapTable.object(forKey: self) else {
             let callsDict = SpryDictionary<RecordedCall>()
             callsMapTable.setObject(callsDict, forKey: self)
@@ -64,6 +73,11 @@ public extension Spyable {
     // MARK: Static
 
     private static var _callsDictionary: SpryDictionary<RecordedCall> {
+        callsMapTableMutex.lock()
+        defer {
+            callsMapTableMutex.unlock()
+        }
+
         guard let callsDict = callsMapTable.object(forKey: self) else {
             let callsDict = SpryDictionary<RecordedCall>()
             callsMapTable.setObject(callsDict, forKey: self)

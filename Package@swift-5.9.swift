@@ -18,12 +18,14 @@ let package = Package(
         .library(name: "SpryKitDynamic", type: .dynamic, targets: ["SpryKit"])
     ],
     dependencies: [
+        .package(url: "https://github.com/NikSativa/Threading.git", from: "2.2.0"),
         .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.2.2")
     ],
     targets: [
         .target(name: "SpryKit",
                 dependencies: [
-                    "CwlPreconditionTesting"
+                    "CwlPreconditionTesting",
+                    "Threading"
                 ],
                 path: "Source",
                 resources: [

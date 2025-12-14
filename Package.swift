@@ -19,6 +19,7 @@ let package = Package(
         .library(name: "SpryKitDynamic", type: .dynamic, targets: ["SpryKit"])
     ],
     dependencies: [
+        .package(url: "https://github.com/NikSativa/Threading.git", from: "2.2.0"),
         .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.2.2"),
         .package(url: "https://github.com/apple/swift-syntax.git", from: "600.0.1")
     ],
@@ -31,7 +32,7 @@ let package = Package(
                     .product(name: "SwiftSyntax", package: "swift-syntax"),
                     .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
                     .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
-                    .product(name: "SwiftDiagnostics", package: "swift-syntax"),
+                    .product(name: "SwiftDiagnostics", package: "swift-syntax")
                 ],
                 path: "SharedTypes"),
         .macro(name: "MacroAndCompilerPlugin",
@@ -48,7 +49,8 @@ let package = Package(
                     "SharedTypes",
                     "MacroAndCompilerPlugin",
                     "CwlPreconditionTesting",
-                    .product(name: "SwiftSyntax", package: "swift-syntax")
+                    .product(name: "SwiftSyntax", package: "swift-syntax"),
+                    "Threading"
                 ],
                 path: "Source",
                 resources: [
