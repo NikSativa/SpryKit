@@ -63,6 +63,7 @@ let package = Package(
         .testTarget(name: "SpryKitTests",
                     dependencies: [
                         "SpryKit",
+                        "MacroAndCompilerPlugin",
                         .product(name: "SwiftSyntax", package: "swift-syntax"),
                         .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
                         .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax")
