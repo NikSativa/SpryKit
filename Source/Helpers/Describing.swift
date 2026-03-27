@@ -11,7 +11,7 @@ internal func describe<T>(_ value: T?) -> String {
     switch value {
     case .none:
         str = "nil"
-    case .some(let value):
+    case let .some(value):
         if let value = value as? Encodable {
             let encoder = JSONEncoder()
             encoder.outputFormatting = SpryJSONEncoderOutputFormatting

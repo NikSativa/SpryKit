@@ -298,7 +298,7 @@ final class READMEExamplesTests {
         expectEqualError(TestError.one, TestError.one)
         expectNotEqualError(TestError.one, TestError.two)
 
-        // With closure that returns error
+        /// With closure that returns error
         func returnError() throws -> TestError? {
             return TestError.one
         }

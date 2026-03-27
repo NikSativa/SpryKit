@@ -91,15 +91,21 @@ private struct PlatformImage {
 
 #if os(macOS)
 private extension NSBitmapImageRep {
-    var png: Data? { representation(using: .png, properties: [:]) }
+    var png: Data? {
+        representation(using: .png, properties: [:])
+    }
 }
 
 private extension Data {
-    var bitmap: NSBitmapImageRep? { NSBitmapImageRep(data: self) }
+    var bitmap: NSBitmapImageRep? {
+        NSBitmapImageRep(data: self)
+    }
 }
 
 private extension NSImage {
-    var png: Data? { tiffRepresentation?.bitmap?.png }
+    var png: Data? {
+        tiffRepresentation?.bitmap?.png
+    }
 
     func pngData() -> Data? {
         return png

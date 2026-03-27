@@ -71,6 +71,7 @@ public func expectEqualError<E: Error>(_ lhs: E?,
         Issue.record("Expected error is nil, use `#expect(lhs == nil)` instead. \(message)")
         return
     }
+
     guard let lhs else {
         Issue.record("Actual error is nil, use `#expect(rhs == nil)` instead. \(message)")
         return
@@ -93,6 +94,7 @@ public func expectNotEqualError<E: Error>(_ lhs: E?,
         Issue.record("Expected error is nil, use `#expect(lhs == nil)` instead. \(message)", sourceLocation: sourceLocation)
         return
     }
+
     guard let lhs else {
         Issue.record("Actual error is nil, use `#expect(rhs == nil)` instead. \(message)", sourceLocation: sourceLocation)
         return

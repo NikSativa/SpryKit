@@ -40,13 +40,13 @@ final class StubInfo {
         }
 
         switch stubType {
-        case .andReturn(let value):
+        case let .andReturn(value):
             return value
-        case .andDo(let closure):
+        case let .andDo(closure):
             return try closure(args)
-        case .andDoVoid(let closure):
+        case let .andDoVoid(closure):
             return try closure(args)
-        case .andThrow(let error):
+        case let .andThrow(error):
             throw error
         }
     }
@@ -121,7 +121,7 @@ extension StubInfo: SpryFriendlyStringConvertible {
             return functionName
         }
 
-        let arguementListStringRepresentation = makeFriendlyDescription(for: arguments, separator: ", ", closeEach: true)
-        return functionName + " with " + arguementListStringRepresentation
+        let argumentListStringRepresentation = makeFriendlyDescription(for: arguments, separator: ", ", closeEach: true)
+        return functionName + " with " + argumentListStringRepresentation
     }
 }

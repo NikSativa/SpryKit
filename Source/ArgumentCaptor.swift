@@ -11,7 +11,7 @@ public final class ArgumentCaptor: @unchecked Sendable {
 
     /// Get an argument that was captured.
     ///
-    /// - Parameter at: The index of the captured argument. The index cooresponds the number of times the specified function was called (when argument specifiers passed validation). For instance if the function was called 5 times and you want the argument captured during the 2nd call then ask for index 1, `getValue(at: 1)`. Defaults to 0. Asking for the an index that is out of bounds will result in a `fatalError()`.
+    /// - Parameter at: The index of the captured argument. The index corresponds the number of times the specified function was called (when argument specifiers passed validation). For instance if the function was called 5 times and you want the argument captured during the 2nd call then ask for index 1, `getValue(at: 1)`. Defaults to 0. Asking for the an index that is out of bounds will result in a `fatalError()`.
     /// - Parameter as: The expected type of the argument captured. Asking for the wrong type will result in a `fatalError()`
     ///
     /// - Returns: The captured argument or fatal error if there was an issue.

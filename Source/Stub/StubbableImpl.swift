@@ -264,7 +264,7 @@ public extension Stubbable {
         switch fallback {
         case .noFallback:
             Constant.FatalError.noReturnValueFoundForInstanceFunction(stubbable: self, function: function, arguments: arguments, returnType: T.self)
-        case .fallback(let value):
+        case let .fallback(value):
             return value
         }
     }
@@ -273,7 +273,7 @@ public extension Stubbable {
         switch fallback {
         case .noFallback:
             Constant.FatalError.noReturnValueFoundForClassFunction(stubbableType: self, function: function, arguments: arguments, returnType: T.self)
-        case .fallback(let value):
+        case let .fallback(value):
             return value
         }
     }

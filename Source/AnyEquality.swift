@@ -182,6 +182,7 @@ private func manualDictionaryEquality(lhsMirror: Mirror, rhsMirror: Mirror) -> B
             // key doesn't not exist in both dictionaries
             return false
         }
+
         guard isAnyEqual(lhsValue, rhsValue) else {
             // values for the same key are not equal
             return false
@@ -201,7 +202,7 @@ private func convertMirrorToDictionary(mirror: Mirror) -> [AnyHashable: Any] {
         } else if let pair = child.value as? (key: AnyHashable, value: Any) {
             dictionary[pair.key] = pair.value
         } else {
-            fatalError("Unable to reconstruct dictionary from a Mirror with a `displatyStyle` of `.dictionary`")
+            fatalError("Unable to reconstruct dictionary from a Mirror with a `displayStyle` of `.dictionary`")
         }
     }
 
@@ -258,7 +259,7 @@ private func convertMirrorToSet(mirror: Mirror) -> Set<AnyHashable> {
             let r = result.insert(value)
             assert(r.inserted, "duplicates found")
         } else {
-            fatalError("Unable to reconstruct dictionary from a Mirror with a `displatyStyle` of `.dictionary`")
+            fatalError("Unable to reconstruct dictionary from a Mirror with a `displayStyle` of `.dictionary`")
         }
     }
 

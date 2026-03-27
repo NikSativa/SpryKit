@@ -22,15 +22,15 @@ private func descriptionOfExpectation(actualType: Any.Type, functionName: String
     let countDescription: String
     let count: Int
     switch countSpecifier {
-    case .exactly(let _count):
+    case let .exactly(_count):
         countDescription = "exactly"
         count = _count
 
-    case .atLeast(let _count) where _count != 1:
+    case let .atLeast(_count) where _count != 1:
         countDescription = "at least"
         count = _count
 
-    case .atMost(let _count):
+    case let .atMost(_count):
         countDescription = "at most"
         count = _count
 
@@ -57,7 +57,7 @@ private func descriptionOfNilAttempt(arguments: [Any?], countSpecifier: CountSpe
     switch countSpecifier {
     case .exactly:
         descriptionOfAttempt += " 'count' times"
-    case .atLeast(let count) where count != 1:
+    case let .atLeast(count) where count != 1:
         descriptionOfAttempt += " at least 'count' times"
     case .atMost:
         descriptionOfAttempt += " at most 'count' times"

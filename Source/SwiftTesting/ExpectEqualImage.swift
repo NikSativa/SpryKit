@@ -26,6 +26,7 @@ public func expectEqualImage(_ expression1: () throws -> Image?,
             Issue.record("\(message). First image is nil", sourceLocation: sourceLocation)
             return
         }
+
         guard let rhs = try expression2() else {
             Issue.record("\(message). Second image is nil", sourceLocation: sourceLocation)
             return
@@ -52,6 +53,7 @@ public func expectNotEqualImage(_ expression1: () throws -> Image?,
             Issue.record("\(message). First image is nil", sourceLocation: sourceLocation)
             return
         }
+
         guard let rhs = try expression2() else {
             Issue.record("\(message). Second image is nil", sourceLocation: sourceLocation)
             return

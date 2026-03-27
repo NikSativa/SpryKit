@@ -10,9 +10,11 @@ public enum SpryableAccessorMacro: AccessorMacro {
         guard let declaration = declaration.as(VariableDeclSyntax.self) else {
             throw SpryableDiagnostic.notAVariable
         }
+
         guard declaration.bindingSpecifier.tokenKind == .keyword(.var) else {
             throw SpryableDiagnostic.onlyApplicableToVar
         }
+
         guard let name = declaration.bindings.first?.pattern.as(IdentifierPatternSyntax.self)?.identifier else {
             throw SpryableDiagnostic.invalidVariableRequirement
         }
@@ -27,26 +29,18 @@ public enum SpryableAccessorMacro: AccessorMacro {
         var result: [AccessorDeclSyntax] = []
 
         if options ~= .set {
-            result.append(
-                .init(accessorSpecifier: .keyword(.get),
-                      effectSpecifiers: effectSpecifiers,
-                      body: .init(statements: "return spryify(\"\(raw: name)_get\")"))
-            )
+            result.append(.init(accessorSpecifier: .keyword(.get),
+                                effectSpecifiers: effectSpecifiers,
+                                body: .init(statements: "return spryify(\"\(raw: name)_get\")")))
 
-            result.append(
-                .init(accessorSpecifier: .keyword(.set), body: .init(statements: "return spryify(\"\(raw: name)_set\", arguments: newValue)"))
-            )
+            result.append(.init(accessorSpecifier: .keyword(.set), body: .init(statements: "return spryify(\"\(raw: name)_set\", arguments: newValue)")))
         } else if let effectSpecifiers {
-            result.append(
-                .init(accessorSpecifier: .keyword(.get),
-                      effectSpecifiers: effectSpecifiers,
-                      body: .init(statements: "return spryify()"))
-            )
+            result.append(.init(accessorSpecifier: .keyword(.get),
+                                effectSpecifiers: effectSpecifiers,
+                                body: .init(statements: "return spryify()")))
         } else {
-            result.append(
-                .init(accessorSpecifier: .keyword(.get),
-                      body: .init(statements: "return spryify()"))
-            )
+            result.append(.init(accessorSpecifier: .keyword(.get),
+                                body: .init(statements: "return spryify()")))
         }
 
         return result

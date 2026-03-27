@@ -3,7 +3,7 @@ import SpryKit
 import XCTest
 
 final class SpryableXCTests: XCTestCase {
-    let subject: SpryableTestClass = .init()
+    private let subject: SpryableTestClass = .init()
 
     override func tearDown() {
         super.tearDown()

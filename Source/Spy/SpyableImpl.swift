@@ -51,11 +51,11 @@ public extension Spyable {
 
         let success: Bool =
             switch countSpecifier {
-            case .exactly(let count):
+            case let .exactly(count):
                 timesCalled(function, arguments: arguments) == count
-            case .atLeast(let count):
+            case let .atLeast(count):
                 timesCalled(function, arguments: arguments) >= count
-            case .atMost(let count):
+            case let .atMost(count):
                 timesCalled(function, arguments: arguments) <= count
             }
 
@@ -107,11 +107,11 @@ public extension Spyable {
 
         let success: Bool =
             switch countSpecifier {
-            case .exactly(let count):
+            case let .exactly(count):
                 timesCalled(function, arguments: arguments) == count
-            case .atLeast(let count):
+            case let .atLeast(count):
                 timesCalled(function, arguments: arguments) >= count
-            case .atMost(let count):
+            case let .atMost(count):
                 timesCalled(function, arguments: arguments) <= count
             }
 

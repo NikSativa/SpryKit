@@ -3,7 +3,7 @@ import SpryKit
 import XCTest
 
 final class XCTAssertHaveReceivedXCTests: XCTestCase {
-    let actualArgument = "correct arg"
+    private let actualArgument = "correct arg"
     private let subject: SpyableTestHelper = .init()
 
     override func tearDown() {

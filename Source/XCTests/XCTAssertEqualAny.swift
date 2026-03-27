@@ -45,7 +45,7 @@ private func AssertEqual(condition: Bool,
         switch (lhs, rhs) {
         case (.none, .none):
             true
-        case (.some(let lhs), .some(let rhs)):
+        case let (.some(lhs), .some(rhs)):
             isAnyEqual(lhs, rhs)
         case (_, .none),
              (_, .some),

@@ -105,7 +105,9 @@ public struct SpryDiffLine {
     public let children: [SpryDiffLine]
     public let canBeOrdered: Bool
 
-    public var hasChildren: Bool { !children.isEmpty }
+    public var hasChildren: Bool {
+        !children.isEmpty
+    }
 
     public init(contents: String,
                 indentationLevel: Int,

@@ -27,7 +27,13 @@ public extension Image {
 }
 
 public extension Image.spry {
-    #if os(macOS) && swift(>=6.2)
+    #if os(macOS) && swift(>=6.3)
+    nonisolated static let testImage: Image = .init(systemSymbolName: "circle", accessibilityDescription: nil)!
+    nonisolated static let testImage1: Image = .init(systemSymbolName: "square", accessibilityDescription: nil)!
+    nonisolated static let testImage2: Image = .init(systemSymbolName: "diamond", accessibilityDescription: nil)!
+    nonisolated static let testImage3: Image = .init(systemSymbolName: "octagon", accessibilityDescription: nil)!
+    nonisolated static let testImage4: Image = .init(systemSymbolName: "oval", accessibilityDescription: nil)!
+    #elseif os(macOS) && swift(>=6.2)
     nonisolated(unsafe) static let testImage: Image = .init(systemSymbolName: "circle", accessibilityDescription: nil)!
     nonisolated(unsafe) static let testImage1: Image = .init(systemSymbolName: "square", accessibilityDescription: nil)!
     nonisolated(unsafe) static let testImage2: Image = .init(systemSymbolName: "diamond", accessibilityDescription: nil)!
@@ -78,14 +84,20 @@ public extension Image.spry {
 
 #if os(macOS)
 private extension NSBitmapImageRep {
-    var png: Data? { representation(using: .png, properties: [:]) }
+    var png: Data? {
+        representation(using: .png, properties: [:])
+    }
 }
 
 private extension Data {
-    var bitmap: NSBitmapImageRep? { NSBitmapImageRep(data: self) }
+    var bitmap: NSBitmapImageRep? {
+        NSBitmapImageRep(data: self)
+    }
 }
 
 private extension NSImage {
-    var png: Data? { tiffRepresentation?.bitmap?.png }
+    var png: Data? {
+        tiffRepresentation?.bitmap?.png
+    }
 }
 #endif

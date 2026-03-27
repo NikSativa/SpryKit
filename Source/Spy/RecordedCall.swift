@@ -40,8 +40,8 @@ extension RecordedCall: SpryFriendlyStringConvertible {
             return functionName
         }
 
-        let arguementListStringRepresentation = makeFriendlyDescription(for: arguments, separator: ", ", closeEach: true)
-        return functionName + " with " + arguementListStringRepresentation
+        let argumentListStringRepresentation = makeFriendlyDescription(for: arguments, separator: ", ", closeEach: true)
+        return functionName + " with " + argumentListStringRepresentation
     }
 }
 

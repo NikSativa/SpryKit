@@ -152,7 +152,7 @@ private func isEqualArgs(specifiedArg: Any?, actualArg: Any?) -> Bool {
         case .nil:
             return isNil(actualArg)
 
-        case .validator(let validator):
+        case let .validator(validator):
             return validator(actualArg)
 
         case .closure:

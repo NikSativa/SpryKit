@@ -286,17 +286,17 @@ private protocol SomeGenericProtocol {
     init()
 }
 
-private class SomeGeneric: SomeGenericProtocol {
+private final class SomeGeneric: SomeGenericProtocol {
     required init() {}
 }
 
 private protocol SomeProtocol {}
 
-private class SomeWithProtocol: SomeProtocol {}
+private final class SomeWithProtocol: SomeProtocol {}
 
-private class Some {}
+private final class Some {}
 
-private class Container<T: SomeGenericProtocol> {
+private final class Container<T: SomeGenericProtocol> {
     let lsome = Some()
     let lsomeWithProtocol = SomeWithProtocol()
     let lprotocol: SomeProtocol = SomeWithProtocol()

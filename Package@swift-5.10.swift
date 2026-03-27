@@ -34,7 +34,7 @@ let package = Package(
                 swiftSettings: [
                     .define("supportsVisionOS", .when(platforms: [.visionOS])),
                 ]),
-        .testTarget(name: "SpryTests",
+        .testTarget(name: "SpryKitTests",
                     dependencies: [
                         "SpryKit"
                     ],

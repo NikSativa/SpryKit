@@ -46,7 +46,7 @@ private extension Spry {
         switch value {
         case .none:
             return "null"
-        case .some(let value):
+        case let .some(value):
             if let value = value as? Encodable {
                 if let str = (try? String(data: prettyEncoder.encode(value), encoding: .utf8)) {
                     return str

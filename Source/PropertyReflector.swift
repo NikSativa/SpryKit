@@ -24,7 +24,7 @@ public struct PropertyReflector {
         var properties: [String: Any] = [:]
 
         // read optional value
-        for case (let label, let value) in mirror.children {
+        for case let (label, value) in mirror.children {
             // Note ".storage" is appended to lazy var properties
             if let label = label?.replacingOccurrences(of: ".storage", with: "") {
                 properties[label] = unwrapOptionalIfPossible(value)

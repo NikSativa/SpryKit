@@ -206,10 +206,10 @@ final class StubbableTests {
     }
 
     @Test("Passing in arguments when the arguments match what is stubbed list mixed")
-    func passing_in_arguments_when_the_arguments_match_what_is_stubbed_list_mixed() {
-        let expectedArg: [(str: String, url: URL)] = [
-            ("im expected 1", URL(string: "google.com/1")!),
-            ("im expected 2", URL(string: "google.com/2")!)
+    func passing_in_arguments_when_the_arguments_match_what_is_stubbed_list_mixed() throws {
+        let expectedArg: [(str: String, url: URL)] = try [
+            ("im expected 1", #require(URL(string: "google.com/1"))),
+            ("im expected 2", #require(URL(string: "google.com/2")))
         ]
 
         let expectedReturn = ["i should be returned 1", "i should be returned 2"]
@@ -224,10 +224,10 @@ final class StubbableTests {
     }
 
     @Test("Passing in arguments when the arguments match what is stubbed list 2args")
-    func passing_in_arguments_when_the_arguments_match_what_is_stubbed_list_2args() {
-        let expectedArg: [(str: String, url: URL)] = [
-            ("im expected 1", URL(string: "google.com/1")!),
-            ("im expected 2", URL(string: "google.com/2")!)
+    func passing_in_arguments_when_the_arguments_match_what_is_stubbed_list_2args() throws {
+        let expectedArg: [(str: String, url: URL)] = try [
+            ("im expected 1", #require(URL(string: "google.com/1"))),
+            ("im expected 2", #require(URL(string: "google.com/2")))
         ]
 
         let expectedReturn = ["i should be returned 1", "i should be returned 2"]
