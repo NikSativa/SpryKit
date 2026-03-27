@@ -179,7 +179,7 @@ private func manualDictionaryEquality(lhsMirror: Mirror, rhsMirror: Mirror) -> B
 
     for lhsKey in lhsDictionary.keys {
         guard let lhsValue = lhsDictionary[lhsKey], let rhsValue = rhsDictionary[lhsKey] else {
-            // key doesn't not exist in both dictionaries
+            // key doesn't exist in both dictionaries
             return false
         }
 

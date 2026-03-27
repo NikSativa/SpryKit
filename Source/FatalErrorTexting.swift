@@ -115,7 +115,7 @@ internal enum Constant {
             let entries = [
                 "Type: \(type)",
                 "Function signature: \(functionName)",
-                "Error occured on: \(routeString(filePath: file, line: "\(line)"))",
+                "Error occurred on: \(routeString(filePath: file, line: "\(line)"))",
                 "Possible Fix: ↴",
                 probableMessage
             ]

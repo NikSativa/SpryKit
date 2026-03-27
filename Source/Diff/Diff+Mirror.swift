@@ -183,7 +183,7 @@ private struct Differ {
 
         // Remove embedding of `some` for optional types, as it offers no value
         guard expectedMirror.displayStyle != .optional else {
-            if let expectedUnwrapped = expectedMirror.firstChildenValue, let receivedUnwrapped = receivedMirror.firstChildenValue {
+            if let expectedUnwrapped = expectedMirror.firstChildValue, let receivedUnwrapped = receivedMirror.firstChildValue {
                 return diffLines(expectedUnwrapped, receivedUnwrapped, level: level)
             }
             return []
@@ -396,7 +396,7 @@ private extension Mirror {
         }
     }
 
-    var firstChildenValue: Any? {
+    var firstChildValue: Any? {
         children.first?.value
     }
 }
