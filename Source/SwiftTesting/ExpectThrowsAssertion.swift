@@ -1,4 +1,4 @@
-#if canImport(Testing)
+#if canImport(Testing) && canImport(CwlPreconditionTesting)
 import CwlPreconditionTesting
 import Foundation
 import Testing
@@ -53,4 +53,4 @@ public func expectThrowsAssertion(_ expression: @autoclosure @escaping () throws
     expectThrowsAssertion(message, sourceLocation: sourceLocation, expression)
 }
 
-#endif // canImport(Testing)
+#endif // canImport(Testing) && canImport(CwlPreconditionTesting)

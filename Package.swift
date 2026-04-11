@@ -48,7 +48,7 @@ let package = Package(
                     "SpryMacroAvailable",
                     "SharedTypes",
                     "MacroAndCompilerPlugin",
-                    "CwlPreconditionTesting",
+                    .product(name: "CwlPreconditionTesting", package: "CwlPreconditionTesting", condition: .when(platforms: [.iOS, .macOS, .macCatalyst, .tvOS, .watchOS, .visionOS])),
                     .product(name: "SwiftSyntax", package: "swift-syntax"),
                     "Threading"
                 ],

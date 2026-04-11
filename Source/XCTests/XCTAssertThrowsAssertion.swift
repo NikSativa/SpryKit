@@ -1,4 +1,4 @@
-#if canImport(XCTest)
+#if canImport(XCTest) && canImport(CwlPreconditionTesting)
 import CwlPreconditionTesting
 import Foundation
 import XCTest
@@ -30,4 +30,4 @@ public func XCTAssertThrowsAssertion(expression: @autoclosure @escaping () throw
     XCTAssertThrowsAssertion(message(), file: file, line: line, expression)
 }
 
-#endif // canImport(XCTest)
+#endif // canImport(XCTest) && canImport(CwlPreconditionTesting)

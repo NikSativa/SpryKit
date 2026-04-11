@@ -1,4 +1,4 @@
-#if canImport(XCTest)
+#if canImport(XCTest) && canImport(Darwin)
 import Foundation
 import XCTest
 

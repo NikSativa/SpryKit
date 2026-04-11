@@ -1,4 +1,4 @@
-#if canImport(Testing)
+#if canImport(Testing) && canImport(Darwin)
 import Foundation
 import Testing
 

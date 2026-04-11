@@ -1,3 +1,4 @@
+#if canImport(Darwin)
 import Foundation
 
 #if os(macOS)
@@ -101,3 +102,4 @@ private extension NSImage {
     }
 }
 #endif
+#endif // canImport(Darwin)
