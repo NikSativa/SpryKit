@@ -4,11 +4,7 @@ import Threading
 // A global NSMapTable to hold onto stubs for types conforming to Stubbable. This map table has "weak to strong objects" options.
 //
 // - Important: Do NOT use this object.
-#if swift(>=6.0)
 private nonisolated(unsafe) var stubsMapTable: NSMapTable<AnyObject, SpryDictionary<StubInfo>> = NSMapTable.weakToStrongObjects()
-#else
-private var stubsMapTable: NSMapTable<AnyObject, SpryDictionary<StubInfo>> = NSMapTable.weakToStrongObjects()
-#endif
 
 /// Mutex for synchronizing access to stubsMapTable to prevent race conditions
 private let stubsMapTableMutex = PThread(kind: .recursive)

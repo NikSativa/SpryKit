@@ -1,10 +1,6 @@
 import Foundation
 
-#if swift(>=6.0)
 public nonisolated(unsafe) var SpryJSONEncoderOutputFormatting: JSONEncoder.OutputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
-#else
-public var SpryJSONEncoderOutputFormatting: JSONEncoder.OutputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
-#endif
 
 internal func describe<T>(_ value: T?) -> String {
     let str: String
