@@ -21,7 +21,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/NikSativa/Threading.git", from: "2.2.1"),
         .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.2.2"),
-        .package(url: "https://github.com/apple/swift-syntax.git", from: "600.0.1")
+        .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.1")
     ],
     targets: [
         .target(name: "SpryMacroAvailable",
