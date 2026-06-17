@@ -100,6 +100,10 @@ private func isAnyEqual(_ lhs: Any, _ rhs: Any) -> Bool {
 
 @inline(__always)
 private func areAssociatedValuesEqual(_ lhs: Any, _ rhs: Any) -> Bool {
+    if let lhsType = lhs as? Any.Type, let rhsType = rhs as? Any.Type {
+        return lhsType == rhsType
+    }
+
     if let lhs = lhs as? AnyHashable, let rhs = rhs as? AnyHashable {
         return lhs == rhs
     }
