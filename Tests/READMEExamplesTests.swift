@@ -50,9 +50,14 @@ final class FakeUserService: UserService, Spryable {
     }
 }
 
+enum ServiceError: Error, Equatable {
+    case notFound
+}
+
 protocol Service {
     func doSomething() -> String
     func doSomething(with arg: String) -> String
+    func loadSomething() throws -> String
 }
 
 final class FakeService: Service, Spryable {
@@ -63,6 +68,7 @@ final class FakeService: Service, Spryable {
     enum Function: String, StringRepresentable {
         case doSomething = "doSomething()"
         case doSomethingWith = "doSomething(with:)"
+        case loadSomething = "loadSomething()"
         case method = "method()"
     }
 
@@ -72,6 +78,10 @@ final class FakeService: Service, Spryable {
 
     func doSomething(with arg: String) -> String {
         return spryify(arguments: arg)
+    }
+
+    func loadSomething() throws -> String {
+        return try spryifyThrows()
     }
 
     func method() {
@@ -162,6 +172,25 @@ final class READMEExamplesTests {
 
         let result = fakeService.doSomething(with: "test")
         #expect(result == "TEST")
+    }
+
+    @Test("Stubbing - Throwing function")
+    func stubbing_throwingFunction() {
+        let fakeService = FakeService()
+        fakeService.stub(.loadSomething).andThrow(ServiceError.notFound)
+
+        #expect(throws: ServiceError.notFound) {
+            try fakeService.loadSomething()
+        }
+    }
+
+    @Test("Stubbing - stubAgain replaces an existing stub")
+    func stubbing_stubAgain() {
+        let fakeService = FakeService()
+        fakeService.stub(.doSomethingWith).with("a").andReturn("first")
+        fakeService.stubAgain(.doSomethingWith).with("a").andReturn("second")
+
+        #expect(fakeService.doSomething(with: "a") == "second")
     }
 
     // MARK: - Argument Capturing Examples

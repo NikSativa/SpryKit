@@ -5,7 +5,7 @@ import Foundation
 import Cocoa
 
 public typealias Image = NSImage
-#elseif os(iOS) || os(tvOS) || os(watchOS) || supportsVisionOS
+#elseif os(iOS) || os(tvOS) || os(watchOS) || os(visionOS)
 import UIKit
 
 public typealias Image = UIImage
@@ -14,14 +14,14 @@ public typealias Image = UIImage
 // MARK: - Image.spry
 
 public extension Image {
-    enum spry: @unchecked Sendable {
+    enum spry {
         // namespace
     }
 
     func testData() -> Data? {
         #if os(macOS)
         return png
-        #elseif os(iOS) || os(tvOS) || os(watchOS) || supportsVisionOS
+        #else
         return pngData()
         #endif
     }
@@ -34,31 +34,19 @@ public extension Image.spry {
     nonisolated static let testImage2: Image = .init(systemSymbolName: "diamond", accessibilityDescription: nil)!
     nonisolated static let testImage3: Image = .init(systemSymbolName: "octagon", accessibilityDescription: nil)!
     nonisolated static let testImage4: Image = .init(systemSymbolName: "oval", accessibilityDescription: nil)!
-    #elseif os(macOS) && swift(>=6.2)
-    nonisolated(unsafe) static let testImage: Image = .init(systemSymbolName: "circle", accessibilityDescription: nil)!
-    nonisolated(unsafe) static let testImage1: Image = .init(systemSymbolName: "square", accessibilityDescription: nil)!
-    nonisolated(unsafe) static let testImage2: Image = .init(systemSymbolName: "diamond", accessibilityDescription: nil)!
-    nonisolated(unsafe) static let testImage3: Image = .init(systemSymbolName: "octagon", accessibilityDescription: nil)!
-    nonisolated(unsafe) static let testImage4: Image = .init(systemSymbolName: "oval", accessibilityDescription: nil)!
-    #elseif os(macOS) && swift(>=6.0)
-    nonisolated(unsafe) static let testImage: Image = .init(systemSymbolName: "circle", accessibilityDescription: nil)!
-    nonisolated(unsafe) static let testImage1: Image = .init(systemSymbolName: "square", accessibilityDescription: nil)!
-    nonisolated(unsafe) static let testImage2: Image = .init(systemSymbolName: "diamond", accessibilityDescription: nil)!
-    nonisolated(unsafe) static let testImage3: Image = .init(systemSymbolName: "octagon", accessibilityDescription: nil)!
-    nonisolated(unsafe) static let testImage4: Image = .init(systemSymbolName: "oval", accessibilityDescription: nil)!
     #elseif os(macOS)
-    static let testImage: Image = .init(systemSymbolName: "circle", accessibilityDescription: nil)!
-    static let testImage1: Image = .init(systemSymbolName: "square", accessibilityDescription: nil)!
-    static let testImage2: Image = .init(systemSymbolName: "diamond", accessibilityDescription: nil)!
-    static let testImage3: Image = .init(systemSymbolName: "octagon", accessibilityDescription: nil)!
-    static let testImage4: Image = .init(systemSymbolName: "oval", accessibilityDescription: nil)!
+    nonisolated(unsafe) static let testImage: Image = .init(systemSymbolName: "circle", accessibilityDescription: nil)!
+    nonisolated(unsafe) static let testImage1: Image = .init(systemSymbolName: "square", accessibilityDescription: nil)!
+    nonisolated(unsafe) static let testImage2: Image = .init(systemSymbolName: "diamond", accessibilityDescription: nil)!
+    nonisolated(unsafe) static let testImage3: Image = .init(systemSymbolName: "octagon", accessibilityDescription: nil)!
+    nonisolated(unsafe) static let testImage4: Image = .init(systemSymbolName: "oval", accessibilityDescription: nil)!
     #elseif os(watchOS)
     static let testImage: Image = .init(systemName: "circle")!
     static let testImage1: Image = .init(systemName: "square")!
     static let testImage2: Image = .init(systemName: "diamond")!
     static let testImage3: Image = .init(systemName: "octagon")!
     static let testImage4: Image = .init(systemName: "oval")!
-    #elseif os(iOS) || os(tvOS) || supportsVisionOS
+    #elseif os(iOS) || os(tvOS) || os(visionOS)
     static let testImage: Image = Self.image(withColor: .blue)
     static let testImage1: Image = Self.image(withColor: .green)
     static let testImage2: Image = Self.image(withColor: .red)
@@ -72,7 +60,7 @@ public extension Image.spry {
             color.setFill()
             context.fill(rect)
         }
-        #elseif supportsVisionOS
+        #else
         let data = UIGraphicsImageRenderer(bounds: rect).pngData { context in
             color.setFill()
             context.fill(rect)
@@ -86,20 +74,20 @@ public extension Image.spry {
 #if os(macOS)
 private extension NSBitmapImageRep {
     var png: Data? {
-        representation(using: .png, properties: [:])
+        return representation(using: .png, properties: [:])
     }
 }
 
 private extension Data {
     var bitmap: NSBitmapImageRep? {
-        NSBitmapImageRep(data: self)
+        return NSBitmapImageRep(data: self)
     }
 }
 
 private extension NSImage {
     var png: Data? {
-        tiffRepresentation?.bitmap?.png
+        return tiffRepresentation?.bitmap?.png
     }
 }
 #endif
-#endif // canImport(Darwin)
+#endif

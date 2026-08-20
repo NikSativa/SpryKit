@@ -121,6 +121,24 @@ struct AnyEquatableTests {
         #expect(!isAnyEqual(AnyEnum.four(l: "str"), AnyEnum2.four(l: "str2")))
     }
 
+    @Test("Nested optionals")
+    func nestedOptionals() {
+        #expect(!isAnyEqual(OptionalBox(value: nil), OptionalBox(value: 5)))
+        #expect(!isAnyEqual(OptionalBox(value: 5), OptionalBox(value: nil)))
+        #expect(isAnyEqual(OptionalBox(value: nil), OptionalBox(value: nil)))
+        #expect(isAnyEqual(OptionalBox(value: 5), OptionalBox(value: 5)))
+        #expect(!isAnyEqual(OptionalBox(value: 5), OptionalBox(value: 6)))
+
+        #expect(!isAnyEqual([nil, 1] as [Int?], [2, 1] as [Int?]))
+        #expect(isAnyEqual([nil, 1] as [Int?], [nil, 1] as [Int?]))
+
+        #expect(!isAnyEqual(["key": nil] as [String: Int?], ["key": 42] as [String: Int?]))
+        #expect(isAnyEqual(["key": nil] as [String: Int?], ["key": nil] as [String: Int?]))
+
+        #expect(!isAnyEqual((1, nil) as (Int, Int?), (1, 99) as (Int, Int?)))
+        #expect(isAnyEqual((1, nil) as (Int, Int?), (1, nil) as (Int, Int?)))
+    }
+
     private func check<T>(a: T, b: T) {
         let aO: T? = a
         let bO: T? = b
@@ -143,6 +161,10 @@ private final class AnyObject {
 }
 
 private struct EmptyStruct {}
+private struct OptionalBox {
+    let value: Int?
+}
+
 private struct AnyStruct {
     let p: Int
 }

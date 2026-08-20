@@ -11,7 +11,7 @@ import Testing
 ///     let age: Int
 /// }
 /// expectEqualAny(User(name: "John", age: 30), User(name: "John", age: 30))
-/// // или
+/// // or
 /// #expect(isAnyEqual(User(name: "John", age: 30), User(name: "John", age: 30)))
 /// ```
 ///
@@ -24,8 +24,9 @@ public func expectEqualAny<T>(_ lhs: T?,
                               _ message: String? = nil,
                               sourceLocation: SourceLocation = #_sourceLocation) {
     let isEqual = isAnyEqual(lhs, rhs)
-    let defaultMessage = message ?? "\(describe(lhs)) is not equal to \(describe(rhs))\ndiff:\n\(Spry.diffMirror(lhs, rhs))"
-    #expect(isEqual, "\(defaultMessage)", sourceLocation: sourceLocation)
+    #expect(isEqual,
+            "\(message ?? "\(describe(lhs)) is not equal to \(describe(rhs))\ndiff:\n\(Spry.diffMirror(lhs, rhs))")",
+            sourceLocation: sourceLocation)
 }
 
 /// Function that verifies two values of any type are not equal.
@@ -44,8 +45,9 @@ public func expectNotEqualAny<T>(_ lhs: T?,
                                  _ message: String? = nil,
                                  sourceLocation: SourceLocation = #_sourceLocation) {
     let isEqual = isAnyEqual(lhs, rhs)
-    let defaultMessage = message ?? "\(describe(lhs)) is equal to \(describe(rhs))\ndiff:\n\(Spry.diffMirror(lhs, rhs))"
-    #expect(!isEqual, "\(defaultMessage)", sourceLocation: sourceLocation)
+    #expect(!isEqual,
+            "\(message ?? "\(describe(lhs)) is equal to \(describe(rhs))\ndiff:\n\(Spry.diffMirror(lhs, rhs))")",
+            sourceLocation: sourceLocation)
 }
 
 #endif // canImport(Testing)

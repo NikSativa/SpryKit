@@ -339,6 +339,26 @@ final class StubbableXCTests: XCTestCase {
         XCTAssertEqual(StubbableTestHelper.classFunction(), "fallbackValue")
     }
 
+    func test_argument_specifiers_are_matched_structurally_when_detecting_duplicates() {
+        subject.stub(.giveMeAString_string).with(Argument.anything).andReturn("wildcard value")
+        subject.stub(.giveMeAString_string).with("exact").andReturn("exact value")
+
+        XCTAssertEqual(subject.giveMeAString(string: "exact"), "exact value")
+        XCTAssertEqual(subject.giveMeAString(string: "other"), "wildcard value")
+
+        XCTAssertThrowsAssertion {
+            self.subject.stub(.giveMeAString_string).with(Argument.anything).andReturn("second wildcard")
+        }
+    }
+
+    func test_incomplete_stub_traps_when_the_value_is_requested() {
+        _ = subject.stub(.giveMeAString_string)
+
+        XCTAssertThrowsAssertion {
+            _ = self.subject.giveMeAString(string: "blah")
+        }
+    }
+
     func test_stubbing_again_using_with() {
         let originalString = "original string"
         subject.stub(.giveMeAString_string).with(originalString).andReturn("original return value")

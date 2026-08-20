@@ -118,7 +118,7 @@ Add the following to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/NikSativa/SpryKit.git", from: "1.0.0")
+    .package(url: "https://github.com/NikSativa/SpryKit.git", from: "3.2.0")
 ]
 ```
 
@@ -415,6 +415,16 @@ class RealStringService: StringService {
 - *SpryableFunc* macro generates body for function with correct name and arguments.
 - *SpryableVar* macro generates body for property with correct name and accessors.
 
+`@SpryableVar` accepts any combination of `.get` (implicit), `.set`, `.async` and `.throws`.
+A `.set` property generates two function names — `<name>_get` and `<name>_set`.
+
+`@SpryableFunc` accepts `.asRealClosure` (default) or `.asArgument`. With `.asArgument`
+every `@escaping` closure parameter is recorded as `Argument.closure` instead of the closure
+itself, which keeps assertions readable when you never need to invoke the closure.
+
+A `throws` function or a `.throws` property generates `try spryifyThrows(...)`, so `.andThrow()`
+delivers the error instead of trapping.
+
 ```swift
 @Spryable
 final class FakeStringService: StringService {
@@ -434,6 +444,29 @@ final class FakeStringService: StringService {
     static func giveMeAString(arg1: Bool, arg2: String) -> String
 }
 ```
+
+```swift
+@Spryable
+final class FakeUserService: UserService {
+    @SpryableVar(.set)
+    var currentUser: User?
+
+    @SpryableVar(.throws)
+    var token: String
+
+    @SpryableFunc
+    func fetchUser(id: String) throws -> User
+
+    @SpryableFunc(.asArgument)
+    func observe(changes: @escaping (User) -> Void)
+}
+```
+
+> [!NOTE]
+> `@Spryable` does not support subscripts, operators, non-escaping closure parameters or
+> typed `throws` — write those bodies manually. `rethrows` functions keep `spryify()`, because a
+> `rethrows` function may not call an unconditionally throwing one. `private` and `fileprivate`
+> members are ignored and get no generated function names.
 
 ### Spryable + manually
 
@@ -488,6 +521,8 @@ __Abilities__
 * Stub the implementation for a function on an instance of a class or the class itself using `.andDo()`
     * `.andDo()` takes in a closure that passes in an `Array` containing the parameters and should return the stubbed value
 * Specify stubs that only get used if the right arguments are passed in using `.with()` (see [Argument Enum](#argument-enum) for alternate specifications)
+* Stub a thrown error for a throwing function using `.andThrow()`
+* Replace an existing stub for the same function and arguments using `.stubAgain()`
 * Rich `fatalError()` messages that include a detailed list of all stubbed functions when no stub is found (or the arguments received didn't pass validation)
 * Reset stubs with `resetStubs()`
 
@@ -528,6 +563,15 @@ fakeStringService.stub(.iHaveACompletionClosure).with("correct string", Argument
     // return an appropriate value
     return Void() // <-- will be returned by the stub
 })
+
+// throwing functions - the fake must call `spryifyThrows()` / `stubbedValueThrows()`,
+// which `@SpryableFunc` generates automatically for any `throws` function
+fakeStringService.stub(.loadString).andThrow(StringServiceError.notFound)
+
+// stubbing the same function with the same arguments twice is a fatalError,
+// use `stubAgain()` when replacing a stub is intentional
+fakeStringService.stub(.hereAreTwoStrings).with("a", "b").andReturn(true)
+fakeStringService.stubAgain(.hereAreTwoStrings).with("a", "b").andReturn(false)
 
 // can stub class functions as well
 FakeStringService.stub(.imAClassFunction).andReturn(Void())
@@ -670,6 +714,16 @@ XCTAssertThrowsAssertion {
     assertionFailure("should catch this assertion failure")
 }
 ```
+
+> [!WARNING]
+> **Simulator and Mac only.** Catching a trap relies on Mach exception ports, which are private
+> API on a physical device. Running this assertion on a real iPhone, iPad or Apple Watch aborts
+> the whole test run instead of failing a single test — keep such tests on the simulator or macOS.
+
+> [!IMPORTANT]
+> Supported on macOS, iOS and visionOS with `x86_64` or `arm64` only. On tvOS and watchOS the
+> assertion is skipped: it prints a notice to the console and **never fails**, so a test that
+> relies on it silently turns green there.
 
 ### XCTAssertThrowsError / XCTAssertNoThrowError
 
@@ -1016,6 +1070,23 @@ Verify that assertions (preconditions) are thrown:
 }
 ```
 
+The autoclosure overload requires an explicit message, because a defaulted one would make the
+trailing-closure form above ambiguous:
+
+```swift
+expectThrowsAssertion(precondition(false, "Should fail"), "precondition must trap")
+```
+
+> [!WARNING]
+> **Simulator and Mac only.** Catching a trap relies on Mach exception ports, which are private
+> API on a physical device. Running this assertion on a real iPhone, iPad or Apple Watch aborts
+> the whole test run instead of failing a single test — keep such tests on the simulator or macOS.
+
+> [!IMPORTANT]
+> Supported on macOS, iOS and visionOS with `x86_64` or `arm64` only. On tvOS and watchOS the
+> assertion is skipped: it prints a notice to the console and **never fails**, so a test that
+> relies on it silently turns green there.
+
 ### Diff API (Swift Testing)
 
 The Diff API is available in both XCTest and Swift Testing contexts. All diff methods work the same way:
@@ -1094,13 +1165,13 @@ final class MyTests {
 
 ## Requirements
 
-- iOS 13.0+
-- macOS 11.0+
-- macCatalyst 13.0+
-- tvOS 13.0+
-- watchOS 6.0+
+- Swift 6.0+
+- iOS 15.0+
+- macOS 14.0+
+- macCatalyst 15.0+
+- tvOS 16.0+
+- watchOS 9.0+
 - visionOS 1.0+
-- Swift 5.9+
 
 ## Contributing
 

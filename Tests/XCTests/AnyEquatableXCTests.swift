@@ -106,6 +106,23 @@ final class AnyEquatableXCTests: XCTestCase {
         XCTAssertFalse(isAnyEqual(AnyEnum.four(l: "str"), AnyEnum2.four(l: "str2")))
     }
 
+    func test_nested_optionals() {
+        XCTAssertFalse(isAnyEqual(OptionalBox(value: nil), OptionalBox(value: 5)))
+        XCTAssertFalse(isAnyEqual(OptionalBox(value: 5), OptionalBox(value: nil)))
+        XCTAssertTrue(isAnyEqual(OptionalBox(value: nil), OptionalBox(value: nil)))
+        XCTAssertTrue(isAnyEqual(OptionalBox(value: 5), OptionalBox(value: 5)))
+        XCTAssertFalse(isAnyEqual(OptionalBox(value: 5), OptionalBox(value: 6)))
+
+        XCTAssertFalse(isAnyEqual([nil, 1] as [Int?], [2, 1] as [Int?]))
+        XCTAssertTrue(isAnyEqual([nil, 1] as [Int?], [nil, 1] as [Int?]))
+
+        XCTAssertFalse(isAnyEqual(["key": nil] as [String: Int?], ["key": 42] as [String: Int?]))
+        XCTAssertTrue(isAnyEqual(["key": nil] as [String: Int?], ["key": nil] as [String: Int?]))
+
+        XCTAssertFalse(isAnyEqual((1, nil) as (Int, Int?), (1, 99) as (Int, Int?)))
+        XCTAssertTrue(isAnyEqual((1, nil) as (Int, Int?), (1, nil) as (Int, Int?)))
+    }
+
     private func check<T>(a: T, b: T, file: StaticString = #filePath, line: UInt = #line) {
         let aO: T? = a
         let bO: T? = b
@@ -128,6 +145,10 @@ private final class AnyObject {
 }
 
 private struct EmptyStruct {}
+private struct OptionalBox {
+    let value: Int?
+}
+
 private struct AnyStruct {
     let p: Int
 }

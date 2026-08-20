@@ -23,5 +23,26 @@ struct ExpectEqualErrorTests {
             Error.two
         }
     }
+
+    @Test("A nil error is reported at the call site")
+    func a_nil_error_is_reported_at_the_call_site() {
+        withKnownIssue {
+            expectEqualError(Error.one, nil)
+        } matching: { issue in
+            issue.sourceLocation?.fileName == "ExpectEqualErrorTests.swift"
+        }
+
+        withKnownIssue {
+            expectEqualError(nil, Error.one)
+        } matching: { issue in
+            issue.sourceLocation?.fileName == "ExpectEqualErrorTests.swift"
+        }
+
+        withKnownIssue {
+            expectNotEqualError(Error.one, nil)
+        } matching: { issue in
+            issue.sourceLocation?.fileName == "ExpectEqualErrorTests.swift"
+        }
+    }
 }
 #endif // canImport(Testing)

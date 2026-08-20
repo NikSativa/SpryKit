@@ -12,7 +12,7 @@ public final class DidCallResult: CustomStringConvertible, CustomDebugStringConv
     public private(set) lazy var description: String = descriptionClosure()
 
     /// A debug textual representation of this instance.
-    public private(set) lazy var debugDescription: String = descriptionClosure()
+    public private(set) lazy var debugDescription: String = debugDescriptionClosure()
 
     private let descriptionClosure: () -> String
     private let debugDescriptionClosure: () -> String

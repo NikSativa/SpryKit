@@ -9,6 +9,17 @@ struct PropertyReflectorTests {
 
     // MARK: - weak types
 
+    @Test("Missing and mistyped properties trap")
+    func missing_and_mistyped_properties() {
+        expectThrowsAssertion {
+            let _: Int = subject.property(named: "definitelyNotThere")
+        }
+
+        expectThrowsAssertion {
+            let _: Int = subject.property(named: "lsome")
+        }
+    }
+
     @Test("Weak let let")
     func weak_let_let() {
         let someValue: Some? = subject.property(named: "lsome")

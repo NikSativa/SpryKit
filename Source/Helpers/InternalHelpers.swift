@@ -57,14 +57,6 @@ internal extension Array {
         }
 
         for (a, b) in zip(self, actual) {
-            if let a = a as? Argument, a == .anything {
-                continue
-            }
-
-            if let b = b as? Argument, b == .anything {
-                continue
-            }
-
             if !isAnyEqual(a, b) {
                 return false
             }
@@ -93,15 +85,5 @@ internal extension Array {
         }
 
         return remove(at: index)
-    }
-}
-
-internal extension Dictionary {
-    func compare(with actual: Any?) -> Bool {
-        guard let actual = actual as? [Key: Value] else {
-            return false
-        }
-
-        return isAnyEqual(self, actual)
     }
 }

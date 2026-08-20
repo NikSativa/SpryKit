@@ -23,6 +23,7 @@ private func isAnyEqual(_ lhs: Any, _ rhs: Any) -> Bool {
     #if compiler(>=6.2)
     case (.foreignReference, .foreignReference):
         return manualDictionaryEquality(lhs: lhs, lhsMirror: lhsMirror, rhs: rhs, rhsMirror: rhsMirror)
+
     case (_, .foreignReference),
          (.foreignReference, _):
         break
@@ -56,7 +57,7 @@ private func isAnyEqual(_ lhs: Any, _ rhs: Any) -> Bool {
         let lhsUnwrapped = unwrapOptionalIfPossible(lhsMirror)
         let rhsUnwrapped = unwrapOptionalIfPossible(rhsMirror)
 
-        if lhsUnwrapped == nil, lhsUnwrapped == nil {
+        if lhsUnwrapped == nil, rhsUnwrapped == nil {
             return true
         }
 

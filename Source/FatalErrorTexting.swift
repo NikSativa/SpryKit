@@ -20,24 +20,24 @@ private func routeString(filePath: String, line: String) -> String {
 
 internal enum Constant {
     enum FatalError {
-        static func wrongNumberOfArgsBeingStubbed<T>(fakeType: T.Type, functionName _: String, specifiedArguments: [Any?], actualCount: Int) -> Never {
+        static func wrongNumberOfArgsBeingStubbed<T>(fakeType _: T.Type, functionName: String, passedArguments: [Any?], signatureCount: Int) -> Never {
             let title = "Wrong number of arguments"
             let entries = [
                 "Type: \(T.self)",
-                "Function: \(fakeType)",
-                "Function count: \(actualCount)",
-                "Actual count: \(specifiedArguments.count)",
-                "Arguments: \(descriptionOfArguments(specifiedArguments))"
+                "Function: \(functionName)",
+                "Expected count: \(signatureCount)",
+                "Passed count: \(passedArguments.count)",
+                "Arguments: \(descriptionOfArguments(passedArguments))"
             ]
 
             fatalError(title: title, entries: entries)
         }
 
-        static func wrongNumberOfArgsBeingCompared<T>(fakeType: T.Type, functionName _: String, specifiedArguments: [Any?], actualArguments: [Any?]) -> Never {
+        static func wrongNumberOfArgsBeingCompared<T>(fakeType _: T.Type, functionName: String, specifiedArguments: [Any?], actualArguments: [Any?]) -> Never {
             let title = "Wrong number of arguments to compare"
             let entries = [
                 "Type: \(T.self)",
-                "Function: \(fakeType)",
+                "Function: \(functionName)",
                 "Specified count: \(specifiedArguments.count)",
                 "Received count: \(actualArguments.count)",
                 "Specified arguments: \(descriptionOfArguments(specifiedArguments))",
@@ -92,9 +92,12 @@ internal enum Constant {
             noReturnValueFoundForFunction(stubbableType: S.self, functionName: function.rawValue, arguments: arguments, returnType: R.self, stubsDictionary: S._stubsDictionary)
         }
 
-        static func noReturnValueSourceFound(functionName _: String) -> Never {
+        static func noReturnValueSourceFound(functionName: String) -> Never {
             let title = "Incomplete Stub"
-            let entries = ["Must add '.andReturn()', '.andDo()', or '.andThrow()' when stubbing a function"]
+            let entries = [
+                "Function: \(functionName)",
+                "Must add '.andReturn()', '.andDo()', or '.andThrow()' when stubbing a function"
+            ]
 
             fatalError(title: title, entries: entries)
         }
@@ -118,6 +121,28 @@ internal enum Constant {
                 "Error occurred on: \(routeString(filePath: file, line: "\(line)"))",
                 "Possible Fix: ↴",
                 probableMessage
+            ]
+
+            fatalError(title: title, entries: entries)
+        }
+
+        static func propertyNotFound(name: String, available: [String]) -> Never {
+            let title = "Property Reflection: property not found"
+            let entries = [
+                "Requested property: \(name)",
+                "Available properties: \(available.sorted().joined(separator: ", "))"
+            ]
+
+            fatalError(title: title, entries: entries)
+        }
+
+        static func propertyOfUnexpectedType<T>(name: String, value: Any, type _: T.Type) -> Never {
+            let title = "Property Reflection: wrong property type"
+            let entries = [
+                "Requested property: \(name)",
+                "Requested type: \(T.self)",
+                "Actual type: \(Swift.type(of: value))",
+                "Actual value: \(value)"
             ]
 
             fatalError(title: title, entries: entries)

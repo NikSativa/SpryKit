@@ -131,6 +131,28 @@ final class SpyableXCTests: XCTestCase {
         XCTAssertFalse(SpyableTestHelper.didCall(.doStuff).success)
     }
 
+    func test_recording_a_call_with_the_wrong_argument_count_traps() {
+        XCTAssertThrowsAssertion {
+            self.subject.recordCall(functionName: "doStuffWith(int1:int2:)", arguments: 1)
+        }
+    }
+
+    func test_optional_argument_member_is_not_a_wildcard() {
+        let spy = PayloadSpyTestHelper()
+        spy.send(payload: .init(id: 1, note: "actual"))
+
+        XCTAssertFalse(spy.didCall(.sendWithPayload, withArguments: [SpyablePayload(id: 1, note: nil)]).success)
+        XCTAssertFalse(spy.didCall(.sendWithPayload, withArguments: [SpyablePayload(id: 1, note: "other")]).success)
+        XCTAssertTrue(spy.didCall(.sendWithPayload, withArguments: [SpyablePayload(id: 1, note: "actual")]).success)
+    }
+
+    func test_result_descriptions() {
+        subject.doStuff()
+        let result = subject.didCall(.doStuff)
+        XCTAssertEqual(result.description, result.debugDescription)
+        XCTAssertFalse(result.description.isEmpty)
+    }
+
     func test_result_recordedCallsDescription() {
         XCTAssertEqual(subject.didCall(.doStuff).friendlyDescription, "<>")
 
@@ -150,6 +172,25 @@ final class SpyableXCTests: XCTestCase {
         subject.doStuffWith(int1: firstArg, int2: secondArg)
         let expectedDescription2 = "\(SpyableTestHelper.Function.doStuff.rawValue); \(SpyableTestHelper.Function.doStuffWithInts.rawValue) with <\(firstArg)>, <\(secondArg)>"
         XCTAssertEqual(subject.didCall(.doStuff).friendlyDescription, expectedDescription2)
+    }
+}
+
+private struct SpyablePayload {
+    let id: Int
+    let note: String?
+}
+
+private final class PayloadSpyTestHelper: Spyable {
+    enum ClassFunction: String, StringRepresentable {
+        case _unknown_
+    }
+
+    enum Function: String, StringRepresentable {
+        case sendWithPayload = "send(payload:)"
+    }
+
+    func send(payload: SpyablePayload) {
+        recordCall(arguments: payload)
     }
 }
 

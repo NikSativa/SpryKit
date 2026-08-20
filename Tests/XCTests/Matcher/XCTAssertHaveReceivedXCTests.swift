@@ -67,6 +67,22 @@ final class XCTAssertHaveReceivedXCTests: XCTestCase {
         XCTAssertHaveNotReceived(subject, .doStuff)
         XCTAssertHaveNotReceived(subject, .doStuffWithString)
     }
+
+    func test_nil_spyable_explains_itself() {
+        let missing: SpyableTestHelper? = nil
+
+        XCTExpectFailure("nil spyable is reported with an explanation", failingBlock: {
+            XCTAssertHaveReceived(missing, .doStuff)
+        }, issueMatcher: { issue in
+            issue.compactDescription.contains("but spyable is nil")
+        })
+
+        XCTExpectFailure("nil spyable is reported with an explanation", failingBlock: {
+            XCTAssertHaveNotReceived(missing, .doStuff)
+        }, issueMatcher: { issue in
+            issue.compactDescription.contains("but spyable is nil")
+        })
+    }
 }
 
 private final class SpyableTestHelper: Spyable {

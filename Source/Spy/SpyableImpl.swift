@@ -1,9 +1,9 @@
 import Foundation
 import Threading
 
-// A global NSMapTable to hold onto calls for types conforming to Spyable. This map table has "weak to strong objects" options.
-//
-// - Important: Do NOT use this object.
+/// A global NSMapTable to hold onto calls for types conforming to Spyable. This map table has "weak to strong objects" options.
+///
+/// - Important: Do NOT use this object.
 private nonisolated(unsafe) var callsMapTable: NSMapTable<AnyObject, SpryDictionary<RecordedCall>> = NSMapTable.weakToStrongObjects()
 
 /// Mutex for synchronizing access to callsMapTable to prevent race conditions
@@ -36,14 +36,14 @@ public extension Spyable {
     }
 
     func recordCall(functionName: String = #function, arguments: Any?..., file: String = #file, line: Int = #line) {
-        functionName.validateArguments(arguments)
+        functionName.validateArguments(arguments, on: Self.self)
 
         let function = Function(functionName: functionName, type: Self.self, file: file, line: line)
         internal_recordCall(function: function, arguments: arguments)
     }
 
     func didCall(_ function: Function, withArguments arguments: [Any?] = [], countSpecifier: CountSpecifier = .atLeast(1)) -> DidCallResult {
-        function.rawValue.validateArguments(arguments)
+        function.rawValue.validateArguments(arguments, on: Self.self)
 
         let success: Bool =
             switch countSpecifier {
@@ -92,14 +92,14 @@ public extension Spyable {
     }
 
     static func recordCall(functionName: String = #function, arguments: Any?..., file: String = #file, line: Int = #line) {
-        functionName.validateArguments(arguments)
+        functionName.validateArguments(arguments, on: Self.self)
 
         let function = ClassFunction(functionName: functionName, type: self, file: file, line: line)
         internal_recordCall(function: function, arguments: arguments)
     }
 
     static func didCall(_ function: ClassFunction, withArguments arguments: [Any?] = [], countSpecifier: CountSpecifier = .atLeast(1)) -> DidCallResult {
-        function.rawValue.validateArguments(arguments)
+        function.rawValue.validateArguments(arguments, on: Self.self)
 
         let success: Bool =
             switch countSpecifier {

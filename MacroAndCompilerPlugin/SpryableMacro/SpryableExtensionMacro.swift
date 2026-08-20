@@ -1,4 +1,4 @@
-#if canImport(SwiftSyntax600) && swift(>=6.0)
+#if canImport(SwiftSyntax600)
 import SwiftDiagnostics
 import SwiftSyntax
 import SwiftSyntaxMacros
@@ -20,7 +20,6 @@ public enum SpryableExtensionMacro: ExtensionMacro {
                       let requirements = try MembersParser(declaration)
                       try enumBlockBuilder(requirements, isStatic: true).with(\.trailingTrivia, .newline)
                       try enumBlockBuilder(requirements, isStatic: false).with(\.trailingTrivia, .newline)
-                      //                try initBlockBuilder(modifiers: requirements.syntax.modifiers)
                   })
         ]
     }

@@ -379,6 +379,28 @@ final class StubbableTests {
         #expect(StubbableTestHelper.classFunction() == "fallbackValue")
     }
 
+    @Test("Argument specifiers are matched structurally when detecting duplicates")
+    func argument_specifiers_are_matched_structurally_when_detecting_duplicates() {
+        subject.stub(.giveMeAString_string).with(Argument.anything).andReturn("wildcard value")
+        subject.stub(.giveMeAString_string).with("exact").andReturn("exact value")
+
+        #expect(subject.giveMeAString(string: "exact") == "exact value")
+        #expect(subject.giveMeAString(string: "other") == "wildcard value")
+
+        expectThrowsAssertion { [subject] in
+            subject.stub(.giveMeAString_string).with(Argument.anything).andReturn("second wildcard")
+        }
+    }
+
+    @Test("Incomplete stub traps when the value is requested")
+    func incomplete_stub_traps_when_the_value_is_requested() {
+        _ = subject.stub(.giveMeAString_string)
+
+        expectThrowsAssertion { [subject] in
+            _ = subject.giveMeAString(string: "blah")
+        }
+    }
+
     @Test("Stubbing again using with")
     func stubbing_again_using_with() {
         let originalString = "original string"

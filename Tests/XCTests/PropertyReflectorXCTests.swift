@@ -7,6 +7,16 @@ final class PropertyReflectorSpecXCTests: XCTestCase {
 
     // MARK: - weak types
 
+    func test_missing_and_mistyped_properties() {
+        XCTAssertThrowsAssertion {
+            let _: Int = self.subject.property(named: "definitelyNotThere")
+        }
+
+        XCTAssertThrowsAssertion {
+            let _: Int = self.subject.property(named: "lsome")
+        }
+    }
+
     func test_weak_let_let() {
         let someValue: Some = subject.property(named: "lsome")
         XCTAssertNotNil(someValue)

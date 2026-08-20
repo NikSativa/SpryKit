@@ -15,6 +15,40 @@ struct ArgumentTests {
         #expect(Argument.skipped.description == "Argument.skipped", "Argument.skipped")
     }
 
+    @Test("Equatable")
+    func equatable() {
+        #expect(Argument.anything == Argument.anything)
+        #expect(Argument.skipped == Argument.skipped)
+        #expect(Argument.nil == Argument.nil)
+        #expect(Argument.nonNil == Argument.nonNil)
+        #expect(Argument.closure == Argument.closure)
+        #expect(Argument.anything != Argument.skipped)
+        #expect(Argument.skipped != Argument.anything)
+        #expect(Argument.nil != Argument.nonNil)
+    }
+
+    @Test("isType")
+    func isType() {
+        #expect(matches(.isType(ArgumentBase.self), ArgumentBase.self))
+        #expect(matches(.isType(ArgumentBase.self), ArgumentSub.self))
+        #expect(!matches(.isType(ArgumentBase.self), ArgumentBase()))
+        #expect(!matches(.isType(ArgumentBase.self), String.self))
+        #expect(!matches(.isType(ArgumentProtocol.self), ArgumentImpl.self))
+    }
+
+    @Test("instanceOf")
+    func instanceOf() {
+        #expect(matches(.instanceOf(ArgumentBase.self), ArgumentBase()))
+        #expect(matches(.instanceOf(ArgumentBase.self), ArgumentSub()))
+        #expect(matches(.instanceOf(ArgumentProtocol.self), ArgumentImpl()))
+        #expect(!matches(.instanceOf(ArgumentBase.self), ArgumentBase.self))
+        #expect(!matches(.instanceOf(ArgumentBase.self), 5))
+    }
+
+    private func matches(_ specified: Argument, _ actual: Any?) -> Bool {
+        return isEqualArgsLists(specifiedArgs: [specified], actualArgs: [actual])
+    }
+
     @Test("Is equal args list")
     func is_equal_args_list() {
         var specifiedArgs: [Any?]!
@@ -55,7 +89,7 @@ struct ArgumentTests {
             3 as Int?,
             Argument.anything
         ]
-        #expect(subjectAction())
+        #expect(!subjectAction())
 
         specifiedArgs = [
             Argument.anything,
@@ -172,4 +206,9 @@ struct ArgumentTests {
         #expect(!subjectAction())
     }
 }
+
+private class ArgumentBase {}
+private final class ArgumentSub: ArgumentBase {}
+private protocol ArgumentProtocol {}
+private final class ArgumentImpl: ArgumentProtocol {}
 #endif // canImport(Testing)

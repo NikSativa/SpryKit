@@ -28,17 +28,14 @@ let package = Package(
                 path: "VersionMarkerModule"),
         // internal
         .target(name: "SharedTypes",
-                dependencies: [
-                    .product(name: "SwiftSyntax", package: "swift-syntax"),
-                    .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
-                    .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
-                    .product(name: "SwiftDiagnostics", package: "swift-syntax")
-                ],
                 path: "SharedTypes"),
         .macro(name: "MacroAndCompilerPlugin",
                dependencies: [
                     "SharedTypes",
+                    .product(name: "SwiftSyntax", package: "swift-syntax"),
+                    .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
                     .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+                    .product(name: "SwiftDiagnostics", package: "swift-syntax"),
                     .product(name: "SwiftCompilerPlugin", package: "swift-syntax")
                ],
                path: "MacroAndCompilerPlugin"),
@@ -49,15 +46,11 @@ let package = Package(
                     "SharedTypes",
                     "MacroAndCompilerPlugin",
                     .product(name: "CwlPreconditionTesting", package: "CwlPreconditionTesting", condition: .when(platforms: [.iOS, .macOS, .macCatalyst, .tvOS, .watchOS, .visionOS])),
-                    .product(name: "SwiftSyntax", package: "swift-syntax"),
                     "Threading"
                 ],
                 path: "Source",
                 resources: [
                     .process("PrivacyInfo.xcprivacy")
-                ],
-                swiftSettings: [
-                    .define("supportsVisionOS", .when(platforms: [.visionOS])),
                 ]),
         // test
         .testTarget(name: "SpryKitTests",
@@ -66,11 +59,10 @@ let package = Package(
                         "MacroAndCompilerPlugin",
                         .product(name: "SwiftSyntax", package: "swift-syntax"),
                         .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
-                        .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax")
+                        .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
+                        .product(name: "SwiftSyntaxMacrosGenericTestSupport", package: "swift-syntax"),
+                        .product(name: "SwiftSyntaxMacroExpansion", package: "swift-syntax")
                     ],
-                    path: "Tests",
-                    swiftSettings: [
-                        .define("supportsVisionOS", .when(platforms: [.visionOS])),
-                    ])
+                    path: "Tests")
     ]
 )

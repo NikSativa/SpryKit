@@ -1,4 +1,4 @@
-#if canImport(SwiftSyntax600) && swift(>=6.0)
+#if canImport(SwiftSyntax600)
 import SharedTypes
 import SwiftSyntax
 import SwiftSyntaxBuilder
@@ -8,6 +8,14 @@ internal extension DeclModifierListSyntax {
     var isStatic: Bool {
         return contains {
             return $0.name.tokenKind == .keyword(.static)
+                || $0.name.tokenKind == .keyword(.class)
+        }
+    }
+
+    var isPrivate: Bool {
+        return contains {
+            return $0.name.tokenKind == .keyword(.private)
+                || $0.name.tokenKind == .keyword(.fileprivate)
         }
     }
 
@@ -21,6 +29,28 @@ internal extension DeclModifierListSyntax {
         return filter {
             return $0.name.tokenKind != .keyword(.final)
         }
+    }
+}
+
+internal extension FunctionSignatureSyntax {
+    /// The `Spryable` entry point that matches this signature's effects.
+    ///
+    /// `rethrows` keeps `spryify`, because a `rethrows` function may not call an
+    /// unconditionally throwing one.
+    func spryifyCallee() throws -> (name: String, needsTry: Bool) {
+        guard let throwsClause = effectSpecifiers?.throwsClause else {
+            return ("spryify", false)
+        }
+
+        if throwsClause.type != nil {
+            throw SpryableDiagnostic.typedThrowsNotSupported
+        }
+
+        guard throwsClause.throwsSpecifier.tokenKind == .keyword(.throws) else {
+            return ("spryify", false)
+        }
+
+        return ("spryifyThrows", true)
     }
 }
 
@@ -115,12 +145,6 @@ internal extension FunctionParameterSyntax {
 }
 
 internal extension Macro {
-    static func initBlockBuilder(modifiers: DeclModifierListSyntax) throws -> InitializerDeclSyntax {
-        return InitializerDeclSyntax(modifiers: modifiers.filterPrivate().filterFinal(),
-                                     signature: .init(parameterClause: .init(parameters: [])),
-                                     body: .init(statements: []))
-    }
-
     static func enumBlockBuilder(_ requirements: MembersParser, isStatic: Bool) throws -> EnumDeclSyntax {
         let declarations = try enumCaseDeclarations(requirements, isStatic: isStatic)
         let members: MemberBlockItemListSyntax =
@@ -223,13 +247,23 @@ internal extension Macro {
         }
 
         var uniqRawValues: Set<String> = []
-        let uniq = cases.filter { enumCaseDeclSyntax in
-            guard let text = enumCaseDeclSyntax.elements.first?.rawValue?.value.description else {
-                // vars are without 'rawValue'
-                return true
+        var uniqNames: Set<String> = []
+        var uniq: [EnumCaseDeclSyntax] = []
+        for enumCaseDeclSyntax in cases {
+            guard let element = enumCaseDeclSyntax.elements.first else {
+                continue
             }
 
-            return uniqRawValues.insert(text).inserted
+            if let rawValue = element.rawValue?.value.description,
+               !uniqRawValues.insert(rawValue).inserted {
+                continue
+            }
+
+            guard uniqNames.insert(element.name.text).inserted else {
+                throw SpryableDiagnostic.duplicateCaseName(element.name.text)
+            }
+
+            uniq.append(enumCaseDeclSyntax)
         }
         return uniq
     }

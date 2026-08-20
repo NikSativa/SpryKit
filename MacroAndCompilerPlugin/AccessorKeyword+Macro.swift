@@ -1,4 +1,4 @@
-#if canImport(SwiftSyntax600) && swift(>=6.0)
+#if canImport(SwiftSyntax600)
 import Foundation
 import SharedTypes
 

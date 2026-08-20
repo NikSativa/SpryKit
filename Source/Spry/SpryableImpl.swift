@@ -4,7 +4,7 @@ public extension Spryable {
     // MARK: - Instance
 
     func spryify<T>(_ functionName: String = #function, arguments: Any?..., asType _: T.Type = T.self, file: String = #file, line: Int = #line) -> T {
-        functionName.validateArguments(arguments)
+        functionName.validateArguments(arguments, on: Self.self)
 
         let function = Function(functionName: functionName, type: Self.self, file: file, line: line)
         do {
@@ -18,7 +18,7 @@ public extension Spryable {
     }
 
     func spryifyThrows<T>(_ functionName: String = #function, arguments: Any?..., asType _: T.Type = T.self, file: String = #file, line: Int = #line) throws -> T {
-        functionName.validateArguments(arguments)
+        functionName.validateArguments(arguments, on: Self.self)
 
         let function = Function(functionName: functionName, type: Self.self, file: file, line: line)
         defer {
@@ -28,7 +28,7 @@ public extension Spryable {
     }
 
     func spryify<T>(_ functionName: String = #function, arguments: Any?..., fallbackValue: T, file: String = #file, line: Int = #line) -> T {
-        functionName.validateArguments(arguments)
+        functionName.validateArguments(arguments, on: Self.self)
 
         let function = Function(functionName: functionName, type: Self.self, file: file, line: line)
         do {
@@ -42,7 +42,7 @@ public extension Spryable {
     }
 
     func spryifyThrows<T>(_ functionName: String = #function, arguments: Any?..., fallbackValue: T, file: String = #file, line: Int = #line) throws -> T {
-        functionName.validateArguments(arguments)
+        functionName.validateArguments(arguments, on: Self.self)
 
         let function = Function(functionName: functionName, type: Self.self, file: file, line: line)
         defer {
@@ -59,7 +59,7 @@ public extension Spryable {
     // MARK: - Static
 
     static func spryify<T>(_ functionName: String = #function, arguments: Any?..., asType _: T.Type = T.self, file: String = #file, line: Int = #line) -> T {
-        functionName.validateArguments(arguments)
+        functionName.validateArguments(arguments, on: Self.self)
 
         let function = ClassFunction(functionName: functionName, type: self, file: file, line: line)
         do {
@@ -73,7 +73,7 @@ public extension Spryable {
     }
 
     static func spryify<T>(_ functionName: String = #function, arguments: Any?..., fallbackValue: T, file: String = #file, line: Int = #line) -> T {
-        functionName.validateArguments(arguments)
+        functionName.validateArguments(arguments, on: Self.self)
 
         let function = ClassFunction(functionName: functionName, type: self, file: file, line: line)
         do {
@@ -87,7 +87,7 @@ public extension Spryable {
     }
 
     static func spryifyThrows<T>(_ functionName: String = #function, arguments: Any?..., asType _: T.Type = T.self, file: String = #file, line: Int = #line) throws -> T {
-        functionName.validateArguments(arguments)
+        functionName.validateArguments(arguments, on: Self.self)
 
         let function = ClassFunction(functionName: functionName, type: self, file: file, line: line)
         defer {
@@ -97,7 +97,7 @@ public extension Spryable {
     }
 
     static func spryifyThrows<T>(_ functionName: String = #function, arguments: Any?..., fallbackValue: T, file: String = #file, line: Int = #line) throws -> T {
-        functionName.validateArguments(arguments)
+        functionName.validateArguments(arguments, on: Self.self)
 
         let function = ClassFunction(functionName: functionName, type: self, file: file, line: line)
         defer {

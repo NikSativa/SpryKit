@@ -1,9 +1,9 @@
 import Foundation
 import Threading
 
-// A global NSMapTable to hold onto stubs for types conforming to Stubbable. This map table has "weak to strong objects" options.
-//
-// - Important: Do NOT use this object.
+/// A global NSMapTable to hold onto stubs for types conforming to Stubbable. This map table has "weak to strong objects" options.
+///
+/// - Important: Do NOT use this object.
 private nonisolated(unsafe) var stubsMapTable: NSMapTable<AnyObject, SpryDictionary<StubInfo>> = NSMapTable.weakToStrongObjects()
 
 /// Mutex for synchronizing access to stubsMapTable to prevent race conditions
@@ -39,7 +39,7 @@ public extension Stubbable {
                 return
             }
 
-            handleDuplicates(stubsDictionary: welf._stubsDictionary, stub: stub, again: false)
+            handleDuplicates(stubsDictionary: welf._stubsDictionary, stub: stub, again: false, fakeType: Self.self)
         })
         _stubsDictionary.append(stub)
 
@@ -52,7 +52,7 @@ public extension Stubbable {
                 return
             }
 
-            handleDuplicates(stubsDictionary: welf._stubsDictionary, stub: stub, again: true)
+            handleDuplicates(stubsDictionary: welf._stubsDictionary, stub: stub, again: true, fakeType: Self.self)
         })
         _stubsDictionary.append(stub)
 
@@ -110,7 +110,7 @@ public extension Stubbable {
 
     static func stub(_ function: ClassFunction) -> Stub {
         let stub = StubInfo(functionName: function.rawValue, stubCompleteHandler: { stub in
-            handleDuplicates(stubsDictionary: _stubsDictionary, stub: stub, again: false)
+            handleDuplicates(stubsDictionary: _stubsDictionary, stub: stub, again: false, fakeType: Self.self)
         })
         _stubsDictionary.append(stub)
 
@@ -119,7 +119,7 @@ public extension Stubbable {
 
     static func stubAgain(_ function: ClassFunction) -> Stub {
         let stub = StubInfo(functionName: function.rawValue, stubCompleteHandler: { stub in
-            handleDuplicates(stubsDictionary: _stubsDictionary, stub: stub, again: true)
+            handleDuplicates(stubsDictionary: _stubsDictionary, stub: stub, again: true, fakeType: Self.self)
         })
         _stubsDictionary.append(stub)
 
@@ -275,7 +275,7 @@ public extension Stubbable {
     }
 }
 
-private func handleDuplicates(stubsDictionary: SpryDictionary<StubInfo>, stub: StubInfo, again: Bool) {
+private func handleDuplicates(stubsDictionary: SpryDictionary<StubInfo>, stub: StubInfo, again: Bool, fakeType: (some Any).Type) {
     let duplicates = stubsDictionary.completedDuplicates(of: stub)
 
     if duplicates.isEmpty {
@@ -283,7 +283,7 @@ private func handleDuplicates(stubsDictionary: SpryDictionary<StubInfo>, stub: S
     }
 
     if !stub.arguments.isEmpty {
-        stub.functionName.validateArguments(stub.arguments)
+        stub.functionName.validateArguments(stub.arguments, on: fakeType)
     }
 
     if again {

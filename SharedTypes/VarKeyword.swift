@@ -1,4 +1,3 @@
-#if swift(>=6.0)
 import Foundation
 
 /// Parameters for @SpryableVar
@@ -12,4 +11,3 @@ public enum VarKeyword: String, Hashable, CaseIterable {
     /// add 'throws' parameter to 'get'
     case `throws`
 }
-#endif

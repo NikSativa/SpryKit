@@ -19,6 +19,12 @@ struct ExpectThrowsAssertionTests {
             throwPrecondition()
         }
     }
+
+    @Test("Assertion via autoclosure")
+    func assertion_via_autoclosure() {
+        expectThrowsAssertion(throwFatalError(), "fatalError must trap")
+        expectThrowsAssertion(throwPrecondition(), "preconditionFailure must trap")
+    }
 }
 
 private func throwAssertion() {

@@ -1,4 +1,4 @@
-#if canImport(SwiftSyntax600) && swift(>=6.0)
+#if canImport(SwiftSyntax600)
 import SwiftCompilerPlugin
 import SwiftSyntaxMacros
 
@@ -7,8 +7,7 @@ struct MacroAndCompilerPlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
         SpryableAccessorMacro.self,
         SpryableExtensionMacro.self,
-        SpryableBodyMacro.self,
-        SpryablePeerMacro.self
+        SpryableBodyMacro.self
     ]
 }
 #endif

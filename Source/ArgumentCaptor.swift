@@ -16,18 +16,22 @@ public final class ArgumentCaptor: @unchecked Sendable {
     ///
     /// - Returns: The captured argument or fatal error if there was an issue.
     public func getValue<T>(at index: Int = 0, as _: T.Type = T.self) -> T {
-        return $capturedArguments.syncUnchecked { capturedArguments in
-            guard index >= 0, capturedArguments.count > index else {
-                Constant.FatalError.capturedArgumentsOutOfBounds(index: index, capturedArguments: capturedArguments)
-            }
-
-            let capturedAsUnknownType = capturedArguments[index]
-            guard let captured = capturedAsUnknownType as? T else {
-                Constant.FatalError.argumentCaptorCouldNotReturnSpecifiedType(value: capturedAsUnknownType, type: T.self)
-            }
-
-            return captured
+        // The lock is released before reporting, because `XCTAssertThrowsAssertion` unwinds a trap
+        // without running `defer`, which would leave the captor locked forever.
+        let capturedArguments = $capturedArguments.syncUnchecked { capturedArguments in
+            return capturedArguments
         }
+
+        guard index >= 0, capturedArguments.count > index else {
+            Constant.FatalError.capturedArgumentsOutOfBounds(index: index, capturedArguments: capturedArguments)
+        }
+
+        let capturedAsUnknownType = capturedArguments[index]
+        guard let captured = capturedAsUnknownType as? T else {
+            Constant.FatalError.argumentCaptorCouldNotReturnSpecifiedType(value: capturedAsUnknownType, type: T.self)
+        }
+
+        return captured
     }
 
     public subscript<T>(_ index: Int) -> T {

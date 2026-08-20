@@ -68,12 +68,12 @@ public func expectEqualError<E: Error>(_ lhs: E?,
                                        _ message: String = "",
                                        sourceLocation: SourceLocation = #_sourceLocation) where E: Equatable {
     guard let rhs else {
-        Issue.record("Expected error is nil, use `#expect(lhs == nil)` instead. \(message)")
+        Issue.record("Expected error is nil, use `#expect(lhs == nil)` instead. \(message)", sourceLocation: sourceLocation)
         return
     }
 
     guard let lhs else {
-        Issue.record("Actual error is nil, use `#expect(rhs == nil)` instead. \(message)")
+        Issue.record("Actual error is nil, use `#expect(rhs == nil)` instead. \(message)", sourceLocation: sourceLocation)
         return
     }
 

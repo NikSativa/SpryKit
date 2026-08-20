@@ -1,4 +1,4 @@
-#if canImport(SwiftSyntax600) && swift(>=6.0)
+#if canImport(SwiftSyntax600)
 import SwiftSyntax
 
 struct MembersParser {
@@ -16,10 +16,18 @@ struct MembersParser {
             if member.decl.is(SubscriptDeclSyntax.self) {
                 throw SpryableDiagnostic.subscriptsNotSupported
             } else if let decl = member.decl.as(VariableDeclSyntax.self) {
+                guard !decl.modifiers.isPrivate else {
+                    continue
+                }
+
                 variables.append(decl)
             } else if let decl = member.decl.as(FunctionDeclSyntax.self) {
                 guard case .identifier = decl.name.tokenKind else {
                     throw SpryableDiagnostic.operatorsNotSupported
+                }
+
+                guard !decl.modifiers.isPrivate else {
+                    continue
                 }
 
                 functions.append(decl)

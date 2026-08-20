@@ -145,6 +145,31 @@ final class SpyableTests {
         #expect(!SpyableTestHelper.didCall(.doStuff).isSuccess)
     }
 
+    @Test("Recording a call with the wrong argument count traps")
+    func recording_a_call_with_the_wrong_argument_count_traps() {
+        expectThrowsAssertion { [subject] in
+            subject.recordCall(functionName: "doStuffWith(int1:int2:)", arguments: 1)
+        }
+    }
+
+    @Test("Optional argument member is not a wildcard")
+    func optional_argument_member_is_not_a_wildcard() {
+        let spy = PayloadSpyTestHelper()
+        spy.send(payload: .init(id: 1, note: "actual"))
+
+        #expect(!spy.didCall(.sendWithPayload, withArguments: [SpyablePayload(id: 1, note: nil)]).isSuccess)
+        #expect(!spy.didCall(.sendWithPayload, withArguments: [SpyablePayload(id: 1, note: "other")]).isSuccess)
+        #expect(spy.didCall(.sendWithPayload, withArguments: [SpyablePayload(id: 1, note: "actual")]).isSuccess)
+    }
+
+    @Test("Result descriptions")
+    func result_descriptions() {
+        subject.doStuff()
+        let result = subject.didCall(.doStuff)
+        #expect(result.description == result.debugDescription)
+        #expect(!result.description.isEmpty)
+    }
+
     @Test("Result recorded calls description")
     func result_recordedCallsDescription() {
         #expect(subject.didCall(.doStuff).friendlyDescription == "<>")
@@ -165,6 +190,25 @@ final class SpyableTests {
         subject.doStuffWith(int1: firstArg, int2: secondArg)
         let expectedDescription2 = "\(SpyableTestHelper.Function.doStuff.rawValue); \(SpyableTestHelper.Function.doStuffWithInts.rawValue) with <\(firstArg)>, <\(secondArg)>"
         #expect(subject.didCall(.doStuff).friendlyDescription == expectedDescription2)
+    }
+}
+
+private struct SpyablePayload {
+    let id: Int
+    let note: String?
+}
+
+private final class PayloadSpyTestHelper: Spyable {
+    enum ClassFunction: String, StringRepresentable {
+        case _unknown_
+    }
+
+    enum Function: String, StringRepresentable {
+        case sendWithPayload = "send(payload:)"
+    }
+
+    func send(payload: SpyablePayload) {
+        recordCall(arguments: payload)
     }
 }
 

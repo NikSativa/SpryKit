@@ -71,6 +71,23 @@ final class ExpectHaveReceivedTests {
         expectHaveNotReceived(subject, .doStuff)
         expectHaveNotReceived(subject, .doStuffWithString)
     }
+
+    @Test("Nil spyable explains itself")
+    func nil_spyable_explains_itself() {
+        let missing: SpyableTestHelper? = nil
+
+        withKnownIssue {
+            expectHaveReceived(missing, .doStuff)
+        } matching: { issue in
+            issue.description.contains("but spyable is nil")
+        }
+
+        withKnownIssue {
+            expectHaveNotReceived(missing, .doStuff)
+        } matching: { issue in
+            issue.description.contains("but spyable is nil")
+        }
+    }
 }
 
 private final class SpyableTestHelper: Spyable {

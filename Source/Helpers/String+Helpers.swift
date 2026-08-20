@@ -1,7 +1,7 @@
 import Foundation
 
 internal extension String {
-    func validateArguments(_ arguments: [Any?]) {
+    func validateArguments(_ arguments: [Any?], on fakeType: (some Any).Type) {
         if arguments.isEmpty {
             return
         }
@@ -10,9 +10,9 @@ internal extension String {
             return
         }
 
-        let actualCount = components(separatedBy: ":").count - 1
-        if arguments.count != actualCount {
-            Constant.FatalError.wrongNumberOfArgsBeingStubbed(fakeType: Self.self, functionName: self, specifiedArguments: arguments, actualCount: actualCount)
+        let signatureCount = components(separatedBy: ":").count - 1
+        if arguments.count != signatureCount {
+            Constant.FatalError.wrongNumberOfArgsBeingStubbed(fakeType: fakeType, functionName: self, passedArguments: arguments, signatureCount: signatureCount)
         }
     }
 }

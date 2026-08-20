@@ -1,4 +1,3 @@
-#if canImport(SwiftSyntax600) && swift(>=6.0)
 import Foundation
 import SharedTypes
 
@@ -13,4 +12,3 @@ public macro SpryableVar(_ accessors: SharedTypes.VarKeyword... = [.get]) =
 @attached(body)
 public macro SpryableFunc(_ accessors: SharedTypes.FuncKeyword... = [.asRealClosure]) =
     #externalMacro(module: "MacroAndCompilerPlugin", type: "SpryableBodyMacro")
-#endif

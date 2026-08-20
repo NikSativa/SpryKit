@@ -1,4 +1,4 @@
-#if canImport(SwiftSyntax600) && swift(>=6.0)
+#if canImport(SwiftSyntax600)
 import SwiftDiagnostics
 import SwiftSyntax
 import SwiftSyntaxMacros
@@ -26,18 +26,20 @@ public enum SpryableAccessorMacro: AccessorMacro {
                                      throwsClause: options ~= .throws ? .init(throwsSpecifier: .keyword(.throws)) : nil)
         }
 
+        let getter = options ~= .throws ? "try spryifyThrows" : "spryify"
+
         var result: [AccessorDeclSyntax] = []
 
         if options ~= .set {
             result.append(.init(accessorSpecifier: .keyword(.get),
                                 effectSpecifiers: effectSpecifiers,
-                                body: .init(statements: "return spryify(\"\(raw: name)_get\")")))
+                                body: .init(statements: "return \(raw: getter)(\"\(raw: name)_get\")")))
 
             result.append(.init(accessorSpecifier: .keyword(.set), body: .init(statements: "return spryify(\"\(raw: name)_set\", arguments: newValue)")))
         } else if let effectSpecifiers {
             result.append(.init(accessorSpecifier: .keyword(.get),
                                 effectSpecifiers: effectSpecifiers,
-                                body: .init(statements: "return spryify()")))
+                                body: .init(statements: "return \(raw: getter)()")))
         } else {
             result.append(.init(accessorSpecifier: .keyword(.get),
                                 body: .init(statements: "return spryify()")))

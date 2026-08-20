@@ -49,7 +49,18 @@ public struct PropertyReflector {
         return .init(properties)
     }
 
+    /// Returns the value of the property with the given name.
+    ///
+    /// - Important: Reports a `fatalError` when the property does not exist or has a different type.
     public func property<T>(_: T.Type = T.self, named name: String) -> T {
-        return properties[name] as! T
+        guard let value = properties[name] else {
+            Constant.FatalError.propertyNotFound(name: name, available: Array(properties.keys))
+        }
+
+        guard let typed = value as? T else {
+            Constant.FatalError.propertyOfUnexpectedType(name: name, value: value, type: T.self)
+        }
+
+        return typed
     }
 }

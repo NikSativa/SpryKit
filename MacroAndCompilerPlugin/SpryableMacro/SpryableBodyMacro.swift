@@ -1,4 +1,4 @@
-#if canImport(SwiftSyntax600) && swift(>=6.0)
+#if canImport(SwiftSyntax600)
 import SwiftDiagnostics
 import SwiftSyntax
 import SwiftSyntaxMacros
@@ -29,7 +29,7 @@ public enum SpryableBodyMacro: BodyMacro {
             for (idx, parameter) in parameters.enumerated() {
                 let name: TokenSyntax = {
                     if parameter.isEscapingClosure, !(options ~= .asRealClosure) {
-                        return idx == parameters.count - 1 ? "Argument.closure" : "Argument.closure,"
+                        return "Argument.closure"
                     } else {
                         return parameter.secondName ?? parameter.firstName
                     }
@@ -43,11 +43,18 @@ public enum SpryableBodyMacro: BodyMacro {
             }
         }
 
-        let funcCall = FunctionCallExprSyntax(calledExpression: DeclReferenceExprSyntax(baseName: "spryify"),
+        let callee = try syntax.signature.spryifyCallee()
+        let funcCall = FunctionCallExprSyntax(calledExpression: DeclReferenceExprSyntax(baseName: .identifier(callee.name)),
                                               leftParen: .leftParenToken(),
                                               arguments: arguments,
                                               rightParen: .rightParenToken())
-        let smt = ReturnStmtSyntax(expression: funcCall)
+        let expression: ExprSyntax =
+            if callee.needsTry {
+                .init(TryExprSyntax(expression: funcCall))
+            } else {
+                .init(funcCall)
+            }
+        let smt = ReturnStmtSyntax(expression: expression)
 
         return [
             .init(item: .stmt(.init(smt)))

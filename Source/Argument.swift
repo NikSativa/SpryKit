@@ -7,13 +7,18 @@ public enum Argument {
     /// Every value matches this qualification except Optional.none
     case nonNil
 
-    /// Every value matches this qualification.
+    /// Every value matches this qualification, except `Argument.skipped`.
     case anything
 
-    /// Every value matches this qualification, but not 'Argument.anything'.
+    /// Every value matches this qualification, except `Argument.anything`.
+    ///
+    /// Recorded by the `@SpryableFunc` macro in place of a parameter that has no
+    /// name (`_:`) and therefore cannot be forwarded. Match it explicitly — `.anything`
+    /// deliberately does not.
     case skipped
 
-    /// Any closure
+    /// Matches any closure, and matches an argument that the `@SpryableFunc(.asArgument)`
+    /// macro recorded as `Argument.closure` in place of the real closure.
     case closure
 
     /// Custom validator
@@ -28,14 +33,20 @@ public enum Argument {
         return ArgumentCaptor()
     }
 
-    /// Type is exactly the type passed in match this qualification (subtypes do NOT qualify).
+    /// Matches a metatype value whose type is `T` or a subclass of `T`.
+    ///
+    /// Use this to constrain an argument that is itself a metatype, e.g. `resolve(type: Service.self)`.
+    ///
+    /// - Note: When `T` is a protocol this matches nothing — a metatype of a merely conforming type
+    ///   cannot be cast through `Any`. Pass the metatype itself as the expected argument instead.
     public static func isType<T>(_: T.Type) -> Self {
         return .validator {
             return ($0 as? T.Type) != nil
         }
     }
 
-    /// Only objects whose type is exactly the type passed in match this qualification (subtypes do NOT qualify).
+    /// Matches any value that is an instance of `T`, including instances of its subtypes
+    /// and of types conforming to `T` when `T` is a protocol.
     public static func instanceOf<T>(_: T.Type) -> Self {
         return .validator {
             return $0 is T
@@ -48,7 +59,8 @@ public enum Argument {
 extension Argument: Equatable {
     public static func ==(lhs: Self, rhs: Self) -> Bool {
         switch (lhs, rhs) {
-        case (.closure, .closure),
+        case (.anything, .anything),
+             (.closure, .closure),
              (.nil, .nil),
              (.nonNil, .nonNil),
              (.skipped, .skipped),
@@ -156,6 +168,9 @@ private func isEqualArgs(specifiedArg: Any?, actualArg: Any?) -> Bool {
             return validator(actualArg)
 
         case .closure:
+            if let actualArg = actualArg as? Argument {
+                return actualArg == .closure
+            }
             return isClosure(actualArg)
         }
     }

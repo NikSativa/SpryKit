@@ -1,16 +1,12 @@
 import Foundation
-import Threading
+import SpryKit
 import XCTest
-
-// PThread is internal
-@testable import SpryKit
 
 final class ThreadSafeXCTests: XCTestCase {
     func test_threadSafe() {
         let threadSafe: SpryableTestClass = .init()
         threadSafe.stub(.getAString).andReturn("Hello, World!")
 
-        let mutex = PThread(kind: .recursive)
         var expectetions: [XCTestExpectation] = []
         let storage = Storage()
 
@@ -20,19 +16,36 @@ final class ThreadSafeXCTests: XCTestCase {
 
             let queue: DispatchQueue = Bool.random() ? .global(qos: .utility) : .global(qos: .background)
             queue.asyncAfter(deadline: .now() + 0.1) {
-                mutex.sync {
-                    let v = threadSafe.getAString()
-                    storage.values.append(v)
-                }
+                storage.append(threadSafe.getAString())
                 exp.fulfill()
             }
         }
 
         wait(for: expectetions, timeout: 10)
         XCTAssertEqual(storage.values.count, expectetions.count)
+        XCTAssertEqual(threadSafe.recordedCallsCount, expectetions.count)
     }
 }
 
 private final class Storage: @unchecked Sendable {
-    var values: [String] = []
+    private let lock = NSLock()
+    private var storage: [String] = []
+
+    var values: [String] {
+        lock.lock()
+        defer {
+            lock.unlock()
+        }
+
+        return storage
+    }
+
+    func append(_ value: String) {
+        lock.lock()
+        defer {
+            lock.unlock()
+        }
+
+        storage.append(value)
+    }
 }

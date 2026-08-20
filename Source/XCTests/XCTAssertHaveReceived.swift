@@ -27,7 +27,7 @@ public func XCTAssertHaveReceived<T: Spyable>(_ spyable: T?,
                                               line: UInt = #line) {
     guard let spyable else {
         let descriptionOfAttempted = descriptionOfNilAttempt(arguments: arguments, countSpecifier: countSpecifier)
-        XCTFail(descriptionOfAttempted, file: file, line: line)
+        XCTFail("Expected to \(descriptionOfAttempted) but spyable is nil", file: file, line: line)
         return
     }
 
@@ -58,7 +58,7 @@ public func XCTAssertHaveReceived<T: Spyable>(_ spyable: T?,
     let arguments: [Any?] = []
     guard let spyable else {
         let descriptionOfAttempted = descriptionOfNilAttempt(arguments: arguments, countSpecifier: countSpecifier)
-        XCTFail(descriptionOfAttempted, file: file, line: line)
+        XCTFail("Expected to \(descriptionOfAttempted) but spyable is nil", file: file, line: line)
         return
     }
 
@@ -92,7 +92,7 @@ public func XCTAssertHaveNotReceived<T: Spyable>(_ spyable: T?,
                                                  line: UInt = #line) {
     guard let spyable else {
         let descriptionOfAttempted = descriptionOfNilAttempt(arguments: arguments, countSpecifier: countSpecifier)
-        XCTFail(descriptionOfAttempted, file: file, line: line)
+        XCTFail("Expected to not \(descriptionOfAttempted) but spyable is nil", file: file, line: line)
         return
     }
 
@@ -123,7 +123,7 @@ public func XCTAssertHaveNotReceived<T: Spyable>(_ spyable: T?,
     let arguments: [Any?] = []
     guard let spyable else {
         let descriptionOfAttempted = descriptionOfNilAttempt(arguments: arguments, countSpecifier: countSpecifier)
-        XCTFail(descriptionOfAttempted, file: file, line: line)
+        XCTFail("Expected to not \(descriptionOfAttempted) but spyable is nil", file: file, line: line)
         return
     }
 
@@ -157,7 +157,7 @@ public func XCTAssertHaveReceived<T: Spyable>(_ spyable: T.Type?,
                                               line: UInt = #line) {
     guard let spyable else {
         let descriptionOfAttempted = descriptionOfNilAttempt(arguments: arguments, countSpecifier: countSpecifier)
-        XCTFail(descriptionOfAttempted, file: file, line: line)
+        XCTFail("Expected to \(descriptionOfAttempted) but spyable is nil", file: file, line: line)
         return
     }
 
@@ -189,7 +189,7 @@ public func XCTAssertHaveReceived<T: Spyable>(_ spyable: T.Type?,
     let arguments: [Any?] = []
     guard let spyable else {
         let descriptionOfAttempted = descriptionOfNilAttempt(arguments: arguments, countSpecifier: countSpecifier)
-        XCTFail(descriptionOfAttempted, file: file, line: line)
+        XCTFail("Expected to \(descriptionOfAttempted) but spyable is nil", file: file, line: line)
         return
     }
 
@@ -223,7 +223,7 @@ public func XCTAssertHaveNotReceived<T: Spyable>(_ spyable: T.Type?,
                                                  line: UInt = #line) {
     guard let spyable else {
         let descriptionOfAttempted = descriptionOfNilAttempt(arguments: arguments, countSpecifier: countSpecifier)
-        XCTFail(descriptionOfAttempted, file: file, line: line)
+        XCTFail("Expected to not \(descriptionOfAttempted) but spyable is nil", file: file, line: line)
         return
     }
 
@@ -254,7 +254,7 @@ public func XCTAssertHaveNotReceived<T: Spyable>(_ spyable: T.Type?,
     let arguments: [Any?] = []
     guard let spyable else {
         let descriptionOfAttempted = descriptionOfNilAttempt(arguments: arguments, countSpecifier: countSpecifier)
-        XCTFail(descriptionOfAttempted, file: file, line: line)
+        XCTFail("Expected to not \(descriptionOfAttempted) but spyable is nil", file: file, line: line)
         return
     }
 

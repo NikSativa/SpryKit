@@ -16,6 +16,11 @@ final class XCTAssertThrowsAssertionXCTests: XCTestCase {
             throwPrecondition()
         }
     }
+
+    func test_assertion_via_autoclosure() {
+        XCTAssertThrowsAssertion(expression: throwFatalError())
+        XCTAssertThrowsAssertion(expression: throwPrecondition(), "preconditionFailure must trap")
+    }
 }
 
 private func throwAssertion() {

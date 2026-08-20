@@ -12,6 +12,37 @@ final class ArgumentXCTests: XCTestCase {
         XCTAssertEqual(Argument.skipped.description, "Argument.skipped", "Argument.skipped")
     }
 
+    func test_equatable() {
+        XCTAssertEqual(Argument.anything, Argument.anything)
+        XCTAssertEqual(Argument.skipped, Argument.skipped)
+        XCTAssertEqual(Argument.nil, Argument.nil)
+        XCTAssertEqual(Argument.nonNil, Argument.nonNil)
+        XCTAssertEqual(Argument.closure, Argument.closure)
+        XCTAssertNotEqual(Argument.anything, Argument.skipped)
+        XCTAssertNotEqual(Argument.skipped, Argument.anything)
+        XCTAssertNotEqual(Argument.nil, Argument.nonNil)
+    }
+
+    func test_isType() {
+        XCTAssertTrue(matches(.isType(ArgumentBase.self), ArgumentBase.self))
+        XCTAssertTrue(matches(.isType(ArgumentBase.self), ArgumentSub.self))
+        XCTAssertFalse(matches(.isType(ArgumentBase.self), ArgumentBase()))
+        XCTAssertFalse(matches(.isType(ArgumentBase.self), String.self))
+        XCTAssertFalse(matches(.isType(ArgumentProtocol.self), ArgumentImpl.self))
+    }
+
+    func test_instanceOf() {
+        XCTAssertTrue(matches(.instanceOf(ArgumentBase.self), ArgumentBase()))
+        XCTAssertTrue(matches(.instanceOf(ArgumentBase.self), ArgumentSub()))
+        XCTAssertTrue(matches(.instanceOf(ArgumentProtocol.self), ArgumentImpl()))
+        XCTAssertFalse(matches(.instanceOf(ArgumentBase.self), ArgumentBase.self))
+        XCTAssertFalse(matches(.instanceOf(ArgumentBase.self), 5))
+    }
+
+    private func matches(_ specified: Argument, _ actual: Any?) -> Bool {
+        return isEqualArgsLists(specifiedArgs: [specified], actualArgs: [actual])
+    }
+
     func test_is_equal_args_list() {
         var specifiedArgs: [Any?]!
         var actualArgs: [Any?]!
@@ -51,7 +82,7 @@ final class ArgumentXCTests: XCTestCase {
             3 as Int?,
             Argument.anything
         ]
-        XCTAssertTrue(subjectAction())
+        XCTAssertFalse(subjectAction())
 
         specifiedArgs = [
             Argument.anything,
@@ -168,3 +199,8 @@ final class ArgumentXCTests: XCTestCase {
         XCTAssertFalse(subjectAction())
     }
 }
+
+private class ArgumentBase {}
+private final class ArgumentSub: ArgumentBase {}
+private protocol ArgumentProtocol {}
+private final class ArgumentImpl: ArgumentProtocol {}
