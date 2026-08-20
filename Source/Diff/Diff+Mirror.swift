@@ -145,6 +145,7 @@ private struct Differ {
     private let indentationType: SpryDiffIndentationType
     private let skipPrintingOnDiffCount: Bool
     private let nameLabels: SpryDiffNameLabels
+    private let visited: ComparisonContext
 
     init(indentationType: SpryDiffIndentationType,
          skipPrintingOnDiffCount: Bool,
@@ -152,6 +153,7 @@ private struct Differ {
         self.indentationType = indentationType
         self.skipPrintingOnDiffCount = skipPrintingOnDiffCount
         self.nameLabels = nameLabels
+        self.visited = ComparisonContext()
     }
 
     func diff<T>(_ expected: T, _ received: T) -> [String] {
@@ -160,8 +162,30 @@ private struct Differ {
     }
 
     func diffLines<T>(_ expected: T, _ received: T, level: Int = 0) -> [SpryDiffLine] {
+        guard level < ComparisonContext.maximumDiffDepth else {
+            return [SpryDiffLine(contents: "Nested deeper than \(ComparisonContext.maximumDiffDepth) levels",
+                                 indentationLevel: level,
+                                 canBeOrdered: false)]
+        }
+
         let expectedMirror = Mirror(reflecting: expected)
         let receivedMirror = Mirror(reflecting: received)
+
+        // A reference cycle would otherwise walk forever. Re-entering the same pair means the graph
+        // loops back on itself, and a loop adds no difference of its own.
+        var openedPair: ReferencePair?
+        if expectedMirror.displayStyle == .class, receivedMirror.displayStyle == .class {
+            let pair = ReferencePair(lhs: expected as AnyObject, rhs: received as AnyObject)
+            guard visited.beginComparing(pair) else {
+                return []
+            }
+            openedPair = pair
+        }
+        defer {
+            if let openedPair {
+                visited.endComparing(openedPair)
+            }
+        }
 
         if let expectedDecimal = expected as? Decimal, let receivedDecimal = received as? Decimal {
             return expectedDecimal == receivedDecimal ? [] : generateExpectedReceiveLines("\(expectedDecimal)", "\(receivedDecimal)", level)
@@ -326,6 +350,10 @@ private struct Differ {
     }
 
     private func buildLineContents(lines: [SpryDiffLine]) -> [String] {
+        guard !lines.isEmpty else {
+            return []
+        }
+
         let linesContents = lines.map { line in line.generateContents(indentationType: indentationType) }
         // In the case of this being a top level failure (e.g. both mirrors have no children, like comparing two
         // primitives `diff(2,3)`, we only want to produce one failure to have proper spacing.

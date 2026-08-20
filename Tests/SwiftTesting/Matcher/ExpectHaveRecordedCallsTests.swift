@@ -20,6 +20,42 @@ final class ExpectHaveRecordedCallsTests {
         SpyableTestHelper.doClassStuff()
         expectHaveRecordedCalls(SpyableTestHelper.self)
     }
+
+    @Test("Failures are reported")
+    func failures_are_reported() {
+        let subject = SpyableTestHelper()
+
+        withKnownIssue {
+            expectHaveRecordedCalls(subject)
+        } matching: { issue in
+            issue.description.contains("have recorded 0 calls")
+        }
+
+        subject.doStuff()
+
+        withKnownIssue {
+            expectHaveNoRecordedCalls(subject)
+        } matching: { issue in
+            issue.description.contains("have recorded 1 call")
+        }
+
+        withKnownIssue {
+            expectHaveRecordedCalls(SpyableTestHelper.self)
+        } matching: { issue in
+            issue.description.contains("have recorded 0 calls")
+        }
+
+        SpyableTestHelper.doClassStuff()
+
+        withKnownIssue {
+            expectHaveNoRecordedCalls(SpyableTestHelper.self)
+        } matching: { issue in
+            issue.description.contains("have recorded 1 call")
+        }
+
+        expectHaveRecordedCalls(subject, "custom")
+        expectHaveNoRecordedCalls(SpyableTestHelper(), "custom")
+    }
 }
 
 private final class SpyableTestHelper: Spyable {

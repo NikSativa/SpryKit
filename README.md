@@ -8,7 +8,8 @@
 SpryKit is a powerful Swift testing framework that provides spying and stubbing capabilities, making it easier to write clean and maintainable unit tests. It's designed to help you test classes in isolation by verifying method calls and controlling return values.
 
 > [!IMPORTANT]
-> Thread-safe: perfect for multi-threaded test environments.
+> Recorded calls and stubs are guarded by locks, so a fake can be exercised from several threads at
+> once. See [Thread Safety](#thread-safety) for what that does and does not cover.
 
 ## Best Practices
 
@@ -50,7 +51,7 @@ Traditional mocking and stubbing in Swift can be verbose and error-prone, especi
 - 🎯 **Spying**: Record and verify method calls and their arguments
 - 🎭 **Stubbing**: Control method return values for testing different scenarios
 - 🚀 **Macro Support**: Reduce boilerplate with Swift 6.0+ macros
-- 🔒 **Thread Safety**: Built-in support for multi-threaded environments
+- 🔒 **Thread Safety**: Locked storage for calls and stubs, safe to exercise from several threads
 - 📱 **Cross-Platform**: Support for iOS, macOS, tvOS, watchOS, and visionOS
 - 🧪 **Rich Assertions**: Comprehensive set of XCTest and Swift Testing assertions
 - 🔍 **Argument Capturing**: Capture and inspect method arguments
@@ -80,6 +81,10 @@ __Table of Contents__
 * [SpryEquatable](#spryequatable)
 * [Argument](#argument)
 * [ArgumentCaptor](#argumentcaptor)
+* [Stub Resolution Order](#stub-resolution-order)
+* [Resetting State](#resetting-state)
+* [Thread Safety](#thread-safety)
+* [Comparison Limits](#comparison-limits)
 * [MacroAvailable](#macroavailable)
 
 ### 🧪 Advanced Testing
@@ -579,6 +584,74 @@ FakeStringService.stub(.imAClassFunction).andReturn(Void())
 // do not forget to reset class stubs (since Class objects are essentially singletons)
 FakeStringService.resetStubs()
 ```
+
+## Stub Resolution Order
+
+When several stubs match the same function, SpryKit picks in this order:
+
+1. stubs registered **with** arguments, most recently registered first;
+2. stubs registered **without** arguments, most recently registered first.
+
+So a specific stub always beats a wildcard one, no matter which was registered first, and re-stubbing
+the same shape shadows the earlier one:
+
+```swift
+fake.stub(.doSomethingWith).andReturn("any")          // no arguments — the fallback
+fake.stub(.doSomethingWith).with("a").andReturn("A")  // specific — wins for "a"
+
+fake.doSomething(with: "a")  // "A"
+fake.doSomething(with: "b")  // "any"
+```
+
+Registering the same function with the same arguments twice is a `fatalError` — use `stubAgain()`
+when replacing a stub is intentional.
+
+## Resetting State
+
+An instance drops its calls and stubs when it is deallocated, so a fresh fake starts clean.
+
+A **type** does not. Class-level stubs and recorded calls registered through `ClassFunction` live for
+the whole process, so a stub registered in one test still answers in the next one:
+
+```swift
+override func tearDown() {
+    super.tearDown()
+    Spry.resetAll()
+}
+```
+
+`Spry.resetAll()` drops calls and stubs for every fake at once. Narrower options are
+`resetCalls()`, `resetStubs()` and `resetCallsAndStubs()` on a single instance or type.
+
+> [!WARNING]
+> `Spry.resetAll()` is process-wide. Do not call it from tests that run in parallel with other tests
+> — it clears their state too.
+
+## Thread Safety
+
+Recorded calls, stubs and captured arguments live behind locks, so exercising one fake from several
+threads at once is safe: calls are not lost and stubs resolve correctly. This is verified under
+Thread Sanitizer.
+
+What is not covered:
+
+- **Class-level state is shared by every test in the process.** See [Resetting State](#resetting-state).
+- **`Spry.resetAll()` and `SpryJSONEncoderOutputFormatting` are process-wide.** Changing them while
+  other tests run affects those tests.
+
+## Comparison Limits
+
+Arguments are compared structurally through `Mirror`, which walks the whole object graph. Two limits
+keep that from taking the process down:
+
+- **Reference cycles are detected.** A pair of objects already being compared is treated as equal, so
+  `parent`/`child` and delegate back-references compare fine.
+- **Depth is capped.** A graph nested deeper than 100 levels reports a `fatalError` naming both types
+  instead of overflowing the stack; the diff renderer stops at 30 levels and says so in its output.
+  Every nested value counts, optional wrappers included.
+
+Make the type conform to `Equatable` if you need an exact comparison of something deeper — SpryKit
+uses `==` when it is available.
 
 ## Spyable
 

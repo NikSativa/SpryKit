@@ -27,6 +27,14 @@ struct ArgumentTests {
         #expect(Argument.nil != Argument.nonNil)
     }
 
+    @Test("Argument.closure does not match nil")
+    func argument_closure_does_not_match_nil() {
+        #expect(matches(.closure, { }))
+        #expect(!matches(.closure, nil))
+        #expect(!matches(.closure, 5))
+        #expect(matches(.nil, nil))
+    }
+
     @Test("isType")
     func isType() {
         #expect(matches(.isType(ArgumentBase.self), ArgumentBase.self))

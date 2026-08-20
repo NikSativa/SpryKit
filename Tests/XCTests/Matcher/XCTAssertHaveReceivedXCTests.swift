@@ -83,6 +83,71 @@ final class XCTAssertHaveReceivedXCTests: XCTestCase {
             issue.compactDescription.contains("but spyable is nil")
         })
     }
+
+    func test_count_specifiers_shape_the_report() {
+        subject.doStuff()
+        subject.doStuff()
+
+        XCTAssertHaveReceived(subject, .doStuff, countSpecifier: .exactly(2))
+        XCTAssertHaveReceived(subject, .doStuff, countSpecifier: .atLeast(2))
+        XCTAssertHaveReceived(subject, .doStuff, countSpecifier: .atMost(2))
+        XCTAssertHaveNotReceived(subject, .doStuff, countSpecifier: .exactly(3))
+
+        XCTExpectFailure(failingBlock: {
+            XCTAssertHaveReceived(self.subject, .doStuff, countSpecifier: .exactly(3))
+        }, issueMatcher: { $0.compactDescription.contains("exactly 3 times") })
+
+        XCTExpectFailure(failingBlock: {
+            XCTAssertHaveReceived(self.subject, .doStuff, countSpecifier: .atLeast(3))
+        }, issueMatcher: { $0.compactDescription.contains("at least 3 times") })
+
+        XCTExpectFailure(failingBlock: {
+            XCTAssertHaveReceived(self.subject, .doStuff, countSpecifier: .atMost(1))
+        }, issueMatcher: { $0.compactDescription.contains("at most 1 time") })
+    }
+
+    func test_nil_spyable_reports_each_count_specifier() {
+        let missing: SpyableTestHelper? = nil
+
+        XCTExpectFailure(failingBlock: {
+            XCTAssertHaveReceived(missing, .doStuffWithString, with: "x", countSpecifier: .exactly(1))
+        }, issueMatcher: { $0.compactDescription.contains("with arguments") && $0.compactDescription.contains("'count' times") })
+
+        XCTExpectFailure(failingBlock: {
+            XCTAssertHaveReceived(missing, .doStuff, countSpecifier: .atLeast(2))
+        }, issueMatcher: { $0.compactDescription.contains("at least 'count' times") })
+
+        XCTExpectFailure(failingBlock: {
+            XCTAssertHaveReceived(missing, .doStuff, countSpecifier: .atMost(2))
+        }, issueMatcher: { $0.compactDescription.contains("at most 'count' times") })
+
+        XCTExpectFailure(failingBlock: {
+            XCTAssertHaveNotReceived(missing, .doStuffWithString, with: "x")
+        }, issueMatcher: { _ in true })
+
+        XCTExpectFailure(failingBlock: {
+            XCTAssertHaveReceived(SpyableTestHelper.Type?.none, .doStuff)
+        }, issueMatcher: { _ in true })
+
+        XCTExpectFailure(failingBlock: {
+            XCTAssertHaveNotReceived(SpyableTestHelper.Type?.none, .doStuff, with: "x")
+        }, issueMatcher: { _ in true })
+    }
+
+    func test_class_count_specifiers() {
+        SpyableTestHelper.doClassStuff()
+
+        XCTAssertHaveReceived(SpyableTestHelper.self, .doStuff, countSpecifier: .exactly(1))
+        XCTAssertHaveNotReceived(SpyableTestHelper.self, .doStuff, countSpecifier: .exactly(2))
+
+        XCTExpectFailure(failingBlock: {
+            XCTAssertHaveReceived(SpyableTestHelper.self, .doStuffWithString, with: "x", countSpecifier: .exactly(1))
+        }, issueMatcher: { _ in true })
+
+        XCTExpectFailure(failingBlock: {
+            XCTAssertHaveNotReceived(SpyableTestHelper.self, .doStuff)
+        }, issueMatcher: { _ in true })
+    }
 }
 
 private final class SpyableTestHelper: Spyable {

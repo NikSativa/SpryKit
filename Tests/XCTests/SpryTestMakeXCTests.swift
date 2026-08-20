@@ -44,7 +44,7 @@ final class SpryTestMakeXCTests: XCTestCase {
 
         let text = try XCTUnwrap(String(data: encoded, encoding: .utf8))
         XCTAssertTrue(text.contains("\"age\""))
-        XCTAssertLessThan(text.range(of: "\"age\"")!.lowerBound, text.range(of: "\"name\"")!.lowerBound)
+        XCTAssertLessThan(try XCTUnwrap(text.range(of: "\"age\"")?.lowerBound), try XCTUnwrap(text.range(of: "\"name\"")?.lowerBound))
     }
 
     func test_data_decoding_failure() {
@@ -73,7 +73,7 @@ final class SpryTestMakeXCTests: XCTestCase {
         XCTAssertTrue(description.contains("Value"))
     }
 
-    func test_dispatchTime() throws {
+    func test_dispatchTime() {
         let now = DispatchTime.now()
         let future = DispatchTime.spry.testMake(secondsFromNow: 10)
         XCTAssertGreaterThan(future, now)

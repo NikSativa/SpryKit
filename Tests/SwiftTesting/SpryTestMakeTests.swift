@@ -50,7 +50,7 @@ struct SpryTestMakeTests {
 
         let text = try #require(String(data: encoded, encoding: .utf8))
         #expect(text.contains("\"age\""))
-        #expect(text.range(of: "\"age\"")!.lowerBound < text.range(of: "\"name\"")!.lowerBound)
+        #expect(try #require(text.range(of: "\"age\"")?.lowerBound) < text.range(of: "\"name\"")!.lowerBound)
     }
 
     @Test("Data decoding failure")

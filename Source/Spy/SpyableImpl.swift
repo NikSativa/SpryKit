@@ -4,22 +4,32 @@ import Threading
 /// A global NSMapTable to hold onto calls for types conforming to Spyable. This map table has "weak to strong objects" options.
 ///
 /// - Important: Do NOT use this object.
-private nonisolated(unsafe) var callsMapTable: NSMapTable<AnyObject, SpryDictionary<RecordedCall>> = NSMapTable.weakToStrongObjects()
+private nonisolated(unsafe) var callsMapTable: NSMapTable<AnyObject, SpryItemStorage<RecordedCall>> = NSMapTable.weakToStrongObjects()
 
 /// Mutex for synchronizing access to callsMapTable to prevent race conditions
 private let callsMapTableMutex = PThread(kind: .recursive)
 
+/// Drops every recorded call, for every type and instance.
+internal func removeAllRecordedCalls() {
+    callsMapTableMutex.lock()
+    defer {
+        callsMapTableMutex.unlock()
+    }
+
+    callsMapTable.removeAllObjects()
+}
+
 public extension Spyable {
     // MARK: Instance
 
-    private var _callsDictionary: SpryDictionary<RecordedCall> {
+    private var _callsDictionary: SpryItemStorage<RecordedCall> {
         callsMapTableMutex.lock()
         defer {
             callsMapTableMutex.unlock()
         }
 
         guard let callsDict = callsMapTable.object(forKey: self) else {
-            let callsDict = SpryDictionary<RecordedCall>()
+            let callsDict = SpryItemStorage<RecordedCall>()
             callsMapTable.setObject(callsDict, forKey: self)
             return callsDict
         }
@@ -68,14 +78,14 @@ public extension Spyable {
 
     // MARK: Static
 
-    private static var _callsDictionary: SpryDictionary<RecordedCall> {
+    private static var _callsDictionary: SpryItemStorage<RecordedCall> {
         callsMapTableMutex.lock()
         defer {
             callsMapTableMutex.unlock()
         }
 
         guard let callsDict = callsMapTable.object(forKey: self) else {
-            let callsDict = SpryDictionary<RecordedCall>()
+            let callsDict = SpryItemStorage<RecordedCall>()
             callsMapTable.setObject(callsDict, forKey: self)
             return callsDict
         }
@@ -149,7 +159,7 @@ public extension Spyable {
 
 // MARK: Private Functions
 
-private func numberOfMatchingCalls(fakeType: (some Any).Type, functionName: String, arguments: [Any?], callsDictionary: SpryDictionary<RecordedCall>) -> Int {
+private func numberOfMatchingCalls(fakeType: (some Any).Type, functionName: String, arguments: [Any?], callsDictionary: SpryItemStorage<RecordedCall>) -> Int {
     let matchingFunctions = callsDictionary.get(for: functionName)
 
     // if no args passed in then only check if function was called (allows user to not care about args being passed in)

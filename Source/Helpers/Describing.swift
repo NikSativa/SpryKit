@@ -1,6 +1,17 @@
 import Foundation
+import Threading
 
-public nonisolated(unsafe) var SpryJSONEncoderOutputFormatting: JSONEncoder.OutputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
+/// Output formatting used when SpryKit renders an `Encodable` value in a failure message.
+public var SpryJSONEncoderOutputFormatting: JSONEncoder.OutputFormatting {
+    get {
+        return outputFormattingStorage.wrappedValue
+    }
+    set {
+        outputFormattingStorage.wrappedValue = newValue
+    }
+}
+
+private let outputFormattingStorage: AtomicValue<JSONEncoder.OutputFormatting> = .init(wrappedValue: [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes])
 
 internal func describe<T>(_ value: T?) -> String {
     let str: String

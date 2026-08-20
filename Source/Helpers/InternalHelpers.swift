@@ -17,12 +17,12 @@ internal func isNil(_ value: Any?) -> Bool {
 
 /// This is a helper function to find out if a value is closure.
 internal func isClosure(_ value: Any?) -> Bool {
-    if let unwrappedValue = value {
-        let mirror = Mirror(reflecting: unwrappedValue)
-        return String(describing: mirror.subjectType).contains(" -> ")
-    } else {
-        return true
+    guard let value else {
+        return false
     }
+
+    let mirror = Mirror(reflecting: value)
+    return String(describing: mirror.subjectType).contains(" -> ")
 }
 
 // MARK: - String Extensions
@@ -63,17 +63,6 @@ internal extension Array {
         }
 
         return true
-    }
-}
-
-internal extension Array where Element: Equatable {
-    @discardableResult
-    mutating func removeFirst(_ element: Element) -> Element? {
-        guard let index = firstIndex(of: element) else {
-            return nil
-        }
-
-        return remove(at: index)
     }
 }
 

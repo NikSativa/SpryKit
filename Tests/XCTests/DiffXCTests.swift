@@ -7,6 +7,12 @@ final class DiffXCTests: XCTestCase {
         let name: String
     }
 
+    func testStringInstanceDiff_mirrorsTheNamespacedCall() {
+        XCTAssertEqual("line1\nline2".spryDiffLines(with: "line1\nline3"), Spry.diffLines("line1\nline2", "line1\nline3"))
+        XCTAssertTrue("same".spryDiffLines(with: "same").isEmpty)
+        XCTAssertEqual("line1\nline2".spryDiffLines(with: "line1\nline3"), "\u{2007} line1\n\u{2212} line2\n+ line3")
+    }
+
     func testDiffTexts_equalStrings_returnsEmpty() {
         let lhs = "line1\nline2"
         let rhs = "line1\nline2"
@@ -230,4 +236,35 @@ final class DiffXCTests: XCTestCase {
             _ = Spry.diffEncodable(lhs, rhs)
         }
     }
+
+    func test_stringsShortCircuitEncoding() {
+        XCTAssertEqual(Spry.diffEncodable("line1\nline2", "line1\nline3"), Spry.diffLines("line1\nline2", "line1\nline3"))
+        XCTAssertTrue(Spry.diffEncodable("same", "same").isEmpty)
+    }
+
+    func test_aValueThatCannotBeEncodedFallsBackToItsDescription() {
+        let subject = Spry.diffEncodable(NotEncodable(value: .infinity), NotEncodable(value: 1))
+
+        XCTAssertFalse(subject.isEmpty)
+        XCTAssertTrue(subject.contains("NotEncodable"))
+    }
+
+    func test_aCustomEncoderIsRespected() {
+        let encoder = JSONEncoder()
+        encoder.keyEncodingStrategy = .convertToSnakeCase
+
+        let subject = Spry.diffEncodable(SnakePayload(firstName: "John"),
+                                         SnakePayload(firstName: "Jane"),
+                                         encoder: encoder)
+
+        XCTAssertTrue(subject.contains("first_name"))
+    }
+}
+
+private struct NotEncodable: Encodable {
+    let value: Double
+}
+
+private struct SnakePayload: Encodable {
+    let firstName: String
 }

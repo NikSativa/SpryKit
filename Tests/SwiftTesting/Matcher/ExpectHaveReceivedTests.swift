@@ -88,6 +88,86 @@ final class ExpectHaveReceivedTests {
             issue.description.contains("but spyable is nil")
         }
     }
+
+    @Test("Count specifiers shape the report")
+    func count_specifiers_shape_the_report() {
+        let subject = SpyableTestHelper()
+        subject.doStuff()
+        subject.doStuff()
+
+        expectHaveReceived(subject, .doStuff, countSpecifier: .exactly(2))
+        expectHaveReceived(subject, .doStuff, countSpecifier: .atLeast(2))
+        expectHaveReceived(subject, .doStuff, countSpecifier: .atMost(2))
+        expectHaveNotReceived(subject, .doStuff, countSpecifier: .exactly(3))
+
+        withKnownIssue {
+            expectHaveReceived(subject, .doStuff, countSpecifier: .exactly(3))
+        } matching: { issue in
+            issue.description.contains("exactly 3 times")
+        }
+
+        withKnownIssue {
+            expectHaveReceived(subject, .doStuff, countSpecifier: .atLeast(3))
+        } matching: { issue in
+            issue.description.contains("at least 3 times")
+        }
+
+        withKnownIssue {
+            expectHaveReceived(subject, .doStuff, countSpecifier: .atMost(1))
+        } matching: { issue in
+            issue.description.contains("at most 1 time")
+        }
+    }
+
+    @Test("Nil spyable reports each count specifier")
+    func nil_spyable_reports_each_count_specifier() {
+        let missing: SpyableTestHelper? = nil
+
+        withKnownIssue {
+            expectHaveReceived(missing, .doStuffWithString, with: "x", countSpecifier: .exactly(1))
+        } matching: { issue in
+            issue.description.contains("with arguments") && issue.description.contains("'count' times")
+        }
+
+        withKnownIssue {
+            expectHaveReceived(missing, .doStuff, countSpecifier: .atLeast(2))
+        } matching: { issue in
+            issue.description.contains("at least 'count' times")
+        }
+
+        withKnownIssue {
+            expectHaveReceived(missing, .doStuff, countSpecifier: .atMost(2))
+        } matching: { issue in
+            issue.description.contains("at most 'count' times")
+        }
+
+        withKnownIssue {
+            expectHaveNotReceived(missing, .doStuffWithString, with: "x")
+        }
+
+        withKnownIssue {
+            expectHaveReceived(SpyableTestHelper.Type?.none, .doStuff)
+        }
+
+        withKnownIssue {
+            expectHaveNotReceived(SpyableTestHelper.Type?.none, .doStuff, with: "x")
+        }
+    }
+
+    @Test("A failed expectation returns false")
+    func a_failed_expectation_returns_false() {
+        let subject = SpyableTestHelper()
+
+        withKnownIssue {
+            #expect(!expectHaveReceived(subject, .doStuff))
+        }
+
+        subject.doStuff()
+
+        withKnownIssue {
+            #expect(!expectHaveNotReceived(subject, .doStuff))
+        }
+    }
 }
 
 private final class SpyableTestHelper: Spyable {

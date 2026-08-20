@@ -456,6 +456,88 @@ struct SpryableMacrosTests {
                              macros: sut)
     }
 
+    @Test("A struct is rejected")
+    func a_struct_is_rejected() {
+        assertMacroExpansion("""
+                             @SpryableExtensionMacro
+                             struct FakeFoo {
+                             }
+                             """,
+                             expandedSource: """
+                             struct FakeFoo {
+                             }
+                             """,
+                             diagnostics: [
+                                 .init(message: SpryableDiagnostic.onlyApplicableToClass.message,
+                                       line: 1,
+                                       column: 1)
+                             ],
+                             macros: sut)
+    }
+
+    @Test("A subscript is rejected")
+    func a_subscript_is_rejected() {
+        assertMacroExpansion("""
+                             @SpryableExtensionMacro
+                             final class FakeFoo {
+                                 subscript(index: Int) -> Int
+                             }
+                             """,
+                             expandedSource: """
+                             final class FakeFoo {
+                                 subscript(index: Int) -> Int
+                             }
+                             """,
+                             diagnostics: [
+                                 .init(message: SpryableDiagnostic.subscriptsNotSupported.message,
+                                       line: 1,
+                                       column: 1)
+                             ],
+                             macros: sut)
+    }
+
+    @Test("An operator is rejected")
+    func an_operator_is_rejected() {
+        assertMacroExpansion("""
+                             @SpryableExtensionMacro
+                             final class FakeFoo {
+                                 static func ==(lhs: FakeFoo, rhs: FakeFoo) -> Bool
+                             }
+                             """,
+                             expandedSource: """
+                             final class FakeFoo {
+                                 static func ==(lhs: FakeFoo, rhs: FakeFoo) -> Bool
+                             }
+                             """,
+                             diagnostics: [
+                                 .init(message: SpryableDiagnostic.operatorsNotSupported.message,
+                                       line: 1,
+                                       column: 1)
+                             ],
+                             macros: sut)
+    }
+
+    @Test("A let property is rejected")
+    func a_let_property_is_rejected() {
+        assertMacroExpansion("""
+                             final class FakeFoo {
+                                 @SpryableAccessorMacro
+                                 let value: Int
+                             }
+                             """,
+                             expandedSource: """
+                             final class FakeFoo {
+                                 let value: Int
+                             }
+                             """,
+                             diagnostics: [
+                                 .init(message: SpryableDiagnostic.onlyApplicableToVar.message,
+                                       line: 2,
+                                       column: 5)
+                             ],
+                             macros: sut)
+    }
+
     @Test("Closures")
     func closures() {
         let declaration =

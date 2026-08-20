@@ -44,5 +44,51 @@ struct ExpectEqualErrorTests {
             issue.sourceLocation?.fileName == "ExpectEqualErrorTests.swift"
         }
     }
+
+    @Test("Unequal errors are reported")
+    func unequal_errors_are_reported() {
+        withKnownIssue {
+            expectEqualError(Error.one, Error.two, "must match")
+        } matching: { issue in
+            issue.description.contains("must match")
+        }
+
+        withKnownIssue {
+            expectNotEqualError(Error.one, Error.one, "must differ")
+        } matching: { issue in
+            issue.description.contains("must differ")
+        }
+    }
+
+    @Test("The closure overloads report nil and unexpected throws")
+    func the_closure_overloads_report_nil_and_unexpected_throws() {
+        withKnownIssue {
+            expectEqualError(Error.one) { nil }
+        } matching: { issue in
+            issue.description.contains("but actual error is nil")
+        }
+
+        withKnownIssue {
+            expectNotEqualError(Error.one) { nil }
+        } matching: { issue in
+            issue.description.contains("but actual error is nil")
+        }
+
+        withKnownIssue {
+            expectEqualError(Error.one) { throw Error.two }
+        } matching: { issue in
+            issue.description.contains("Unexpected error thrown")
+        }
+
+        withKnownIssue {
+            expectNotEqualError(Error.one) { throw Error.two }
+        } matching: { issue in
+            issue.description.contains("Unexpected error thrown")
+        }
+
+        withKnownIssue {
+            expectNotEqualError(Error.one) { Error.one }
+        }
+    }
 }
 #endif // canImport(Testing)

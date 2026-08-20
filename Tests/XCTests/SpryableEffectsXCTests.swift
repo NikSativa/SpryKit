@@ -36,14 +36,14 @@ final class SpryableEffectsXCTests: XCTestCase {
             return try work()
         }
 
-        XCTAssertEqual(try subject.rethrowing(execute: { 42 }), 42)
+        XCTAssertEqual(try subject.rethrowing(execute: { try Self.throwingWork() }), 42)
     }
 
     func test_rethrowing_function_cannot_deliver_an_error() {
         subject.stub(.rethrowingWithExecute).andThrow(SpryableTestError.notFound)
 
         XCTAssertThrowsAssertion {
-            try self.subject.rethrowing(execute: { 42 })
+            try self.subject.rethrowing(execute: { try Self.throwingWork() })
         }
     }
 
@@ -60,5 +60,8 @@ final class SpryableEffectsXCTests: XCTestCase {
         XCTAssertEqual(SpryableEffectsTestClass.classScoped(some: 1), "ok")
         XCTAssertHaveReceived(SpryableEffectsTestClass.self, .classScopedWithSome, with: 1)
         XCTAssertHaveNoRecordedCalls(subject)
+    }
+    private static func throwingWork() throws -> Int {
+        return 42
     }
 }

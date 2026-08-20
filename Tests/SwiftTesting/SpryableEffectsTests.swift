@@ -44,7 +44,7 @@ final class SpryableEffectsTests {
             return try work()
         }
 
-        #expect(try subject.rethrowing(execute: { 42 }) == 42)
+        #expect(try subject.rethrowing(execute: { try Self.throwingWork() }) == 42)
     }
 
     @Test("Rethrowing function cannot deliver an error")
@@ -52,7 +52,7 @@ final class SpryableEffectsTests {
         subject.stub(.rethrowingWithExecute).andThrow(SpryableTestError.notFound)
 
         expectThrowsAssertion { [subject] in
-            try subject.rethrowing(execute: { 42 })
+            try subject.rethrowing(execute: { try Self.throwingWork() })
         }
     }
 
@@ -71,6 +71,9 @@ final class SpryableEffectsTests {
         #expect(SpryableEffectsTestClass.classScoped(some: 1) == "ok")
         #expect(SpryableEffectsTestClass.didCall(.classScopedWithSome, withArguments: [1]).isSuccess)
         #expect(!subject.haveRecordedCalls)
+    }
+    private static func throwingWork() throws -> Int {
+        return 42
     }
 }
 #endif // canImport(Testing)

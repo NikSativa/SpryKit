@@ -1,4 +1,5 @@
 import Foundation
+import Threading
 
 final class StubInfo {
     private enum StubType {
@@ -8,33 +9,55 @@ final class StubInfo {
         case andThrow(Error)
     }
 
-    let functionName: String
-
-    var isComplete: Bool {
-        return stubType != nil
+    private struct State {
+        var arguments: [Any?] = []
+        var stubType: StubType?
+        var chronologicalIndex: Int = -1
+        var completeHandler: ((StubInfo) -> Void)?
     }
 
-    private(set) var arguments: [Any?] = []
-    var chronologicalIndex = -1
+    let functionName: String
 
-    private var stubType: StubType? {
-        didSet {
-            if stubType != nil {
-                stubCompleteHandler?(self)
-                stubCompleteHandler = nil
+    private let state: AtomicValue<State>
+
+    var isComplete: Bool {
+        return state.syncUnchecked { state in
+            return state.stubType != nil
+        }
+    }
+
+    var arguments: [Any?] {
+        return state.syncUnchecked { state in
+            return state.arguments
+        }
+    }
+
+    var chronologicalIndex: Int {
+        get {
+            return state.syncUnchecked { state in
+                return state.chronologicalIndex
+            }
+        }
+        set {
+            state.syncUnchecked { state in
+                state.chronologicalIndex = newValue
             }
         }
     }
 
-    private var stubCompleteHandler: ((StubInfo) -> Void)?
-
     init(functionName: String,
          stubCompleteHandler: @escaping (StubInfo) -> Void) {
         self.functionName = functionName
-        self.stubCompleteHandler = stubCompleteHandler
+        self.state = .init(wrappedValue: State(completeHandler: stubCompleteHandler))
     }
 
     func returnValue(for args: [Any?]) throws -> Any? {
+        // The value is read out before reporting: a caught trap unwinds without running `defer`,
+        // which would leave the stub locked forever.
+        let stubType = state.syncUnchecked { state in
+            return state.stubType
+        }
+
         guard let stubType else {
             Constant.FatalError.noReturnValueSourceFound(functionName: functionName)
         }
@@ -50,6 +73,21 @@ final class StubInfo {
             throw error
         }
     }
+
+    /// Records the outcome and hands the stub to its completion handler.
+    ///
+    /// The handler runs outside the lock: it walks the owning dictionary, which takes locks of its
+    /// own.
+    private func complete(with stubType: StubType) {
+        let handler = state.syncUnchecked { state -> ((StubInfo) -> Void)? in
+            state.stubType = stubType
+            let handler = state.completeHandler
+            state.completeHandler = nil
+            return handler
+        }
+
+        handler?(self)
+    }
 }
 
 // MARK: - SpryItem
@@ -60,28 +98,31 @@ extension StubInfo: SpryItem {}
 
 extension StubInfo: Stub {
     func with(_ arguments: Any...) -> Self {
-        self.arguments += arguments
+        state.syncUnchecked { state in
+            state.arguments += arguments
+        }
+
         return self
     }
 
     func andReturn() {
-        stubType = .andReturn(())
+        complete(with: .andReturn(()))
     }
 
     func andReturn(_ value: Any?) {
-        stubType = .andReturn(value)
+        complete(with: .andReturn(value))
     }
 
     func andDo(_ closure: @escaping DoClosure<Any?>) {
-        stubType = .andDo(closure)
+        complete(with: .andDo(closure))
     }
 
     func andDoVoid(_ closure: @escaping DoClosure<Void>) {
-        stubType = .andDoVoid(closure)
+        complete(with: .andDoVoid(closure))
     }
 
     func andThrow(_ error: Error) {
-        stubType = .andThrow(error)
+        complete(with: .andThrow(error))
     }
 }
 
@@ -89,13 +130,17 @@ extension StubInfo: Stub {
 
 extension StubInfo: CustomStringConvertible {
     private func makeDescription() -> String {
+        let (arguments, stubType) = state.syncUnchecked { state in
+            return (state.arguments, state.stubType)
+        }
+
         let argumentsDescription = arguments.map {
             return $0.map {
                 "<\($0)>"
             } ?? "<nil>"
         }
         .joined(separator: ", ")
-        let returnDescription = isNil(stubType) ? "nil" : "\(stubType!)"
+        let returnDescription = stubType.map { "\($0)" } ?? "nil"
 
         return "Stub(function: <\(functionName)>, args: <\(argumentsDescription)>, returnValue: <\(returnDescription)>)"
     }
@@ -117,6 +162,7 @@ extension StubInfo: CustomDebugStringConvertible {
 
 extension StubInfo: SpryFriendlyStringConvertible {
     var friendlyDescription: String {
+        let arguments = arguments
         if arguments.isEmpty {
             return functionName
         }

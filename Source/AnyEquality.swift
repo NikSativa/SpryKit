@@ -6,11 +6,15 @@ public func isAnyEqual(_ lhs: Any?, _ rhs: Any?) -> Bool {
         return lhs == nil && rhs == nil
     }
 
-    return isAnyEqual(lhs, rhs)
+    return isAnyEqual(lhs, rhs, context: ComparisonContext())
 }
 
-@inline(__always)
-private func isAnyEqual(_ lhs: Any, _ rhs: Any) -> Bool {
+private func isAnyEqual(_ lhs: Any, _ rhs: Any, context: ComparisonContext) -> Bool {
+    context.descend(comparing: lhs, and: rhs)
+    defer {
+        context.ascend()
+    }
+
     let lhsMirror = Mirror(reflecting: lhs)
     let rhsMirror = Mirror(reflecting: rhs)
 
@@ -22,33 +26,42 @@ private func isAnyEqual(_ lhs: Any, _ rhs: Any) -> Bool {
     switch (lhsStyle, rhsStyle) {
     #if compiler(>=6.2)
     case (.foreignReference, .foreignReference):
-        return manualDictionaryEquality(lhs: lhs, lhsMirror: lhsMirror, rhs: rhs, rhsMirror: rhsMirror)
-
+        return manualDictionaryEquality(lhs: lhs, lhsMirror: lhsMirror, rhs: rhs, rhsMirror: rhsMirror, context: context)
     case (_, .foreignReference),
          (.foreignReference, _):
         break
     #endif
 
-    case (.class, .class),
-         (.struct, .struct):
-        return manualDictionaryEquality(lhs: lhs, lhsMirror: lhsMirror, rhs: rhs, rhsMirror: rhsMirror)
+    case (.class, .class):
+        let pair = ReferencePair(lhs: lhs as AnyObject, rhs: rhs as AnyObject)
+        guard context.beginComparing(pair) else {
+            return true
+        }
+        defer {
+            context.endComparing(pair)
+        }
+
+        return manualDictionaryEquality(lhs: lhs, lhsMirror: lhsMirror, rhs: rhs, rhsMirror: rhsMirror, context: context)
+
+    case (.struct, .struct):
+        return manualDictionaryEquality(lhs: lhs, lhsMirror: lhsMirror, rhs: rhs, rhsMirror: rhsMirror, context: context)
 
     case (.dictionary, .dictionary):
-        return manualDictionaryEquality(lhsMirror: lhsMirror, rhsMirror: rhsMirror)
+        return manualDictionaryEquality(lhsMirror: lhsMirror, rhsMirror: rhsMirror, context: context)
 
     case (.enum, .enum):
         guard lhsMirror.subjectType == rhsMirror.subjectType else {
             return false
         }
 
-        return areEnumCasesEqual(lhs: lhs, rhs: rhs, lhsMirror: lhsMirror, rhsMirror: rhsMirror)
+        return areEnumCasesEqual(lhs: lhs, rhs: rhs, lhsMirror: lhsMirror, rhsMirror: rhsMirror, context: context)
 
     case (.tuple, .tuple):
         // ignore labels as dev's sugar
-        return manualArrayEquality(lhsMirror: lhsMirror, rhsMirror: rhsMirror)
+        return manualArrayEquality(lhsMirror: lhsMirror, rhsMirror: rhsMirror, context: context)
 
     case (.collection, .collection):
-        return manualArrayEquality(lhsMirror: lhsMirror, rhsMirror: rhsMirror)
+        return manualArrayEquality(lhsMirror: lhsMirror, rhsMirror: rhsMirror, context: context)
 
     case (.set, .set):
         return manualSetEquality(lhsMirror: lhsMirror, rhsMirror: rhsMirror)
@@ -63,17 +76,17 @@ private func isAnyEqual(_ lhs: Any, _ rhs: Any) -> Bool {
 
         if let lhsUnwrapped,
            let rhsUnwrapped {
-            return isAnyEqual(lhsUnwrapped, rhsUnwrapped)
+            return isAnyEqual(lhsUnwrapped, rhsUnwrapped, context: context)
         }
 
     case (.optional, _):
         if let lhsUnwrapped = unwrapOptionalIfPossible(lhsMirror) {
-            return isAnyEqual(lhsUnwrapped, rhs)
+            return isAnyEqual(lhsUnwrapped, rhs, context: context)
         }
 
     case (_, .optional):
         if let rhsUnwrapped = unwrapOptionalIfPossible(rhsMirror) {
-            return isAnyEqual(lhs, rhsUnwrapped)
+            return isAnyEqual(lhs, rhsUnwrapped, context: context)
         }
 
     case (_, .class),
@@ -124,8 +137,7 @@ private func unwrapOptionalIfPossible(_ mirror: Mirror) -> Any? {
     return nil
 }
 
-@inline(__always)
-private func areEnumCasesEqual(lhs: Any, rhs: Any, lhsMirror: Mirror, rhsMirror: Mirror) -> Bool {
+private func areEnumCasesEqual(lhs: Any, rhs: Any, lhsMirror: Mirror, rhsMirror: Mirror, context: ComparisonContext) -> Bool {
     // Make sure that both enums have or don't have associated values
     guard lhsMirror.children.isEmpty == rhsMirror.children.isEmpty else {
         return false
@@ -150,14 +162,14 @@ private func areEnumCasesEqual(lhs: Any, rhs: Any, lhsMirror: Mirror, rhsMirror:
         return false
     }
 
-    return manualDictionaryEquality(lhsMirror: lhsMirror, rhsMirror: rhsMirror)
+    return manualDictionaryEquality(lhsMirror: lhsMirror, rhsMirror: rhsMirror, context: context)
 }
 
-@inline(__always)
 private func manualDictionaryEquality(lhs: Any,
                                       lhsMirror: Mirror,
                                       rhs: Any,
-                                      rhsMirror: Mirror) -> Bool {
+                                      rhsMirror: Mirror,
+                                      context: ComparisonContext) -> Bool {
     guard lhsMirror.subjectType == rhsMirror.subjectType else {
         return false
     }
@@ -167,11 +179,10 @@ private func manualDictionaryEquality(lhs: Any,
         return lhs == rhs
     }
 
-    return manualDictionaryEquality(lhsMirror: lhsMirror, rhsMirror: rhsMirror)
+    return manualDictionaryEquality(lhsMirror: lhsMirror, rhsMirror: rhsMirror, context: context)
 }
 
-@inline(__always)
-private func manualDictionaryEquality(lhsMirror: Mirror, rhsMirror: Mirror) -> Bool {
+private func manualDictionaryEquality(lhsMirror: Mirror, rhsMirror: Mirror, context: ComparisonContext) -> Bool {
     let lhsDictionary = convertMirrorToDictionary(mirror: lhsMirror)
     let rhsDictionary = convertMirrorToDictionary(mirror: rhsMirror)
 
@@ -188,7 +199,7 @@ private func manualDictionaryEquality(lhsMirror: Mirror, rhsMirror: Mirror) -> B
             return false
         }
 
-        guard isAnyEqual(lhsValue, rhsValue) else {
+        guard isAnyEqual(lhsValue, rhsValue, context: context) else {
             // values for the same key are not equal
             return false
         }
@@ -214,8 +225,7 @@ private func convertMirrorToDictionary(mirror: Mirror) -> [AnyHashable: Any] {
     return dictionary
 }
 
-@inline(__always)
-private func manualArrayEquality(lhsMirror: Mirror, rhsMirror: Mirror) -> Bool {
+private func manualArrayEquality(lhsMirror: Mirror, rhsMirror: Mirror, context: ComparisonContext) -> Bool {
     let lhsArray = convertMirrorToArray(mirror: lhsMirror)
     let rhsArray = convertMirrorToArray(mirror: rhsMirror)
 
@@ -224,7 +234,7 @@ private func manualArrayEquality(lhsMirror: Mirror, rhsMirror: Mirror) -> Bool {
     }
 
     for (l, r) in zip(lhsArray, rhsArray) {
-        if !isAnyEqual(l, r) {
+        if !isAnyEqual(l, r, context: context) {
             return false
         }
     }

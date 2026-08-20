@@ -1,32 +1,15 @@
 import Foundation
 import Threading
 
-protocol SpryItem: AnyObject, Equatable {
-    var arguments: [Any?] { get }
-    var functionName: String { get }
-    var chronologicalIndex: Int { get set }
-    var isComplete: Bool { get }
-}
-
-extension SpryItem {
-    static func ==(lhs: Self, rhs: Self) -> Bool {
-        return lhs.functionName == rhs.functionName
-            && lhs.arguments.count == rhs.arguments.count
-            && lhs.arguments.compare(with: rhs.arguments)
-    }
-}
-
 @preconcurrency
-final class SpryDictionary<T: SpryItem>: @unchecked Sendable {
+final class SpryItemStorage<T: SpryItem>: @unchecked Sendable {
     /// Array of all stubs in chronological order.
     var values: [T] {
-        let valuesMap = $valuesMap.syncUnchecked {
-            return $0
+        return $valuesMap.syncUnchecked { valuesMap in
+            return valuesMap.values
+                .flatMap { $0 }
+                .sorted { $0.chronologicalIndex < $1.chronologicalIndex }
         }
-
-        return valuesMap.values
-            .flatMap { $0 }
-            .sorted { $0.chronologicalIndex < $1.chronologicalIndex }
     }
 
     private var chronologicalIndex: Int = 0
@@ -93,7 +76,7 @@ final class SpryDictionary<T: SpryItem>: @unchecked Sendable {
 
 // MARK: - CustomStringConvertible
 
-extension SpryDictionary: CustomStringConvertible {
+extension SpryItemStorage: CustomStringConvertible {
     var description: String {
         $valuesMap.syncUnchecked { valuesMap in
             return String(describing: valuesMap)
@@ -103,7 +86,7 @@ extension SpryDictionary: CustomStringConvertible {
 
 // MARK: - CustomDebugStringConvertible
 
-extension SpryDictionary: CustomDebugStringConvertible {
+extension SpryItemStorage: CustomDebugStringConvertible {
     var debugDescription: String {
         $valuesMap.syncUnchecked { valuesMap in
             return String(describing: valuesMap)
@@ -113,7 +96,7 @@ extension SpryDictionary: CustomDebugStringConvertible {
 
 // MARK: - SpryFriendlyStringConvertible
 
-extension SpryDictionary: SpryFriendlyStringConvertible {
+extension SpryItemStorage: SpryFriendlyStringConvertible {
     var friendlyDescription: String {
         return makeFriendlyDescription(for: values, separator: "; ", closeEach: false)
     }

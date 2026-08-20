@@ -23,6 +23,13 @@ final class ArgumentXCTests: XCTestCase {
         XCTAssertNotEqual(Argument.nil, Argument.nonNil)
     }
 
+    func test_argument_closure_does_not_match_nil() {
+        XCTAssertTrue(matches(.closure, { }))
+        XCTAssertFalse(matches(.closure, nil))
+        XCTAssertFalse(matches(.closure, 5))
+        XCTAssertTrue(matches(.nil, nil))
+    }
+
     func test_isType() {
         XCTAssertTrue(matches(.isType(ArgumentBase.self), ArgumentBase.self))
         XCTAssertTrue(matches(.isType(ArgumentBase.self), ArgumentSub.self))

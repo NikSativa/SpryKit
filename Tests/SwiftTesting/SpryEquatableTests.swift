@@ -5,6 +5,31 @@ import Testing
 
 @Suite("SpryEquatable Tests", .serialized)
 struct SpryEquatableTests {
+    @Test("Custom conformance without Equatable")
+    func custom_conformance_without_Equatable() {
+        let subject = AnyObjectOnly(p: 1)
+
+        #expect(subject._DO_NOT_OVERRIDE_isEqual(to: AnyObjectOnly(p: 1)))
+        #expect(!subject._DO_NOT_OVERRIDE_isEqual(to: AnyObjectOnly(p: 2)))
+        #expect(!subject._DO_NOT_OVERRIDE_isEqual(to: "not the same type"))
+        #expect(!subject._DO_NOT_OVERRIDE_isEqual(to: nil))
+    }
+
+    @Test("Conformance backed by Equatable")
+    func conformance_backed_by_Equatable() {
+        let subject = AnyObjectAndEquatable()
+
+        #expect(subject._DO_NOT_OVERRIDE_isEqual(to: AnyObjectAndEquatable()))
+        #expect(!subject._DO_NOT_OVERRIDE_isEqual(to: "not the same type"))
+        #expect(!subject._DO_NOT_OVERRIDE_isEqual(to: nil))
+    }
+
+    @Test("A manual implementation is honoured")
+    func a_manual_implementation_is_honoured() {
+        #expect(SpryEquatableTestHelper(isEqual: true)._DO_NOT_OVERRIDE_isEqual(to: "anything"))
+        #expect(!SpryEquatableTestHelper(isEqual: false)._DO_NOT_OVERRIDE_isEqual(to: "anything"))
+    }
+
     @Test("NOT Equatable and AnyObject")
     func NOT_Equatable_and_AnyObject() {
         let myObject1 = AnyObjectOnly(p: 1)

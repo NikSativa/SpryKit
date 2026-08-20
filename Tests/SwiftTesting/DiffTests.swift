@@ -10,6 +10,13 @@ struct DiffTests {
         let name: String
     }
 
+    @Test("String instance diff mirrors the namespaced call")
+    func string_instance_diff_mirrors_the_namespaced_call() {
+        #expect("line1\nline2".spryDiffLines(with: "line1\nline3") == Spry.diffLines("line1\nline2", "line1\nline3"))
+        #expect("same".spryDiffLines(with: "same").isEmpty)
+        #expect("line1\nline2".spryDiffLines(with: "line1\nline3") == "\u{2007} line1\n\u{2212} line2\n+ line3")
+    }
+
     @Test("Diff texts equal strings returns empty")
     func diffTexts_equalStrings_returnsEmpty() {
         let lhs = "line1\nline2"
@@ -192,5 +199,39 @@ struct DiffTests {
           d
         """)
     }
+
+    @Test("Strings short-circuit encoding")
+    func strings_short_circuit_encoding() {
+        #expect(Spry.diffEncodable("line1\nline2", "line1\nline3") == Spry.diffLines("line1\nline2", "line1\nline3"))
+        #expect(Spry.diffEncodable("same", "same").isEmpty)
+    }
+
+    @Test("A value that cannot be encoded falls back to its description")
+    func a_value_that_cannot_be_encoded_falls_back_to_its_description() {
+        let subject = Spry.diffEncodable(NotEncodable(value: .infinity), NotEncodable(value: 1))
+
+        #expect(!subject.isEmpty)
+        #expect(subject.contains("NotEncodable"))
+    }
+
+    @Test("A custom encoder is respected")
+    func a_custom_encoder_is_respected() {
+        let encoder = JSONEncoder()
+        encoder.keyEncodingStrategy = .convertToSnakeCase
+
+        let subject = Spry.diffEncodable(SnakePayload(firstName: "John"),
+                                         SnakePayload(firstName: "Jane"),
+                                         encoder: encoder)
+
+        #expect(subject.contains("first_name"))
+    }
+}
+
+private struct NotEncodable: Encodable {
+    let value: Double
+}
+
+private struct SnakePayload: Encodable {
+    let firstName: String
 }
 #endif // canImport(Testing)

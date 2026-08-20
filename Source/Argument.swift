@@ -37,11 +37,17 @@ public enum Argument {
     ///
     /// Use this to constrain an argument that is itself a metatype, e.g. `resolve(type: Service.self)`.
     ///
-    /// - Note: When `T` is a protocol this matches nothing — a metatype of a merely conforming type
-    ///   cannot be cast through `Any`. Pass the metatype itself as the expected argument instead.
+    /// - Important: `T` must be a concrete type. A generic parameter bound to a protocol resolves to
+    ///   `P.Protocol` rather than the existential metatype, so conformance cannot be tested and
+    ///   nothing matches. Pass the metatype itself as the expected argument instead —
+    ///   `.with(ServiceProtocol.self)` compares metatypes directly and does the right thing.
     public static func isType<T>(_: T.Type) -> Self {
-        return .validator {
-            return ($0 as? T.Type) != nil
+        return .validator { value in
+            guard let type = value as? Any.Type else {
+                return false
+            }
+
+            return type is T.Type
         }
     }
 

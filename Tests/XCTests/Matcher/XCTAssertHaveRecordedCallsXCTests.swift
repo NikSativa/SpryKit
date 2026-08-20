@@ -18,6 +18,30 @@ final class XCTAssertHaveRecordedCallsXCTests: XCTestCase {
         SpyableTestHelper.doClassStuff()
         XCTAssertHaveRecordedCalls(SpyableTestHelper.self)
     }
+
+    func test_failures_are_reported() {
+        let subject = SpyableTestHelper()
+
+        XCTExpectFailure(failingBlock: {
+            XCTAssertHaveRecordedCalls(subject)
+        }, issueMatcher: { $0.compactDescription.contains("have recorded 0 calls") })
+
+        subject.doStuff()
+
+        XCTExpectFailure(failingBlock: {
+            XCTAssertHaveNoRecordedCalls(subject)
+        }, issueMatcher: { $0.compactDescription.contains("have recorded 1 call") })
+
+        XCTExpectFailure(failingBlock: {
+            XCTAssertHaveRecordedCalls(SpyableTestHelper.self)
+        }, issueMatcher: { $0.compactDescription.contains("have recorded 0 calls") })
+
+        SpyableTestHelper.doClassStuff()
+
+        XCTExpectFailure(failingBlock: {
+            XCTAssertHaveNoRecordedCalls(SpyableTestHelper.self)
+        }, issueMatcher: { $0.compactDescription.contains("have recorded 1 call") })
+    }
 }
 
 private final class SpyableTestHelper: Spyable {

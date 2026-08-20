@@ -4,7 +4,7 @@ import Threading
 /// A global NSMapTable to hold onto stubs for types conforming to Stubbable. This map table has "weak to strong objects" options.
 ///
 /// - Important: Do NOT use this object.
-private nonisolated(unsafe) var stubsMapTable: NSMapTable<AnyObject, SpryDictionary<StubInfo>> = NSMapTable.weakToStrongObjects()
+private nonisolated(unsafe) var stubsMapTable: NSMapTable<AnyObject, SpryItemStorage<StubInfo>> = NSMapTable.weakToStrongObjects()
 
 /// Mutex for synchronizing access to stubsMapTable to prevent race conditions
 private let stubsMapTableMutex = PThread(kind: .recursive)
@@ -15,17 +15,27 @@ internal enum Fallback<T> {
     case fallback(T)
 }
 
+/// Drops every stub, for every type and instance.
+internal func removeAllStubs() {
+    stubsMapTableMutex.lock()
+    defer {
+        stubsMapTableMutex.unlock()
+    }
+
+    stubsMapTable.removeAllObjects()
+}
+
 public extension Stubbable {
     // MARK: - Instance
 
-    internal var _stubsDictionary: SpryDictionary<StubInfo> {
+    internal var _stubsDictionary: SpryItemStorage<StubInfo> {
         stubsMapTableMutex.lock()
         defer {
             stubsMapTableMutex.unlock()
         }
 
         guard let stubsDict = stubsMapTable.object(forKey: self) else {
-            let stubDict = SpryDictionary<StubInfo>()
+            let stubDict = SpryItemStorage<StubInfo>()
             stubsMapTable.setObject(stubDict, forKey: self)
             return stubDict
         }
@@ -93,14 +103,14 @@ public extension Stubbable {
 
     // MARK: - Static
 
-    internal static var _stubsDictionary: SpryDictionary<StubInfo> {
+    internal static var _stubsDictionary: SpryItemStorage<StubInfo> {
         stubsMapTableMutex.lock()
         defer {
             stubsMapTableMutex.unlock()
         }
 
         guard let stubDict = stubsMapTable.object(forKey: self) else {
-            let stubDict = SpryDictionary<StubInfo>()
+            let stubDict = SpryItemStorage<StubInfo>()
             stubsMapTable.setObject(stubDict, forKey: self)
             return stubDict
         }
@@ -275,7 +285,7 @@ public extension Stubbable {
     }
 }
 
-private func handleDuplicates(stubsDictionary: SpryDictionary<StubInfo>, stub: StubInfo, again: Bool, fakeType: (some Any).Type) {
+private func handleDuplicates(stubsDictionary: SpryItemStorage<StubInfo>, stub: StubInfo, again: Bool, fakeType: (some Any).Type) {
     let duplicates = stubsDictionary.completedDuplicates(of: stub)
 
     if duplicates.isEmpty {

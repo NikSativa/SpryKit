@@ -47,6 +47,20 @@ internal enum Constant {
             fatalError(title: title, entries: entries)
         }
 
+        static func comparisonTooDeep(limit: Int, lhs: Any, rhs: Any) -> Never {
+            let title = "Object graph is too deep to compare"
+            let entries = [
+                "Depth limit: \(limit)",
+                "Left type: \(type(of: lhs))",
+                "Right type: \(type(of: rhs))",
+                "SpryKit walks arguments structurally, and a graph this deep overflows the stack.",
+                "Every nested value counts, optional wrappers included.",
+                "Make the type conform to Equatable, or compare a smaller value."
+            ]
+
+            fatalError(title: title, entries: entries)
+        }
+
         static func doesNotConformToEquatable(_ value: Any) -> Never {
             let title = "Improper Equatable"
             let entries = ["\(type(of: value)) must either conform to Equatable or be changed to a reference type (i.e. class)"]
@@ -162,7 +176,7 @@ internal enum Constant {
 
         // MARK: - Private
 
-        private static func noReturnValueFoundForFunction<S, R>(stubbableType _: S.Type, functionName: String, arguments: [Any?], returnType _: R.Type, stubsDictionary: SpryDictionary<StubInfo>) -> Never {
+        private static func noReturnValueFoundForFunction<S, R>(stubbableType _: S.Type, functionName: String, arguments: [Any?], returnType _: R.Type, stubsDictionary: SpryItemStorage<StubInfo>) -> Never {
             let title = "No return value found"
             let entries = [
                 "Stubbable: \(S.self)",

@@ -3,6 +3,28 @@ import SpryKit
 import XCTest
 
 final class SpryEquatableXCTests: XCTestCase {
+    func test_custom_conformance_without_Equatable() {
+        let subject = AnyObjectOnly(p: 1)
+
+        XCTAssertTrue(subject._DO_NOT_OVERRIDE_isEqual(to: AnyObjectOnly(p: 1)))
+        XCTAssertFalse(subject._DO_NOT_OVERRIDE_isEqual(to: AnyObjectOnly(p: 2)))
+        XCTAssertFalse(subject._DO_NOT_OVERRIDE_isEqual(to: "not the same type"))
+        XCTAssertFalse(subject._DO_NOT_OVERRIDE_isEqual(to: nil))
+    }
+
+    func test_conformance_backed_by_Equatable() {
+        let subject = AnyObjectAndEquatable()
+
+        XCTAssertTrue(subject._DO_NOT_OVERRIDE_isEqual(to: AnyObjectAndEquatable()))
+        XCTAssertFalse(subject._DO_NOT_OVERRIDE_isEqual(to: "not the same type"))
+        XCTAssertFalse(subject._DO_NOT_OVERRIDE_isEqual(to: nil))
+    }
+
+    func test_a_manual_implementation_is_honoured() {
+        XCTAssertTrue(SpryEquatableTestHelper(isEqual: true)._DO_NOT_OVERRIDE_isEqual(to: "anything"))
+        XCTAssertFalse(SpryEquatableTestHelper(isEqual: false)._DO_NOT_OVERRIDE_isEqual(to: "anything"))
+    }
+
     func test_NOT_Equatable_and_AnyObject() {
         let myObject1 = AnyObjectOnly(p: 1)
         let myObject2 = AnyObjectOnly(p: 2)
