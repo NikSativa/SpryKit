@@ -19,7 +19,7 @@ let package = Package(
         .library(name: "SpryKitDynamic", type: .dynamic, targets: ["SpryKit"])
     ],
     dependencies: [
-        .package(url: "https://github.com/NikSativa/Threading.git", from: "2.3.3"),
+        .package(url: "https://github.com/NikSativa/Threading.git", from: "2.3.4"),
         .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.2.2"),
         .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.1")
     ],
