@@ -5,7 +5,7 @@ import Testing
 
 #if os(macOS)
 import AppKit
-#elseif os(iOS) || os(tvOS)
+#elseif os(iOS) || os(tvOS) || os(visionOS)
 import UIKit
 #elseif os(watchOS)
 import WatchKit
@@ -75,7 +75,7 @@ private struct PlatformImage {
         sdk.pngData()
     }
 
-    #elseif supportsVisionOS
+    #elseif os(visionOS)
     init?(data: Data) {
         if let image = UIImage(data: data, scale: Self.scale) {
             self.init(image)

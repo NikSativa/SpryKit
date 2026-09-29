@@ -72,7 +72,7 @@ private struct PlatformImage {
         return sdk.pngData()
     }
 
-    #elseif supportsVisionOS
+    #elseif os(visionOS)
     init?(data: Data) {
         if let image = UIImage(data: data, scale: Self.scale) {
             self.init(image)
