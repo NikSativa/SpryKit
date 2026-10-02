@@ -19,7 +19,7 @@ public func XCTAssertThrowsAssertion(_ message: @autoclosure () -> String = "",
                                      _ expression: @escaping () throws -> some Any) {
     #if (os(macOS) || os(iOS) || os(visionOS)) && (arch(x86_64) || arch(arm64))
     print(" --- ⚠️ ignore this assertion in console! this is a result of XCTAssertThrowsAssertion ⚠️ --- ")
-    XCTAssertNotNil(catchBadInstruction(in: {
+    XCTAssertNotNil(catchBadInstructionSerially(in: {
         do {
             _ = try expression()
         } catch {

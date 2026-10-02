@@ -33,7 +33,7 @@ public func expectThrowsAssertion(_ message: String = "",
                                   _ expression: @escaping () throws -> some Any) {
     #if (os(macOS) || os(iOS) || os(visionOS)) && (arch(x86_64) || arch(arm64))
     print(" --- ⚠️ ignore this assertion in console! this is a result of expectThrowsAssertion ⚠️ --- ")
-    let caught = catchBadInstruction(in: {
+    let caught = catchBadInstructionSerially(in: {
         do {
             _ = try expression()
         } catch {
