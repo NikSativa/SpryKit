@@ -21,21 +21,13 @@ public func expectEqualImage(_ expression1: () throws -> Image?,
                              _ expression2: () throws -> Image?,
                              _ message: String = "",
                              sourceLocation: SourceLocation = #_sourceLocation) {
-    do {
-        guard let lhs = try expression1() else {
-            Issue.record("\(message). First image is nil", sourceLocation: sourceLocation)
-            return
-        }
-
-        guard let rhs = try expression2() else {
-            Issue.record("\(message). Second image is nil", sourceLocation: sourceLocation)
-            return
-        }
-
-        #expect(lhs.testData() == rhs.testData(), "\(message)", sourceLocation: sourceLocation)
-    } catch {
-        Issue.record("\(message). \(error.localizedDescription)", sourceLocation: sourceLocation)
+    guard let images = resolvedImages(expression1, expression2, message, sourceLocation: sourceLocation) else {
+        return
     }
+
+    let lhs = images.lhs
+    let rhs = images.rhs
+    #expect(lhs.testData() == rhs.testData(), "\(message)", sourceLocation: sourceLocation)
 }
 
 /// Verifies that two images are not equal by comparing their PNG data.
@@ -48,21 +40,13 @@ public func expectNotEqualImage(_ expression1: () throws -> Image?,
                                 _ expression2: () throws -> Image?,
                                 _ message: String = "",
                                 sourceLocation: SourceLocation = #_sourceLocation) {
-    do {
-        guard let lhs = try expression1() else {
-            Issue.record("\(message). First image is nil", sourceLocation: sourceLocation)
-            return
-        }
-
-        guard let rhs = try expression2() else {
-            Issue.record("\(message). Second image is nil", sourceLocation: sourceLocation)
-            return
-        }
-
-        #expect(lhs.testData() != rhs.testData(), "\(message)", sourceLocation: sourceLocation)
-    } catch {
-        Issue.record("\(message). \(error.localizedDescription)", sourceLocation: sourceLocation)
+    guard let images = resolvedImages(expression1, expression2, message, sourceLocation: sourceLocation) else {
+        return
     }
+
+    let lhs = images.lhs
+    let rhs = images.rhs
+    #expect(lhs.testData() != rhs.testData(), "\(message)", sourceLocation: sourceLocation)
 }
 
 /// Verifies that two images are equal by comparing their PNG data (alternative parameter order).
@@ -89,6 +73,28 @@ public func expectNotEqualImage(_ expression2: () throws -> Image?,
                                 sourceLocation: SourceLocation = #_sourceLocation,
                                 _ expression1: () throws -> Image?) {
     expectNotEqualImage(expression1, expression2, message, sourceLocation: sourceLocation)
+}
+
+private func resolvedImages(_ expression1: () throws -> Image?,
+                            _ expression2: () throws -> Image?,
+                            _ message: String,
+                            sourceLocation: SourceLocation) -> (lhs: Image, rhs: Image)? {
+    do {
+        guard let lhs = try expression1() else {
+            Issue.record("\(message). First image is nil", sourceLocation: sourceLocation)
+            return nil
+        }
+
+        guard let rhs = try expression2() else {
+            Issue.record("\(message). Second image is nil", sourceLocation: sourceLocation)
+            return nil
+        }
+
+        return (lhs, rhs)
+    } catch {
+        Issue.record("\(message). \(error.localizedDescription)", sourceLocation: sourceLocation)
+        return nil
+    }
 }
 
 #endif // canImport(Testing)

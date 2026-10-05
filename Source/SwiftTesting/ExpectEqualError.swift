@@ -21,17 +21,20 @@ public func expectEqualError<E: Error>(_ expectedError: E,
                                        _ message: String = "",
                                        sourceLocation: SourceLocation = #_sourceLocation,
                                        _ expression: () throws -> E?) where E: Equatable {
+    let actualError: E?
     do {
-        let actualError = try expression()
-        guard let actualError else {
-            Issue.record("Expected error \(expectedError) but actual error is nil. \(message)", sourceLocation: sourceLocation)
-            return
-        }
-
-        #expect((actualError as NSError) == (expectedError as NSError), "\(message)", sourceLocation: sourceLocation)
+        actualError = try expression()
     } catch {
         Issue.record("Unexpected error thrown: \(error.localizedDescription). \(message)", sourceLocation: sourceLocation)
+        return
     }
+
+    guard let actualError else {
+        Issue.record("Expected error \(expectedError) but actual error is nil. \(message)", sourceLocation: sourceLocation)
+        return
+    }
+
+    #expect((actualError as NSError) == (expectedError as NSError), "\(message)", sourceLocation: sourceLocation)
 }
 
 /// Verifies that two errors are not equal.
@@ -44,17 +47,20 @@ public func expectNotEqualError<E: Error>(_ expectedError: E,
                                           _ message: String = "",
                                           sourceLocation: SourceLocation = #_sourceLocation,
                                           _ expression: () throws -> E?) where E: Equatable {
+    let actualError: E?
     do {
-        let actualError = try expression()
-        guard let actualError else {
-            Issue.record("Expected error \(expectedError) but actual error is nil. \(message)", sourceLocation: sourceLocation)
-            return
-        }
-
-        #expect((actualError as NSError) != (expectedError as NSError), "\(message)", sourceLocation: sourceLocation)
+        actualError = try expression()
     } catch {
         Issue.record("Unexpected error thrown: \(error.localizedDescription). \(message)", sourceLocation: sourceLocation)
+        return
     }
+
+    guard let actualError else {
+        Issue.record("Expected error \(expectedError) but actual error is nil. \(message)", sourceLocation: sourceLocation)
+        return
+    }
+
+    #expect((actualError as NSError) != (expectedError as NSError), "\(message)", sourceLocation: sourceLocation)
 }
 
 /// Verifies that two errors are equal (direct comparison).
