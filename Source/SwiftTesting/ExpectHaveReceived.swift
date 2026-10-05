@@ -99,7 +99,7 @@ public func expectHaveReceived<T: Spyable>(_ spyable: T?,
     let descriptionOfAttempted = descriptionOfExpectation(actualType: type(of: spyable), functionName: function.rawValue, arguments: arguments, countSpecifier: countSpecifier)
     let result = spyable.didCall(function, withArguments: arguments, countSpecifier: countSpecifier)
     let message = result.success ? "" : "Expected to \(descriptionOfAttempted) but \(result.friendlyDescription)"
-    #expect(result.success, "\(message)", sourceLocation: sourceLocation)
+    #expect(result.success, Comment(nonEmpty: message), sourceLocation: sourceLocation)
     return result.success
 }
 
@@ -131,7 +131,7 @@ public func expectHaveReceived<T: Spyable>(_ spyable: T?,
     let descriptionOfAttempted = descriptionOfExpectation(actualType: type(of: spyable), functionName: function.rawValue, arguments: arguments, countSpecifier: countSpecifier)
     let result = spyable.didCall(function, withArguments: arguments, countSpecifier: countSpecifier)
     let message = result.success ? "" : "Expected to \(descriptionOfAttempted) but \(result.friendlyDescription)"
-    #expect(result.success, "\(message)", sourceLocation: sourceLocation)
+    #expect(result.success, Comment(nonEmpty: message), sourceLocation: sourceLocation)
     return result.success
 }
 
@@ -153,7 +153,7 @@ public func expectHaveNotReceived<T: Spyable>(_ spyable: T?,
     let descriptionOfAttempted = descriptionOfExpectation(actualType: type(of: spyable), functionName: function.rawValue, arguments: arguments, countSpecifier: countSpecifier)
     let result = spyable.didCall(function, withArguments: arguments, countSpecifier: countSpecifier)
     let message = !result.success ? "" : "Expected to not \(descriptionOfAttempted) but it was called. \(result.friendlyDescription)"
-    #expect(!result.success, "\(message)", sourceLocation: sourceLocation)
+    #expect(!result.success, Comment(nonEmpty: message), sourceLocation: sourceLocation)
     return !result.success
 }
 
@@ -173,7 +173,7 @@ public func expectHaveNotReceived<T: Spyable>(_ spyable: T?,
     let descriptionOfAttempted = descriptionOfExpectation(actualType: type(of: spyable), functionName: function.rawValue, arguments: arguments, countSpecifier: countSpecifier)
     let result = spyable.didCall(function, withArguments: arguments, countSpecifier: countSpecifier)
     let message = !result.success ? "" : "Expected to not \(descriptionOfAttempted) but it was called. \(result.friendlyDescription)"
-    #expect(!result.success, "\(message)", sourceLocation: sourceLocation)
+    #expect(!result.success, Comment(nonEmpty: message), sourceLocation: sourceLocation)
     return !result.success
 }
 
@@ -195,7 +195,7 @@ public func expectHaveReceived<T: Spyable>(_ spyable: T.Type?,
     let descriptionOfAttempted = descriptionOfExpectation(actualType: type(of: spyable), functionName: function.rawValue, arguments: arguments, countSpecifier: countSpecifier)
     let result = spyable.didCall(function, withArguments: arguments, countSpecifier: countSpecifier)
     let message = result.success ? "" : "Expected to \(descriptionOfAttempted) but \(result.friendlyDescription)"
-    #expect(result.success, "\(message)", sourceLocation: sourceLocation)
+    #expect(result.success, Comment(nonEmpty: message), sourceLocation: sourceLocation)
     return result.success
 }
 
@@ -215,7 +215,7 @@ public func expectHaveReceived<T: Spyable>(_ spyable: T.Type?,
     let descriptionOfAttempted = descriptionOfExpectation(actualType: type(of: spyable), functionName: function.rawValue, arguments: arguments, countSpecifier: countSpecifier)
     let result = spyable.didCall(function, withArguments: arguments, countSpecifier: countSpecifier)
     let message = result.success ? "" : "Expected to \(descriptionOfAttempted) but \(result.friendlyDescription)"
-    #expect(result.success, "\(message)", sourceLocation: sourceLocation)
+    #expect(result.success, Comment(nonEmpty: message), sourceLocation: sourceLocation)
     return result.success
 }
 
@@ -237,7 +237,7 @@ public func expectHaveNotReceived<T: Spyable>(_ spyable: T.Type?,
     let descriptionOfAttempted = descriptionOfExpectation(actualType: type(of: spyable), functionName: function.rawValue, arguments: arguments, countSpecifier: countSpecifier)
     let result = spyable.didCall(function, withArguments: arguments, countSpecifier: countSpecifier)
     let message = !result.success ? "" : "Expected to not \(descriptionOfAttempted) but it was called. \(result.friendlyDescription)"
-    #expect(!result.success, "\(message)", sourceLocation: sourceLocation)
+    #expect(!result.success, Comment(nonEmpty: message), sourceLocation: sourceLocation)
     return !result.success
 }
 
@@ -257,7 +257,7 @@ public func expectHaveNotReceived<T: Spyable>(_ spyable: T.Type?,
     let descriptionOfAttempted = descriptionOfExpectation(actualType: type(of: spyable), functionName: function.rawValue, arguments: arguments, countSpecifier: countSpecifier)
     let result = spyable.didCall(function, withArguments: arguments, countSpecifier: countSpecifier)
     let message = !result.success ? "" : "Expected to not \(descriptionOfAttempted) but it was called. \(result.friendlyDescription)"
-    #expect(!result.success, "\(message)", sourceLocation: sourceLocation)
+    #expect(!result.success, Comment(nonEmpty: message), sourceLocation: sourceLocation)
     return !result.success
 }
 

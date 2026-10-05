@@ -27,7 +27,7 @@ public func expectEqualImage(_ expression1: () throws -> Image?,
 
     let lhs = images.lhs
     let rhs = images.rhs
-    #expect(lhs.testData() == rhs.testData(), "\(message)", sourceLocation: sourceLocation)
+    #expect(lhs.testData() == rhs.testData(), Comment(nonEmpty: message), sourceLocation: sourceLocation)
 }
 
 /// Verifies that two images are not equal by comparing their PNG data.
@@ -46,7 +46,7 @@ public func expectNotEqualImage(_ expression1: () throws -> Image?,
 
     let lhs = images.lhs
     let rhs = images.rhs
-    #expect(lhs.testData() != rhs.testData(), "\(message)", sourceLocation: sourceLocation)
+    #expect(lhs.testData() != rhs.testData(), Comment(nonEmpty: message), sourceLocation: sourceLocation)
 }
 
 /// Verifies that two images are equal by comparing their PNG data (alternative parameter order).

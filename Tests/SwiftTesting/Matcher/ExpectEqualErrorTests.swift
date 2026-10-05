@@ -88,6 +88,8 @@ struct ExpectEqualErrorTests {
 
         withKnownIssue {
             expectNotEqualError(Error.one) { Error.one }
+        } matching: { issue in
+            issue.comments.isEmpty
         }
     }
 }

@@ -25,7 +25,7 @@ public func expectEqualAny<T>(_ lhs: T?,
                               sourceLocation: SourceLocation = #_sourceLocation) {
     let isEqual = isAnyEqual(lhs, rhs)
     #expect(isEqual,
-            "\(message ?? "\(describe(lhs)) is not equal to \(describe(rhs))\ndiff:\n\(Spry.diffMirror(lhs, rhs))")",
+            Comment(nonEmpty: message ?? "\(describe(lhs)) is not equal to \(describe(rhs))\ndiff:\n\(Spry.diffMirror(lhs, rhs))"),
             sourceLocation: sourceLocation)
 }
 
@@ -46,7 +46,7 @@ public func expectNotEqualAny<T>(_ lhs: T?,
                                  sourceLocation: SourceLocation = #_sourceLocation) {
     let isEqual = isAnyEqual(lhs, rhs)
     #expect(!isEqual,
-            "\(message ?? "\(describe(lhs)) is equal to \(describe(rhs))\ndiff:\n\(Spry.diffMirror(lhs, rhs))")",
+            Comment(nonEmpty: message ?? "\(describe(lhs)) is equal to \(describe(rhs))\ndiff:\n\(Spry.diffMirror(lhs, rhs))"),
             sourceLocation: sourceLocation)
 }
 

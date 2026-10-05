@@ -34,7 +34,7 @@ public func expectEqualError<E: Error>(_ expectedError: E,
         return
     }
 
-    #expect((actualError as NSError) == (expectedError as NSError), "\(message)", sourceLocation: sourceLocation)
+    #expect((actualError as NSError) == (expectedError as NSError), Comment(nonEmpty: message), sourceLocation: sourceLocation)
 }
 
 /// Verifies that two errors are not equal.
@@ -60,7 +60,7 @@ public func expectNotEqualError<E: Error>(_ expectedError: E,
         return
     }
 
-    #expect((actualError as NSError) != (expectedError as NSError), "\(message)", sourceLocation: sourceLocation)
+    #expect((actualError as NSError) != (expectedError as NSError), Comment(nonEmpty: message), sourceLocation: sourceLocation)
 }
 
 /// Verifies that two errors are equal (direct comparison).
@@ -83,7 +83,7 @@ public func expectEqualError<E: Error>(_ lhs: E?,
         return
     }
 
-    #expect((lhs as NSError) == (rhs as NSError), "\(message)", sourceLocation: sourceLocation)
+    #expect((lhs as NSError) == (rhs as NSError), Comment(nonEmpty: message), sourceLocation: sourceLocation)
 }
 
 /// Verifies that two errors are not equal (direct comparison).
@@ -106,7 +106,7 @@ public func expectNotEqualError<E: Error>(_ lhs: E?,
         return
     }
 
-    #expect((lhs as NSError) != (rhs as NSError), "\(message)", sourceLocation: sourceLocation)
+    #expect((lhs as NSError) != (rhs as NSError), Comment(nonEmpty: message), sourceLocation: sourceLocation)
 }
 
 #endif // canImport(Testing)

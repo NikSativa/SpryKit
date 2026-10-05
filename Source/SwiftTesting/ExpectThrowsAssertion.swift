@@ -40,7 +40,7 @@ public func expectThrowsAssertion(_ message: String = "",
             Issue.record("catch error: \(error.localizedDescription). \(message)", sourceLocation: sourceLocation)
         }
     })
-    #expect(caught != nil, "\(message)", sourceLocation: sourceLocation)
+    #expect(caught != nil, Comment(nonEmpty: message), sourceLocation: sourceLocation)
     #else
     print(" --- ⚠️ this is a result of expectThrowsAssertion. it is not supported on this platform ⚠️ --- ")
     #endif

@@ -26,7 +26,7 @@ public func expectThrows<E: Error>(_ expectedError: E,
         Issue.record("Expected error \(expectedError) to be thrown, but expression completed successfully. \(message)", sourceLocation: sourceLocation)
     } catch let actualError {
         if let actualError = actualError as? E {
-            #expect((actualError as NSError) == (expectedError as NSError), "\(message)", sourceLocation: sourceLocation)
+            #expect((actualError as NSError) == (expectedError as NSError), Comment(nonEmpty: message), sourceLocation: sourceLocation)
         } else {
             Issue.record("Expected error \(expectedError) but got \(actualError). \(message)", sourceLocation: sourceLocation)
         }
