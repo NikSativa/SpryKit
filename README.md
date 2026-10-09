@@ -50,6 +50,7 @@ Traditional mocking and stubbing in Swift can be verbose and error-prone, especi
 
 - 🎯 **Spying**: Record and verify method calls and their arguments
 - 🎭 **Stubbing**: Control method return values for testing different scenarios
+- ⏳ **Async Control**: Wait for a call and answer it when the test decides — deterministic tests of concurrent code without sleeps
 - 🚀 **Macro Support**: Reduce boilerplate with Swift 6.0+ macros
 - 🔒 **Thread Safety**: Locked storage for calls and stubs, safe to exercise from several threads
 - 📱 **Cross-Platform**: Support for iOS, macOS, tvOS, watchOS, and visionOS
@@ -72,6 +73,7 @@ __Table of Contents__
 * [Spying](#spying)
 * [Stubbing](#stubbing)
 * [Argument Capturing](#argument-capturing)
+* [Async Code](#async-code)
 * [Spryable](#spryable)
   * [Spryable + Macro](#spryable--macro)
   * [Spryable + manually](#spryable--manually)
@@ -324,6 +326,51 @@ let capturedArg = captor.getValue(as: String.self)
 #expect(capturedArg == "expected value")
 ```
 
+### Async Code
+
+A test of concurrent code should decide when each dependency answers instead of sleeping and hoping the
+work is done. Two primitives make that possible:
+
+- `andWaitForResponse()` keeps every call of a stubbed `async` function waiting and returns a
+  `StubResponder`. Each `respond(with:)`, `respond()` or `respond(throwing:)` answers exactly one call,
+  the oldest waiting one first. A response given before the call arrives is kept for it.
+- `waitForCall(_:withArguments:times:)` suspends until the fake has recorded enough matching calls,
+  counting the calls made before the wait.
+
+```swift
+@Spryable
+final class FakeValueProvider: ValueProvider, @unchecked Sendable {
+    @SpryableFunc
+    func loadValue() async throws -> String
+}
+
+@Test(.timeLimit(.minutes(1)))
+func loaderReturnsTheProvidedValue() async throws {
+    let provider = FakeValueProvider()
+    let response = provider.stub(.loadValue).andWaitForResponse()
+    let loader = Loader(provider: provider)
+    let loading = Task {
+        return try await loader.load()
+    }
+
+    try await provider.waitForCall(.loadValue)
+    response.respond(with: "loaded value")
+
+    #expect(try await loading.value == "loaded value")
+}
+```
+
+- Only an `async` function can wait. `@SpryableFunc` and `@SpryableVar(.async)` generate
+  `spryifyAsync()` / `spryifyAsyncThrows()` for it; a manual fake returns them itself. A synchronous
+  function stubbed with `andWaitForResponse()` traps.
+- `spryifyAsync()` records the call before the stub answers it, so `waitForCall()` sees a call that is
+  still waiting.
+- A waiting call of a throwing function ends with `CancellationError` when its task is cancelled, so
+  cancelling the code under test releases it. A non-throwing function cannot report cancellation: its
+  call keeps waiting until the test answers it.
+- `waitForCall()` never ends on its own. Give async tests a time limit, such as `.timeLimit(.minutes(1))`
+  in Swift Testing, so a call that never happens fails the test instead of hanging it.
+
 ## Advanced Features
 
 ### Custom Argument Validation
@@ -370,6 +417,7 @@ __Abilities__
     * Create an object that conforms to `Spryable`
     * In every function (the ones that should be stubbed and spied) return the result of `spryify()` passing in all arguments (if any)
         * also works for special functions like `subscript`
+        * in an `async` function return the result of `spryifyAsync()` (`spryifyAsyncThrows()` if it throws) instead, so its calls can wait for a response
     * In every property (the ones that should be stubbed and spied) return the result of `stubbedValue()` in the `get {}` and use `recordCall()` in the `set {}`
 
 Let’s look at an example
@@ -429,6 +477,10 @@ itself, which keeps assertions readable when you never need to invoke the closur
 
 A `throws` function or a `.throws` property generates `try spryifyThrows(...)`, so `.andThrow()`
 delivers the error instead of trapping.
+
+An `async` function or an `.async` property generates `await spryifyAsync(...)`, or
+`try await spryifyAsyncThrows(...)` when it also throws, so `.andWaitForResponse()` can keep its calls
+waiting. See [Async Code](#async-code).
 
 ```swift
 @Spryable
@@ -527,6 +579,7 @@ __Abilities__
     * `.andDo()` takes in a closure that passes in an `Array` containing the parameters and should return the stubbed value
 * Specify stubs that only get used if the right arguments are passed in using `.with()` (see [Argument Enum](#argument-enum) for alternate specifications)
 * Stub a thrown error for a throwing function using `.andThrow()`
+* Keep the calls of an `async` function waiting until the test answers them using `.andWaitForResponse()` (see [Async Code](#async-code))
 * Replace an existing stub for the same function and arguments using `.stubAgain()`
 * Rich `fatalError()` messages that include a detailed list of all stubbed functions when no stub is found (or the arguments received didn't pass validation)
 * Reset stubs with `resetStubs()`
@@ -572,6 +625,11 @@ fakeStringService.stub(.iHaveACompletionClosure).with("correct string", Argument
 // throwing functions - the fake must call `spryifyThrows()` / `stubbedValueThrows()`,
 // which `@SpryableFunc` generates automatically for any `throws` function
 fakeStringService.stub(.loadString).andThrow(StringServiceError.notFound)
+
+// async functions - every call waits until the test answers it through the responder
+let response = fakeStringService.stub(.loadRemoteString).andWaitForResponse()
+response.respond(with: "remote string") // answers the oldest waiting call, or the next call
+response.respond(throwing: StringServiceError.notFound)
 
 // stubbing the same function with the same arguments twice is a fatalError,
 // use `stubAgain()` when replacing a stub is intentional
@@ -713,6 +771,12 @@ fake.didCall(.propertyName, with: "value").success
 
 // passes if the class function was called
 Fake.didCall(.functionName).success
+
+// waits until the function was called; calls made before the wait count too
+try await fake.waitForCall(.functionName)
+
+// waits until the function was called twice with equivalent arguments
+try await fake.waitForCall(.functionName, withArguments: ["firstArg", "secondArg"], times: 2)
 ```
 
 ## XCTAsserts

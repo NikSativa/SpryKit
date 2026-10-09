@@ -15,6 +15,14 @@ internal func isNil(_ value: Any?) -> Bool {
     }
 }
 
+internal func castedStubValue<T>(_ rawValue: Any?) -> T? {
+    if isNil(rawValue) {
+        return rawValue as Any as? T
+    }
+
+    return rawValue as? T
+}
+
 /// This is a helper function to find out if a value is closure.
 internal func isClosure(_ value: Any?) -> Bool {
     guard let value else {

@@ -26,7 +26,17 @@ public enum SpryableAccessorMacro: AccessorMacro {
                                      throwsClause: options ~= .throws ? .init(throwsSpecifier: .keyword(.throws)) : nil)
         }
 
-        let getter = options ~= .throws ? "try spryifyThrows" : "spryify"
+        let getter =
+            switch (options ~= .async, options ~= .throws) {
+            case (true, true):
+                "try await spryifyAsyncThrows"
+            case (true, false):
+                "await spryifyAsync"
+            case (false, true):
+                "try spryifyThrows"
+            case (false, false):
+                "spryify"
+            }
 
         var result: [AccessorDeclSyntax] = []
 

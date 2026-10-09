@@ -48,11 +48,17 @@ public enum SpryableBodyMacro: BodyMacro {
                                               leftParen: .leftParenToken(),
                                               arguments: arguments,
                                               rightParen: .rightParenToken())
-        let expression: ExprSyntax =
-            if callee.needsTry {
-                .init(TryExprSyntax(expression: funcCall))
+        let call: ExprSyntax =
+            if callee.needsAwait {
+                .init(AwaitExprSyntax(expression: funcCall))
             } else {
                 .init(funcCall)
+            }
+        let expression: ExprSyntax =
+            if callee.needsTry {
+                .init(TryExprSyntax(expression: call))
+            } else {
+                call
             }
         let smt = ReturnStmtSyntax(expression: expression)
 

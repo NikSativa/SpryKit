@@ -37,9 +37,12 @@ internal extension FunctionSignatureSyntax {
     ///
     /// `rethrows` keeps `spryify`, because a `rethrows` function may not call an
     /// unconditionally throwing one.
-    func spryifyCallee() throws -> (name: String, needsTry: Bool) {
+    func spryifyCallee() throws -> (name: String, needsTry: Bool, needsAwait: Bool) {
+        let needsAwait = effectSpecifiers?.asyncSpecifier?.tokenKind == .keyword(.async)
+        let name = needsAwait ? "spryifyAsync" : "spryify"
+
         guard let throwsClause = effectSpecifiers?.throwsClause else {
-            return ("spryify", false)
+            return (name, false, needsAwait)
         }
 
         if throwsClause.type != nil {
@@ -47,10 +50,10 @@ internal extension FunctionSignatureSyntax {
         }
 
         guard throwsClause.throwsSpecifier.tokenKind == .keyword(.throws) else {
-            return ("spryify", false)
+            return (name, false, needsAwait)
         }
 
-        return ("spryifyThrows", true)
+        return (name + "Throws", true, needsAwait)
     }
 }
 

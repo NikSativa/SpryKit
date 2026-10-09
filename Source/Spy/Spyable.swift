@@ -69,6 +69,21 @@ public protocol Spyable: AnyObject {
     /// - Returns: A DidCallResult. See `DidCallResult` for more details.
     func didCall(_ function: Function, withArguments arguments: [Any?], countSpecifier: CountSpecifier) -> DidCallResult
 
+    /// Used to wait until a function has been called with the specified arguments the amount of times specified.
+    ///
+    /// A test of concurrent code uses it to learn that the code under test has reached a dependency, for instance before answering a stub registered with `andWaitForResponse()`. Calls recorded before the wait count as well, and the wait ends as soon as enough matching calls are recorded, so the test never guesses a delay.
+    ///
+    /// - Important: Do NOT implement function. Use default implementation provided by Spry.
+    ///
+    /// - Note: The wait does not end on its own. Give the test a time limit, such as Swift Testing's `.timeLimit()`, so a call that never happens fails the test instead of hanging it.
+    ///
+    /// - Parameter function: The `Function` specified.
+    /// - Parameter arguments: The arguments specified. If this value is an empty array, then any parameters passed into the actual function call will match, as with `didCall()`.
+    /// - Parameter times: The number of matching calls to wait for.
+    ///
+    /// - Throws: `CancellationError` when the waiting task is cancelled.
+    func waitForCall(_ function: Function, withArguments arguments: [Any?], times: Int) async throws
+
     /// Removes all recorded calls.
     ///
     /// - Important: Do NOT implement function. Use default implementation provided by Spry.
@@ -138,6 +153,21 @@ public protocol Spyable: AnyObject {
     ///
     /// - Returns: A DidCallResult. See `DidCallResult` for more details.
     static func didCall(_ function: ClassFunction, withArguments arguments: [Any?], countSpecifier: CountSpecifier) -> DidCallResult
+
+    /// Used to wait until a function has been called with the specified arguments the amount of times specified.
+    ///
+    /// A test of concurrent code uses it to learn that the code under test has reached a dependency, for instance before answering a stub registered with `andWaitForResponse()`. Calls recorded before the wait count as well, and the wait ends as soon as enough matching calls are recorded, so the test never guesses a delay.
+    ///
+    /// - Important: Do NOT implement function. Use default implementation provided by Spry.
+    ///
+    /// - Note: The wait does not end on its own. Give the test a time limit, such as Swift Testing's `.timeLimit()`, so a call that never happens fails the test instead of hanging it.
+    ///
+    /// - Parameter function: The `ClassFunction` specified.
+    /// - Parameter arguments: The arguments specified. If this value is an empty array, then any parameters passed into the actual function call will match, as with `didCall()`.
+    /// - Parameter times: The number of matching calls to wait for.
+    ///
+    /// - Throws: `CancellationError` when the waiting task is cancelled.
+    static func waitForCall(_ function: ClassFunction, withArguments arguments: [Any?], times: Int) async throws
 
     /// Removes all recorded calls.
     ///

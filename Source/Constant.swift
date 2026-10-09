@@ -116,6 +116,27 @@ internal enum Constant {
             fatalError(title: title, entries: entries)
         }
 
+        static func andWaitForResponseOnSynchronousFunction(functionName: String) -> Never {
+            let title = "Used '.andWaitForResponse()' on synchronous function"
+            let entries = [
+                "Function: \(functionName)",
+                "Only an 'async' function can wait for a response. Ensure that the function is 'async' and that the fake is calling 'spryifyAsync()' or 'spryifyAsyncThrows()' as the return value of this function."
+            ]
+
+            fatalError(title: title, entries: entries)
+        }
+
+        static func responseOfWrongType<R>(functionName: String, response: Any?, returnType _: R.Type) -> Never {
+            let title = "Response does not match the return type"
+            let entries = [
+                "Function: \(functionName)",
+                "Response: <\(response as Any)>",
+                "Return Type: \(R.self)"
+            ]
+
+            fatalError(title: title, entries: entries)
+        }
+
         static func andThrowOnNonThrowingInstanceFunction<S: Stubbable>(stubbable _: S, function: S.Function) -> Never {
             andThrowOnNonThrowingFunction(type: S.self, functionName: function.rawValue)
         }
@@ -194,7 +215,8 @@ internal enum Constant {
             let entries = [
                 "Stubbable: \(T.self)",
                 "Function: \(functionName)",
-                "If this function can throw, then ensure that the fake is calling 'spryifyThrows()' or 'stubbedValueThrows()' as the return value of this function."
+                "If this function can throw, then ensure that the fake is calling 'spryifyThrows()', 'spryifyAsyncThrows()' or 'stubbedValueThrows()' as the return value of this function.",
+                "A response given through 'respond(throwing:)' is delivered the same way."
             ]
 
             fatalError(title: title, entries: entries)

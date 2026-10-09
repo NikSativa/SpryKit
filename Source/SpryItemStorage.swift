@@ -12,7 +12,12 @@ final class SpryItemStorage<T: SpryItem>: @unchecked Sendable {
         }
     }
 
+    var appendCount: Int {
+        return appendCounter.value
+    }
+
     private var chronologicalIndex: Int = 0
+    private let appendCounter = AwaitableCounter()
 
     @AtomicValue
     private var valuesMap: [String: [T]] = [:]
@@ -27,6 +32,12 @@ final class SpryItemStorage<T: SpryItem>: @unchecked Sendable {
             stubs.insert(stub, at: 0)
             valuesMap[stub.functionName] = stubs
         }
+
+        appendCounter.increment()
+    }
+
+    func waitForAppend(after appendCount: Int) async throws {
+        try await appendCounter.waitForIncrement(after: appendCount)
     }
 
     func completedDuplicates(of stub: T) -> [T] {

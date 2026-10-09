@@ -7,6 +7,7 @@ final class StubInfo {
         case andDo(DoClosure<Any?>)
         case andDoVoid(DoClosure<Void>)
         case andThrow(Error)
+        case andWaitForResponse(StubResponder)
     }
 
     private struct State {
@@ -29,6 +30,16 @@ final class StubInfo {
     var arguments: [Any?] {
         return state.syncUnchecked { state in
             return state.arguments
+        }
+    }
+
+    var responder: StubResponder? {
+        return state.syncUnchecked { state in
+            guard case let .andWaitForResponse(responder) = state.stubType else {
+                return nil
+            }
+
+            return responder
         }
     }
 
@@ -71,6 +82,8 @@ final class StubInfo {
             return try closure(args)
         case let .andThrow(error):
             throw error
+        case .andWaitForResponse:
+            Constant.FatalError.andWaitForResponseOnSynchronousFunction(functionName: functionName)
         }
     }
 
@@ -123,6 +136,12 @@ extension StubInfo: Stub {
 
     func andThrow(_ error: Error) {
         complete(with: .andThrow(error))
+    }
+
+    func andWaitForResponse() -> StubResponder {
+        let responder = StubResponder()
+        complete(with: .andWaitForResponse(responder))
+        return responder
     }
 }
 

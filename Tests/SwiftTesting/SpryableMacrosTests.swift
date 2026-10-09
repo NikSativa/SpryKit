@@ -145,7 +145,7 @@ struct SpryableMacrosTests {
                 }
                 static static var barAsyncThrows: Int {
                     get async throws {
-                        return try spryifyThrows()
+                        return try await spryifyAsyncThrows()
                     }
                 }
                 public static func baz() {
@@ -161,7 +161,7 @@ struct SpryableMacrosTests {
                     return spryify(arguments: some, some2)
                 }
                 static func bazArg6(_: Int, _: String) async throws -> Int {
-                    return try spryifyThrows(arguments: Argument.skipped, Argument.skipped)
+                    return try await spryifyAsyncThrows(arguments: Argument.skipped, Argument.skipped)
                 }
             }
 
@@ -257,7 +257,7 @@ struct SpryableMacrosTests {
                 }
                 var barAsyncThrows: Int {
                     get async throws {
-                        return try spryifyThrows()
+                        return try await spryifyAsyncThrows()
                     }
                 }
                 public func baz() {
@@ -276,10 +276,10 @@ struct SpryableMacrosTests {
                     return spryify(arguments: Argument.skipped)
                 }
                 func bazArg5(_: Int, _: String) async -> Int {
-                    return spryify(arguments: Argument.skipped, Argument.skipped)
+                    return await spryifyAsync(arguments: Argument.skipped, Argument.skipped)
                 }
                 static func bazArg6(_: Int, _: String) async throws -> Int {
-                    return try spryifyThrows(arguments: Argument.skipped, Argument.skipped)
+                    return try await spryifyAsyncThrows(arguments: Argument.skipped, Argument.skipped)
                 }
             }
 
@@ -370,6 +370,64 @@ struct SpryableMacrosTests {
                     case plainThrowsWithSome = "plainThrows(some:)"
                     case rethrowingWithExecute = "rethrowing(execute:)"
                     case withClosuresWithFirst_Second_Third = "withClosures(first:second:third:)"
+                }
+            }
+            """
+
+        assertMacroExpansion(declaration,
+                             expandedSource: expected,
+                             macros: sut)
+    }
+
+    @Test("Async members use spryifyAsync")
+    func asyncMembers() {
+        let declaration =
+            """
+            @SpryableExtensionMacro
+            final class FakeFoo {
+                @SpryableAccessorMacro(.async)
+                var loading: Int
+
+                @SpryableBodyMacro
+                func load(key: String) async -> Int
+
+                @SpryableBodyMacro
+                func loadThrowing(key: String) async throws -> Int
+
+                @SpryableBodyMacro
+                func perform<R>(work: @escaping () async throws -> R) async rethrows -> R
+            }
+            """
+
+        let expected =
+            """
+
+            final class FakeFoo {
+                var loading: Int {
+                    get async {
+                        return await spryifyAsync()
+                    }
+                }
+                func load(key: String) async -> Int {
+                    return await spryifyAsync(arguments: key)
+                }
+                func loadThrowing(key: String) async throws -> Int {
+                    return try await spryifyAsyncThrows(arguments: key)
+                }
+                func perform<R>(work: @escaping () async throws -> R) async rethrows -> R {
+                    return await spryifyAsync(arguments: work)
+                }
+            }
+
+            extension FakeFoo: Spryable {
+                enum ClassFunction: String, StringRepresentable {
+                    case _unknown_ = "'enum' must have at least one 'case'"
+                }
+                enum Function: String, StringRepresentable {
+                    case loading
+                    case loadWithKey = "load(key:)"
+                    case loadThrowingWithKey = "loadThrowing(key:)"
+                    case performWithWork = "perform(work:)"
                 }
             }
             """

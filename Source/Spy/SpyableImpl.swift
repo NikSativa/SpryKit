@@ -72,6 +72,12 @@ public extension Spyable {
                              friendlyDescription: _callsDictionary.friendlyDescription)
     }
 
+    func waitForCall(_ function: Function, withArguments arguments: [Any?] = [], times: Int = 1) async throws {
+        function.rawValue.validateArguments(arguments, on: Self.self)
+
+        try await waitForMatchingCalls(fakeType: Self.self, functionName: function.rawValue, arguments: arguments, times: times, callsDictionary: _callsDictionary)
+    }
+
     func resetCalls() {
         _callsDictionary.clearAll()
     }
@@ -128,6 +134,12 @@ public extension Spyable {
                              friendlyDescription: _callsDictionary.friendlyDescription)
     }
 
+    static func waitForCall(_ function: ClassFunction, withArguments arguments: [Any?] = [], times: Int = 1) async throws {
+        function.rawValue.validateArguments(arguments, on: Self.self)
+
+        try await waitForMatchingCalls(fakeType: Self.self, functionName: function.rawValue, arguments: arguments, times: times, callsDictionary: _callsDictionary)
+    }
+
     static func resetCalls() {
         _callsDictionary.clearAll()
     }
@@ -169,6 +181,17 @@ private func numberOfMatchingCalls(fakeType: (some Any).Type, functionName: Stri
 
     return matchingFunctions.reduce(0) {
         return $0 + isEqualArgsLists(fakeType: fakeType, functionName: functionName, specifiedArgs: arguments, actualArgs: $1.arguments).toInt()
+    }
+}
+
+private func waitForMatchingCalls(fakeType: (some Any).Type, functionName: String, arguments: [Any?], times: Int, callsDictionary: SpryItemStorage<RecordedCall>) async throws {
+    while true {
+        let appendCount = callsDictionary.appendCount
+        if numberOfMatchingCalls(fakeType: fakeType, functionName: functionName, arguments: arguments, callsDictionary: callsDictionary) >= times {
+            return
+        }
+
+        try await callsDictionary.waitForAppend(after: appendCount)
     }
 }
 

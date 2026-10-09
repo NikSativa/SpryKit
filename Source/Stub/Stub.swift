@@ -113,4 +113,27 @@ public protocol Stub {
     ///
     /// - Parameter error: The error to be thrown by the stubbed function.
     func andThrow(_ error: Error)
+
+    /// Used to make the stubbed function wait until the test answers it through the returned responder.
+    ///
+    /// A test of concurrent code uses it to decide when each call finishes and with which result, instead of sleeping and
+    /// hoping the work is done. Pair it with `waitForCall()` to learn that the call has started.
+    ///
+    /// - Important: Only an `async` function can wait: the fake must return `spryifyAsync()` or `spryifyAsyncThrows()`, which `@SpryableFunc` and `@SpryableVar(.async)` generate. A synchronous function stubbed this way traps.
+    ///
+    /// - Note: ONLY the last `andReturn()`, `andDo()`, `andThrow()`, or `andWaitForResponse()` will be used. If multiple stubs are required (for instance with different argument specifiers) then a different stub object is required (i.e. call the `stub()` function again).
+    ///
+    /// ## Example ##
+    /// ```swift
+    /// let response = service.stub(.loadValue).andWaitForResponse()
+    /// async let value = subject.load()
+    ///
+    /// try await service.waitForCall(.loadValue)
+    /// response.respond(with: "loaded value")
+    ///
+    /// #expect(try await value == "loaded value")
+    /// ```
+    ///
+    /// - Returns: The responder that answers the calls of the stubbed function. See `StubResponder`.
+    func andWaitForResponse() -> StubResponder
 }

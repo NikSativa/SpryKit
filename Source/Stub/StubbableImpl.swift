@@ -264,6 +264,24 @@ public extension Stubbable {
         return fatalErrorOrReturnFallback(fallback: fallback, function: function, arguments: arguments)
     }
 
+    internal func internal_asyncStubbedValue<T>(_ function: Function, arguments: [Any?], fallback: Fallback<T>) throws -> AsyncStubbedValue<T> {
+        let stubs = _stubsDictionary.get(for: function.rawValue)
+        if let value: AsyncStubbedValue<T> = try asyncStubbedValue(in: stubs, fakeType: Self.self, functionName: function.rawValue, arguments: arguments) {
+            return value
+        }
+
+        return .ready(fatalErrorOrReturnFallback(fallback: fallback, function: function, arguments: arguments))
+    }
+
+    internal static func internal_asyncStubbedValue<T>(_ function: ClassFunction, arguments: [Any?], fallback: Fallback<T>) throws -> AsyncStubbedValue<T> {
+        let stubs = _stubsDictionary.get(for: function.rawValue)
+        if let value: AsyncStubbedValue<T> = try asyncStubbedValue(in: stubs, fakeType: Self.self, functionName: function.rawValue, arguments: arguments) {
+            return value
+        }
+
+        return .ready(fatalErrorOrReturnFallback(fallback: fallback, function: function, arguments: arguments))
+    }
+
     // MARK: - Private Helper Functions
 
     private func fatalErrorOrReturnFallback<T>(fallback: Fallback<T>, function: Function, arguments: [Any?]) -> T {
@@ -301,6 +319,36 @@ private func handleDuplicates(stubsDictionary: SpryItemStorage<StubInfo>, stub: 
     } else {
         Constant.FatalError.stubbingSameFunctionWithSameArguments(stub: stub)
     }
+}
+
+private func asyncStubbedValue<T>(in stubs: [StubInfo], fakeType: (some Any).Type, functionName: String, arguments: [Any?]) throws -> AsyncStubbedValue<T>? {
+    let (stubsWithoutArgs, stubsWithArgs) = stubs.bisect { $0.arguments.isEmpty }
+
+    for stub in stubsWithArgs where isEqualArgsLists(fakeType: fakeType, functionName: functionName, specifiedArgs: stub.arguments, actualArgs: arguments) {
+        if let responder = stub.responder {
+            captureArguments(stub: stub, actualArgs: arguments)
+            return .waiting(responder, callID: responder.reserveCall(), functionName: functionName)
+        }
+
+        let rawValue = try stub.returnValue(for: arguments)
+        if let value: T = castedStubValue(rawValue) {
+            captureArguments(stub: stub, actualArgs: arguments)
+            return .ready(value)
+        }
+    }
+
+    for stub in stubsWithoutArgs {
+        if let responder = stub.responder {
+            return .waiting(responder, callID: responder.reserveCall(), functionName: functionName)
+        }
+
+        let rawValue = try stub.returnValue(for: arguments)
+        if let value: T = castedStubValue(rawValue) {
+            return .ready(value)
+        }
+    }
+
+    return nil
 }
 
 private func captureArguments(stub: StubInfo, actualArgs: [Any?]) {
