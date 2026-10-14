@@ -212,11 +212,10 @@ final class SpryableAsyncXCTests: XCTestCase {
     }
 
     func test_a_synchronous_function_cannot_wait_for_a_response() {
+        let subject = subject
         _ = subject.stub(.cachedValue).andWaitForResponse()
 
-        XCTAssertThrowsAssertion { [subject] in
-            return subject.cachedValue()
-        }
+        XCTAssertThrowsAssertion(expression: subject.cachedValue())
     }
 
     func test_the_value_wins_the_race_when_it_arrives_before_the_deadline() async throws {
